@@ -1,31 +1,63 @@
 # Automacao-de-Sistemas-Industriais
-Estes documentos constituem um guia didático abrangente sobre controladores lógicos programáveis (CLP), focando em sua aplicação na automação industrial. O material detalha desde a evolução histórica desses dispositivos até sua estrutura interna, explicando o funcionamento de componentes como a CPU, memórias e fontes de alimentação.
+Estes documentos são baseados na disciplina do Prof. Dr. Alexandre Acácio de Andrade, da UFABC, e constituem um guia didático abrangente sobre controladores lógicos programáveis (CLP), focando em sua aplicação na automação industrial. O material detalha desde a evolução histórica desses dispositivos até sua estrutura interna, explicando o funcionamento de componentes como a CPU, memórias e fontes de alimentação.
 
-**Docente:** Alexandre Acácio de Andrade
 **Livro-texto de referência (teoria):** Mikell P. Groover, *Automation, Production Systems, and Computer-Integrated Manufacturing*, 5ª edição, Pearson, 2016.
 **Apostila de referência (prática de laboratório):** *Roteiro — Prática de Laboratório de Automação: CLP — Controladores Lógicos Programáveis*, UFABC (Alexandre Acácio de Andrade, Everton Flavio Oliveira de Almeida, Fabio Gomes de Freitas), Draft V8.
 
-> Este roteiro cruza o cronograma oficial do Plano de Ensino com os capítulos do livro do Groover (base teórica) e com a apostila de laboratório (base prática, com o CLP Siemens S7-1500). Quando o tema da semana não tem correspondência direta em nenhum dos dois materiais, isso está sinalizado.
+> Este roteiro cruza os assuntos do Plano de Ensino com os capítulos do livro do Groover (base teórica) e com a apostila de laboratório (base prática, com o CLP Siemens S7-1500). Quando um assunto não tem correspondência direta em nenhum dos dois materiais, isso está sinalizado.
 
-Este roteiro segue **estritamente o cronograma semanal do plano de ensino** — a tabela abaixo não inclui os capítulos 3, 7 e 8, nem tópicos da ementa (planejamento da produção, escalonamento, ISO 50001 etc.) que não aparecem no cronograma das 9 semanas de conteúdo novo.
+---
 
+## Assuntos da disciplina
 
-## Mapa Semana → Materiais
+### [Introdução à Automação Industrial](./01-introducao/)
+*Conceito de sistema de produção, automação e seus objetivos — Cap. 1 (1.1–1.2) do Groover.*
 
-| Semana | Data | Tema (Plano de Ensino) | Groover (teoria) | Apostila de Laboratório (prática) |
-|---|---|---|---|---|
-| 1 | 11/02 | Apresentação da disciplina; Automação Industrial e objetivos | **Cap. 1**: 1.1 Production Systems; 1.2 Automation in Production Systems | — |
-| 2 | 18/02 | Automação em sistemas de produção; trabalho manual; princípios e estratégias | **Cap. 1** (1.3–1.4) + **Cap. 4** (4.1–4.3) | — |
-| 3 | 25/02 | Setores de produção e produtos | **Cap. 2**: 2.1, 2.2, 2.4 | — |
-| 4 | 11/03 | Sensores e Atuadores | **Cap. 6**: 6.1 Sensors; 6.2 Actuators; 6.3 Analog–Digital Conversions | Apostila: seção de **Entradas e Saídas / Ligações das Réguas** (p.12) e **entrada analógica** (potenciômetro 10V, faixa 0–10V → 0–27648) — ótimo complemento prático da conversão A/D do Cap. 6.3 |
-| 5 | 18/03 | Process Automation Controller – 1 | **Cap. 5**: 5.1–5.3 Computer Process Control | Apostila: **Arquitetura de Hardware do CLP Siemens S7-1500** (p.4–8) — CPU, painel frontal, LEDs de falha, display |
-| 6 | 25/03 | Process Automation Controller – 2 | **Cap. 9**: 9.1 Discrete Control; **9.2 Ladder Logic Diagrams**; 9.3 PLCs; 9.4 PACs | Apostila: **TIA Portal** — criação de projeto, endereçamento, contatos de memória, operações lógicas, blocos de programação (p.13–37); **Exemplo de linguagem Ladder** (motor 4 velocidades, p.82–86) |
-| 7 | 01/04 | SIL (Safety Integrity Level) | ⚠️ Não coberto | ⚠️ Não coberto — ver norma IEC 61508/61511 |
-| 8 | 15/04 | IHMs e Sistemas Supervisórios | Cap. 6.4 (parcial, hardware de I/O) | Apostila: **IHM detalhamento completo** (p.37–54) — modelo KTP400 Basic, configuração de IP, telas, conexão com CLP |
-| 9 | 22/04 | Redes Industriais | ⚠️ Não coberto | Apostila: **Comunicação entre dispositivos** (p.72–80) — rede Ethernet entre CLP, IHM e inversor de frequência (aplicação prática, não o protocolo em si) |
-| 10 | 29/04 | Avaliação | Revisão Caps. 1, 2, 4, 5, 6, 9 | Revisão das Experiências 1–7 |
-| 11 | 06/05 | Exame substituto | — | — |
-| 12 | 13/05 | Exame final | Todo o conteúdo teórico | Toda a parte prática |
+### [Automação em Sistemas de Produção e Princípios de Automação](./02-automacao-principios/)
+*Trabalho manual em sistemas de produção, USA Principle e as 10 estratégias de automação — Cap. 1 (1.3–1.4) e Cap. 4 (4.1–4.3) do Groover.*
+
+### [Setores de Produção e Produtos](./03-setores-producao/)
+*Indústrias e produtos de manufatura, operações de produção e relação produto/produção — Cap. 2 (2.1, 2.2, 2.4) do Groover.*
+
+### [Sensores e Atuadores](./04-sensores-atuadores/)
+*Componentes de hardware para automação, conversão analógico-digital — Cap. 6 (6.1–6.3) do Groover, com complemento prático da apostila (entrada analógica via potenciômetro, p.12).*
+
+### [Controle de Processos por Computador](./05-controle-processos/)
+*Indústrias de processo vs. discretas, controle contínuo vs. discreto, controle por computador — Cap. 5 (5.1–5.3) do Groover, com a arquitetura de hardware do CLP Siemens S7-1500 (apostila, p.4–8).*
+
+### [Controladores Lógicos Programáveis (CLP)](./06-plc-pac/)
+*Controle discreto, diagramas Ladder, arquitetura de PLCs e PACs — Cap. 9 do Groover, com o guia prático do TIA Portal e o exemplo completo em Ladder (apostila, p.13–37 e p.82–86).*
+
+### [SIL — Safety Integrity Level](./07-sil/)
+*Nível de integridade de segurança em sistemas automatizados — não coberto no Groover nem na apostila; consultar norma IEC 61508/61511 e material do AVA.*
+
+### [IHMs e Sistemas Supervisórios](./08-ihm-supervisorio/)
+*Interface homem-máquina e conceitos de supervisão (SCADA) — base conceitual no Cap. 5.3 do Groover, com a configuração completa da IHM KTP400 Basic (apostila, p.37–54).*
+
+### [Redes Industriais](./09-redes-industriais/)
+*Comunicação entre dispositivos de automação — não coberto no Groover; aplicação prática de rede entre CLP, IHM e inversor de frequência (apostila, p.72–80).*
+
+### [Revisão e Avaliação](./revisao-avaliacao/)
+*Revisão geral dos capítulos 1, 2, 4, 5, 6 e 9 do Groover e das Experiências 1–7 da apostila de laboratório.*
+
+---
+
+## Escopo: o que o Plano de Ensino realmente cobre no Groover
+
+O cronograma semanal usa exclusivamente o **Capítulo 1** (introdução, fora das partes) e capítulos das **Partes I e II** do livro — nada das Partes III em diante (Material Handling, Manufacturing Systems, Quality Control, CIM) é usado.
+
+Mas mesmo dentro desse intervalo (Cap. 1–9), nem tudo é usado:
+
+| Usado no plano de ensino | Não usado (fica de fora do escopo do curso) |
+|---|---|
+| Cap. 1 — Introduction | Cap. 3 — Manufacturing Metrics and Economics |
+| Cap. 2 — Manufacturing Operations | Cap. 7 — Computer Numerical Control |
+| Cap. 4 — Introduction to Automation | Cap. 8 — Industrial Robotics |
+| Cap. 5 — Industrial Control Systems | |
+| Cap. 6 — Hardware Components for Automation and Process Control | |
+| Cap. 9 — Discrete Control and PLCs | |
+
+Este roteiro segue **estritamente o conteúdo do cronograma do plano de ensino** — os assuntos listados acima não incluem os capítulos 3, 7 e 8, nem tópicos da ementa (planejamento da produção, escalonamento, ISO 50001 etc.) que não aparecem no cronograma das 9 semanas de conteúdo novo.
 
 ---
 
@@ -94,4 +126,4 @@ automacao-sistemas-industriais/
 └── revisao-avaliacao/
 ```
 
-Cada pasta pode conter: resumo da aula, slides/anotações, exercícios resolvidos e referências ao(s) capítulo(s) do Groover e/ou à seção correspondente da apostila de laboratório.
+Cada pasta corresponde a um dos links da seção **Assuntos da disciplina** acima, e pode conter: resumo da aula, slides/anotações, exercícios resolvidos e referências ao(s) capítulo(s) do Groover e/ou à seção correspondente da apostila de laboratório.
