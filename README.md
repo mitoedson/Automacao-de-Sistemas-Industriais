@@ -7,26 +7,8 @@ Estes documentos constituem um guia didático abrangente sobre controladores ló
 
 > Este roteiro cruza o cronograma oficial do Plano de Ensino com os capítulos do livro do Groover (base teórica) e com a apostila de laboratório (base prática, com o CLP Siemens S7-1500). Quando o tema da semana não tem correspondência direta em nenhum dos dois materiais, isso está sinalizado.
 
----
-
-## Escopo: o que o Plano de Ensino realmente cobre no Groover
-
-O cronograma semanal usa exclusivamente o **Capítulo 1** (introdução, fora das partes) e capítulos das **Partes I e II** do livro — nada das Partes III em diante (Material Handling, Manufacturing Systems, Quality Control, CIM) é usado.
-
-Mas mesmo dentro desse intervalo (Cap. 1–9), nem tudo é usado:
-
-| Usado no plano de ensino | Não usado (fica de fora do escopo do curso) |
-|---|---|
-| Cap. 1 — Introduction | Cap. 3 — Manufacturing Metrics and Economics |
-| Cap. 2 — Manufacturing Operations | Cap. 7 — Computer Numerical Control |
-| Cap. 4 — Introduction to Automation | Cap. 8 — Industrial Robotics |
-| Cap. 5 — Industrial Control Systems | |
-| Cap. 6 — Hardware Components for Automation and Process Control | |
-| Cap. 9 — Discrete Control and PLCs | |
-
 Este roteiro segue **estritamente o cronograma semanal do plano de ensino** — a tabela abaixo não inclui os capítulos 3, 7 e 8, nem tópicos da ementa (planejamento da produção, escalonamento, ISO 50001 etc.) que não aparecem no cronograma das 9 semanas de conteúdo novo.
 
----
 
 ## Mapa Semana → Materiais
 
