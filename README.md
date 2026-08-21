@@ -10,7 +10,7 @@ Estes documentos são baseados na disciplina do Prof. Dr. Alexandre Acácio de A
 
 ## Assuntos da disciplina
 
-### [Introdução à Automação Industrial](./01-introducao/)
+### [Introdução à Automação Industrial](./01-introducao/README.md)
 *Conceito de sistema de produção, automação e seus objetivos — Cap. 1 (1.1–1.2) do Groover.*
 
 ### [Automação em Sistemas de Produção e Princípios de Automação](./02-automacao-principios/)
