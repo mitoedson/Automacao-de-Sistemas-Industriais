@@ -2,7 +2,6 @@
 
 Este documento apresenta uma síntese estruturada sobre os conceitos fundamentais de sistemas de produção, automação e seus respectivos objetivos, fundamentada nos Capítulos 1 (Seções 1.1 e 1.2) do livro-texto do Groover [211] e no material didático e introdutório de Automação de Sistemas Industriais [155, 158].
 
----
 
 ## 1. Conceito de Sistema de Produção
 
