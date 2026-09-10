@@ -13,13 +13,13 @@ Estes documentos são baseados na disciplina do Prof. Dr. Alexandre Acácio de A
 ### [Introdução à Automação Industrial](./01-introducao/README.md)
 *Conceito de sistema de produção, automação e seus objetivos — Cap. 1 (1.1–1.2) do Groover.*
 
-### [Automação em Sistemas de Produção e Princípios de Automação](./02-automacao-principios/)
+### [Automação em Sistemas de Produção e Princípios de Automação](./02-automacao-principios/README.md)
 *Trabalho manual em sistemas de produção, USA Principle e as 10 estratégias de automação — Cap. 1 (1.3–1.4) e Cap. 4 (4.1–4.3) do Groover.*
 
-### [Setores de Produção e Produtos](./03-setores-producao/)
+### [Setores de Produção e Produtos](./03-setores-producao/README.md)
 *Indústrias e produtos de manufatura, operações de produção e relação produto/produção — Cap. 2 (2.1, 2.2, 2.4) do Groover.*
 
-### [Sensores e Atuadores](./04-sensores-atuadores/)
+### [Sensores e Atuadores](./04-sensores-atuadores/README.md)
 *Componentes de hardware para automação, conversão analógico-digital — Cap. 6 (6.1–6.3) do Groover, com complemento prático da apostila (entrada analógica via potenciômetro, p.12).*
 
 ### [Controle de Processos por Computador](./05-controle-processos/)
