@@ -63,11 +63,11 @@ Um **atuador** é o dispositivo de hardware que converte um sinal de comando do 
 
 ## 3. Complemento de aprendizagem — Instrumentação Aplicada
 
-A apostila **Instrumentação Aplicada**, de Álysson Raniere Seidel (UFSM/CTISM, 2011), amplia os conceitos de sensores apresentados anteriormente e aproxima a teoria de situações típicas de automação industrial. O material aborda tecnologia e seleção de sensores, além da medição de temperatura, pressão, vazão e nível. fileciteturn1file0L17-L30
+A apostila **Instrumentação Aplicada**, de Álysson Raniere Seidel (UFSM/CTISM, 2011), amplia os conceitos de sensores apresentados anteriormente e aproxima a teoria de situações típicas de automação industrial. O material aborda tecnologia e seleção de sensores, além da medição de temperatura, pressão, vazão e nível. 
 
 ### 3.1 Do sensor à instrumentação industrial
 
-Na automação, o sensor não deve ser visto apenas como um componente que "detecta" alguma coisa. Ele participa de uma cadeia de medição: uma grandeza física é percebida, convertida em um sinal e posteriormente interpretada pelo sistema de controle. A apostila destaca que a instrumentação é fundamental para medir e processar variáveis que não podem ser acompanhadas adequadamente apenas pelos sentidos humanos. fileciteturn0file1L190-L206
+Na automação, o sensor não deve ser visto apenas como um componente que "detecta" alguma coisa. Ele participa de uma cadeia de medição: uma grandeza física é percebida, convertida em um sinal e posteriormente interpretada pelo sistema de controle. A apostila destaca que a instrumentação é fundamental para medir e processar variáveis que não podem ser acompanhadas adequadamente apenas pelos sentidos humanos. 
 
 Isso complementa a ideia de **função de transferência** apresentada no Groover: conhecer um sensor significa compreender não apenas o que ele mede, mas também **como a grandeza física aparece em sua saída**.
 
@@ -81,13 +81,13 @@ A apostila apresenta diferentes princípios físicos que podem ser usados para t
 - **Efeito Hall** — produz uma tensão relacionada à presença de um campo magnético e pode ser usado para detectar posição, movimento ou velocidade.
 - **Piezoelétricos** — determinados materiais produzem tensão quando submetidos a uma força; são utilizados em medições de força, pressão, aceleração e aplicações ultrassônicas.
 - **Ópticos** — utilizam uma fonte de luz e um elemento detector para identificar presença, movimento ou outras condições do processo.
-- **Ultrassônicos** — determinam a presença ou distância de objetos a partir da emissão e recepção de ondas acústicas e da análise do eco. fileciteturn0file1L354-L362 fileciteturn0file1L399-L417 fileciteturn0file1L438-L454 fileciteturn0file1L499-L527
+- **Ultrassônicos** — determinam a presença ou distância de objetos a partir da emissão e recepção de ondas acústicas e da análise do eco. 
 
 > **Ideia central:** o mesmo objetivo — por exemplo, detectar a presença de um objeto — pode ser realizado por tecnologias diferentes. A escolha depende do material do objeto, distância, ambiente, velocidade, precisão, custo e demais requisitos da aplicação.
 
 ### 3.3 Sensores discretos e contínuos
 
-Um complemento importante à classificação do Groover é a distinção usada na instrumentação industrial entre **sinais discretos** e **sinais contínuos**. Sensores discretos indicam estados como presença/ausência ou ligado/desligado. Sensores contínuos acompanham uma grandeza ao longo de uma faixa de valores, fornecendo uma saída proporcional ou relacionada à variável medida. fileciteturn0file1L559-L596
+Um complemento importante à classificação do Groover é a distinção usada na instrumentação industrial entre **sinais discretos** e **sinais contínuos**. Sensores discretos indicam estados como presença/ausência ou ligado/desligado. Sensores contínuos acompanham uma grandeza ao longo de uma faixa de valores, fornecendo uma saída proporcional ou relacionada à variável medida. 
 
 Essa distinção é especialmente importante quando o sensor será conectado a um **CLP**:
 
@@ -98,7 +98,7 @@ Essa distinção é especialmente importante quando o sensor será conectado a u
 
 ### 3.4 Seleção do sensor: não existe sensor universal
 
-A seleção correta do sensor influencia diretamente o custo e o sucesso da implementação de um processo automatizado. Por isso, não basta perguntar "qual sensor mede esta grandeza?". É necessário perguntar **qual tecnologia é mais adequada às condições reais da aplicação**. fileciteturn0file1L554-L557
+A seleção correta do sensor influencia diretamente o custo e o sucesso da implementação de um processo automatizado. Por isso, não basta perguntar "qual sensor mede esta grandeza?". É necessário perguntar **qual tecnologia é mais adequada às condições reais da aplicação**. 
 
 Alguns critérios práticos são:
 
@@ -111,11 +111,11 @@ Alguns critérios práticos são:
 7. **Qual é o sinal de saída e como o controlador irá recebê-lo?**
 8. **Qual é a precisão, velocidade e confiabilidade necessárias?**
 
-Nos sensores de proximidade, por exemplo, a apostila diferencia **distância sensora nominal**, **distância sensora operacional**, **alvo padrão** e **histerese**. A histerese é particularmente importante porque evita oscilações indesejadas da saída quando há pequenas vibrações próximas ao ponto de acionamento. fileciteturn0file1L628-L649
+Nos sensores de proximidade, por exemplo, a apostila diferencia **distância sensora nominal**, **distância sensora operacional**, **alvo padrão** e **histerese**. A histerese é particularmente importante porque evita oscilações indesejadas da saída quando há pequenas vibrações próximas ao ponto de acionamento. 
 
 ### 3.5 Medição de temperatura
 
-A instrumentação de temperatura apresenta várias tecnologias, entre elas **termopares, RTDs, termistores e circuitos integrados**. A escolha depende da faixa de temperatura, precisão, resposta, ambiente e custo. A apostila também enfatiza que diferentes sensores produzem diferentes compromissos entre desempenho e custo. fileciteturn1file1L99-L108
+A instrumentação de temperatura apresenta várias tecnologias, entre elas **termopares, RTDs, termistores e circuitos integrados**. A escolha depende da faixa de temperatura, precisão, resposta, ambiente e custo. A apostila também enfatiza que diferentes sensores produzem diferentes compromissos entre desempenho e custo. 
 
 Um exemplo interessante é o **termopar**, que utiliza o efeito termoelétrico para produzir uma tensão relacionada à diferença de temperatura. Já os **RTDs** exploram a variação da resistência elétrica com a temperatura, enquanto os **termistores** apresentam uma variação mais acentuada da resistência.
 
@@ -125,7 +125,7 @@ A instrumentação não se limita a sensores de proximidade. Em processos indust
 
 - **Pressão** — pode ser medida por dispositivos como tubo de Bourdon e sensores capacitivos, indutivos, piezorresistivos ou piezoelétricos.
 - **Vazão** — pode ser determinada por diferentes princípios, incluindo medidores volumétricos, eletromagnéticos e de turbina.
-- **Nível** — permite acompanhar a quantidade de material armazenado em tanques e pode ser realizado de forma **contínua** ou **discreta**. fileciteturn0file1L146-L166 fileciteturn1file6L392-L403
+- **Nível** — permite acompanhar a quantidade de material armazenado em tanques e pode ser realizado de forma **contínua** ou **discreta**. 
 
 Essas variáveis ajudam a perceber uma ideia fundamental da automação: **o sensor deve ser escolhido em função do processo**, e não apenas da grandeza que se deseja medir.
 
@@ -135,7 +135,7 @@ Considere uma esteira transportadora que precisa detectar uma peça metálica e 
 
 **Peça metálica → sensor indutivo → entrada do CLP → lógica do programa → saída do CLP → atuador**
 
-O sensor indutivo detecta o metal sem contato físico; sua saída é interpretada pelo CLP; o programa decide a ação; e uma saída do controlador comanda o atuador. Sensores indutivos são particularmente adequados para detectar elementos metálicos e podem apresentar alta frequência de comutação e boa durabilidade. fileciteturn0file1L775-L787
+O sensor indutivo detecta o metal sem contato físico; sua saída é interpretada pelo CLP; o programa decide a ação; e uma saída do controlador comanda o atuador. Sensores indutivos são particularmente adequados para detectar elementos metálicos e podem apresentar alta frequência de comutação e boa durabilidade. 
 
 Esse exemplo conecta diretamente os três conceitos deste material: **sensor**, **controlador** e **atuador**. Quando a informação do sensor é analógica, acrescenta-se ainda a etapa de conversão A/D discutida na seção seguinte.
 
