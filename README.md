@@ -22,7 +22,7 @@ Estes documentos são baseados na disciplina do Prof. Dr. Alexandre Acácio de A
 ### [Sensores e Atuadores](./04-sensores-atuadores/README.md)
 *Componentes de hardware para automação, conversão analógico-digital — Cap. 6 (6.1–6.3) do Groover, com complemento prático da apostila (entrada analógica via potenciômetro, p.12).*
 
-### [Controle de Processos por Computador](./05-controle-processos/)
+### [Controle de Processos por Computador](./05-controle-processos/README.md)
 *Indústrias de processo vs. discretas, controle contínuo vs. discreto, controle por computador — Cap. 5 (5.1–5.3) do Groover, com a arquitetura de hardware do CLP Siemens S7-1500 (apostila, p.4–8).*
 
 ### [Controladores Lógicos Programáveis (CLP)](./06-plc-pac/)
