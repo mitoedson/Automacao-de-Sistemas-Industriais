@@ -141,7 +141,7 @@ Na manufatura industrial contemporânea, os dois campos da automação interpene
                                         │
                                         │   (Comunicação em tempo real)
                        ┌────────────────┴────────────────┐
-                       │   AUTOMAÇÃO DO CHÃO DE FÁBRICA   │
+                       │   AUTOMAÇÃO DO CHÃO DE FÁBRICA  │
                        │       (Sistemas físicos)        │
                        └─────────────────────────────────┘
 ```
@@ -158,7 +158,10 @@ O **CIM** representa a visão unificada em que os sistemas de controle administr
 
 O plano de ensino de *Automação de Sistemas Industriais* visa preparar o futuro profissional para atuar neste ecossistema integrado da manufatura moderna, organizando o conhecimento de maneira estruturada e focado nas seguintes diretrizes [87, 88]:
 
-*   **Visão Sistêmica e Hierárquica:** Utilização da **Pirâmide da Automação** (Níveis de 1 a 5) e dos modelos hierárquico-funcionais para compreender a distribuição lógica dos controladores de processo (CLPs, SDCDs), sistemas supervisórios (SCADA/IHM), sistemas de gerenciamento fabril (MES) e sistemas corporativos de alto nível (ERP) [102, 103, 104].
+*   **Visão Sistêmica e Hierárquica:** Utilização da **Pirâmide da Automação** (Níveis de 0 a 4) e dos modelos hierárquico-funcionais para compreender a distribuição lógica dos controladores de processo (CLPs, SDCDs), sistemas supervisórios (SCADA/IHM), sistemas de gerenciamento fabril (MES) e sistemas corporativos de alto nível (ERP) [102, 103, 104].
+
+![alt text](image.png)
+
 *   **Princípio USA de Melhoria de Processos:** Aplicação sistemática dos três passos metodológicos antes de projetar soluções automatizadas:
     1.  *Understand (Compreender):* Analisar os insumos, as variáveis de processo e como é gerado o valor agregado ao produto [178].
     2.  *Simplify (Simplificar):* Eliminar etapas desnecessárias, gargalos ou transportes improdutivos [180].

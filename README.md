@@ -11,34 +11,34 @@ Estes documentos são baseados na disciplina do Prof. Dr. Alexandre Acácio de A
 ## Assuntos da disciplina
 
 ### [Introdução à Automação Industrial](./01-introducao/README.md)
-*Conceito de sistema de produção, automação e seus objetivos — Cap. 1 (1.1–1.2) do Groover.*
+Conceito de sistema de produção, automação e seus objetivos.
 
 ### [Automação em Sistemas de Produção e Princípios de Automação](./02-automacao-principios/README.md)
-*Trabalho manual em sistemas de produção, USA Principle e as 10 estratégias de automação — Cap. 1 (1.3–1.4) e Cap. 4 (4.1–4.3) do Groover.*
+Trabalho manual em sistemas de produção, USA Principle e as 10 estratégias de automação.
 
 ### [Setores de Produção e Produtos](./03-setores-producao/README.md)
-*Indústrias e produtos de manufatura, operações de produção e relação produto/produção — Cap. 2 (2.1, 2.2, 2.4) do Groover.*
+Indústrias e produtos de manufatura, operações de produção e relação produto/produção.
 
 ### [Sensores e Atuadores](./04-sensores-atuadores/README.md)
-*Componentes de hardware para automação, conversão analógico-digital — Cap. 6 (6.1–6.3) do Groover, com complemento prático da apostila (entrada analógica via potenciômetro, p.12).*
+Componentes de hardware para automação, conversão analógico-digital.
 
 ### [Controle de Processos por Computador](./05-controle-processos/README.md)
-*Indústrias de processo vs. discretas, controle contínuo vs. discreto, controle por computador — Cap. 5 (5.1–5.3) do Groover, com a arquitetura de hardware do CLP Siemens S7-1500 (apostila, p.4–8).*
+Indústrias de processo vs. discretas, controle contínuo vs. discreto, controle por computador.
 
 ### [Controladores Lógicos Programáveis (CLP)](./06-plc-pac/)
-*Controle discreto, diagramas Ladder, arquitetura de PLCs e PACs — Cap. 9 do Groover, com o guia prático do TIA Portal e o exemplo completo em Ladder (apostila, p.13–37 e p.82–86).*
+Controle discreto, diagramas Ladder, arquitetura de PLCs e PACs — Cap. 9 do Groover, com o guia prático do TIA Portal e o exemplo completo em Ladder.
 
 ### [SIL — Safety Integrity Level](./07-sil/)
-*Nível de integridade de segurança em sistemas automatizados — não coberto no Groover nem na apostila; consultar norma IEC 61508/61511 e material do AVA.*
+Nível de integridade de segurança em sistemas automatizados — não coberto no Groover nem na apostila; consultar norma IEC 61508/61511 e material do AVA.*
 
 ### [IHMs e Sistemas Supervisórios](./08-ihm-supervisorio/)
-*Interface homem-máquina e conceitos de supervisão (SCADA) — base conceitual no Cap. 5.3 do Groover, com a configuração completa da IHM KTP400 Basic (apostila, p.37–54).*
+Interface homem-máquina e conceitos de supervisão (SCADA).
 
 ### [Redes Industriais](./09-redes-industriais/)
-*Comunicação entre dispositivos de automação — não coberto no Groover; aplicação prática de rede entre CLP, IHM e inversor de frequência (apostila, p.72–80).*
+Comunicação entre dispositivos de automação — não coberto no Groover; aplicação prática de rede entre CLP, IHM e inversor de frequência.
 
 ### [Revisão e Avaliação](./revisao-avaliacao/)
-*Revisão geral dos capítulos 1, 2, 4, 5, 6 e 9 do Groover e das Experiências 1–7 da apostila de laboratório.*
+Revisão geral dos capítulos 1, 2, 4, 5, 6 e 9 do Groover e das Experiências 1–7 da apostila de laboratório.*
 
 ---
 

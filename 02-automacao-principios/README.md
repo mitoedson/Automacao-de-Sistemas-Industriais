@@ -1,6 +1,6 @@
 # Automação em Sistemas de Produção e Princípios de Automação
 
-## 1. Trabalho Manual em Sistemas de Produção (Cap. 1.3)
+## 1. Trabalho Manual em Sistemas de Produção (Cap. 1.3 - Groover)
 
 Mesmo com a tendência histórica de substituição do trabalho manual por máquinas automatizadas, o trabalho humano continua sendo indispensável em qualquer sistema de produção — seja operando diretamente o processo, seja gerenciando e mantendo a planta.
 
