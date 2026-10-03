@@ -47,7 +47,6 @@ Conforme a **participação humana direta** na execução dos processos produtiv
 *   **Sistemas Trabalhador-Máquina:** O trabalhador opera diretamente equipamentos motorizados (como tornos mecânicos ou prensas manuais), dividindo o ciclo de trabalho entre tempo humano e tempo de máquina [168, 219].
 *   **Sistemas Automatizados:** Uma máquina realiza todo o processo produtivo de maneira autônoma, dispensando a participação direta e contínua de um operador [168, 219].
 
----
 
 ## 2. Conceito de Automação
 
@@ -61,7 +60,6 @@ A automação de um sistema de produção é implementada pela integração de t
 ### Origem do Termo
 O termo "automação" (*automation*) foi originalmente cunhado em **1946** por um gerente de engenharia da **Ford Motor Company** para descrever os mecanismos e dispositivos automáticos de transferência e alimentação que estavam sendo massivamente integrados nas linhas de montagem automotivas da época [221].
 
----
 
 ## 3. Tipos de Automação nos Sistemas de Manufatura
 
@@ -105,7 +103,6 @@ A automação flexível representa um refinamento e uma evolução da programáv
 *   **Vantagens:** Eliminação dos tempos de preparação de máquina; alta eficiência operacional em mixes dinâmicos de produção [173].
 *   **Desvantagens:** Alto investimento em hardware integrado de transporte e software de controle complexo [174].
 
----
 
 ## 4. Objetivos e Razões para Automatizar os Processos Industriais
 
@@ -121,7 +118,6 @@ A decisão corporativa de automatizar as operações de manufatura e os sistemas
 8.  **Realizar Processos Inviáveis Manualmente:** Determinados processos complexos que requerem precisão nanométrica, velocidades ultrarrápidas, ou manipulação física em ambientes estéreis (como fabricação de microchips de silício) seriam tecnicamente impossíveis de serem executados de forma puramente manual [176].
 9.  **Evitar o Alto Custo da Não Automação:** Em mercados globais competitivos, as empresas que mantêm processos manuais lentos e propensos a falhas perdem sua viabilidade econômica e de conformidade perante competidores altamente automatizados [176].
 
----
 
 ## 5. Relação entre Automação de Fábrica, Sistemas de Apoio e o CIM
 
@@ -152,7 +148,6 @@ A automação é dividida e aplicada em duas frentes fundamentais [170]:
 
 O **CIM** representa a visão unificada em que os sistemas de controle administrativo corporativo (como ERP) comunicam-se de forma direta, transparente e instantânea com os softwares de gerenciamento de chão de fábrica (SCADA, MES) e com as unidades terminais remotas (CLPs e PACs), permitindo um sistema de produção adaptativo e integrado em tempo real à cadeia de suprimentos e às demandas financeiras da corporação [103, 104, 186].
 
----
 
 ## 6. Diretrizes da Disciplina e Competências Profissionais
 
@@ -167,3 +162,5 @@ O plano de ensino de *Automação de Sistemas Industriais* visa preparar o futur
     2.  *Simplify (Simplificar):* Eliminar etapas desnecessárias, gargalos ou transportes improdutivos [180].
     3.  *Automate (Automatizar):* Projetar as soluções tecnológicas e algoritmos de controle sobre o processo previamente otimizado [181].
 *   **Competências de Engenharia e Projetos:** Ao final da formação, espera-se que o estudante seja capaz de conceber, analisar e implantar projetos completos de automação, compreendendo as tecnologias de sensores, os atuadores industriais, a lógica programável (Linguagens IEC 61131-3 em CLPs e PACs), o desenvolvimento de sistemas supervisórios (SCADA/IHM) e as redes de comunicação industrial [89, 159, 198].
+<hr size=1>
+<a href="exercicios01.md">Exercícios 01</a>
