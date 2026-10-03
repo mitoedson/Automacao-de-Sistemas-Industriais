@@ -157,7 +157,6 @@ A automação pode ser aplicada em diferentes níveis hierárquicos da fábrica.
 
 > A maior parte das tecnologias de automação e controle discutidas no livro está concentrada nos **níveis 2 e 3** (máquina e célula), embora tecnologias do nível 1 também sejam abordadas.
 
----
 
 ## Pontos-chave para revisão
 
@@ -177,4 +176,5 @@ A automação pode ser aplicada em diferentes níveis hierárquicos da fábrica.
 
 **Referência:** Mikell P. Groover, *Automation, Production Systems, and Computer-Integrated Manufacturing*, 5ª ed. — Cap. 1 (Seções 1.3–1.4) e Cap. 4 (Seções 4.1–4.3).
 
-
+<hr size=1>
+<a href="exercicios02.md">Exercícios</a>

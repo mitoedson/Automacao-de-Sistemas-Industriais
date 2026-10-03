@@ -163,4 +163,4 @@ O plano de ensino de *Automação de Sistemas Industriais* visa preparar o futur
     3.  *Automate (Automatizar):* Projetar as soluções tecnológicas e algoritmos de controle sobre o processo previamente otimizado [181].
 *   **Competências de Engenharia e Projetos:** Ao final da formação, espera-se que o estudante seja capaz de conceber, analisar e implantar projetos completos de automação, compreendendo as tecnologias de sensores, os atuadores industriais, a lógica programável (Linguagens IEC 61131-3 em CLPs e PACs), o desenvolvimento de sistemas supervisórios (SCADA/IHM) e as redes de comunicação industrial [89, 159, 198].
 <hr size=1>
-<a href="exercicios01.md">Exercícios 01</a>
+<a href="exercicios01.md">Exercícios</a>

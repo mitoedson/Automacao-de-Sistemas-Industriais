@@ -88,7 +88,7 @@ O alto custo inicial do equipamento nunca poderá ser diluído na grande quantid
 (d) O ciclo de vida do produto é curto<p>
 (e) Em alguns países o valor da hora de trabalho é muito baixo, de maneira que a automação não pode ser justificada
 
-### Questão 8 - Assinale qual Não é uma razão para investir em automação de um processo
+### Questão 8 - Assinale qual não é uma razão para investir em automação de um processo
 (a) Realizar processos que não podem ser executados manualmente<p>
 (b) Aumentar a segurança do trabalhador<p>
 (c) Reduzir o tempo da produção<p>

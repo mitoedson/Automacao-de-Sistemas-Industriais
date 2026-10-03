@@ -218,3 +218,5 @@ Esse potenciômetro é, na prática, o próprio exemplo de **sensor analógico d
 
 **Referências:** Mikell P. Groover, *Automation, Production Systems, and Computer-Integrated Manufacturing*, 5ª ed. — Cap. 6 (Seções 6.1 a 6.3) + *Roteiro de Prática de Laboratório de Automação: CLP*, UFABC (p. 12 — entradas e saídas do CLP Siemens S7-1500) +  Instrumentação Aplicada, de Álysson Raniere Seidel (UFSM/CTISM, 2011).
 
+<hr size=1>
+<a href="exercicios03.md">Exercícios</a>
