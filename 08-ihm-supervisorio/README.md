@@ -1,4 +1,4 @@
-# Sistemas Supervisórios e IHM — Material de estudo
+# Sistemas Supervisórios e IHM 
 
 Material de estudo sobre **sistemas supervisórios (SCADA)** e **IHM/HMI** em automação industrial: o que são, como funcionam, quais telas um SCADA deve ter, como se diferenciam de uma IHM e como projetar, operar e proteger um sistema desses.
 
@@ -705,3 +705,7 @@ Os slides lembram que a estratégia nacional de defesa brasileira inclui a segur
 - **Referências à apostila** usam a numeração de página impressa (p. 89–95).
 - **Transcrição das videoaulas:** o arquivo de origem é uma transcrição automática com muitos ruídos. Só entraram aqui os pontos que puderam ser confirmados por outras fontes ou que estavam claros no contexto.
 - **Pontos de atenção** (divergências entre fontes, números que merecem conferência) aparecem em blocos `> ⚠️` ao longo do texto.
+
+
+<hr size=1>
+<a href="exercicios04.md">Exercícios</a>
