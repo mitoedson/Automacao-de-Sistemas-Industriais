@@ -79,3 +79,7 @@ e posicionamento.
 <p>(c) Os atuadores Hidráulicos usam óleo sob pressão
 <p>(d) Os atuadores Pneumáticos usam ar comprimido, ideais para tarefas rápidas e com boa força, como garras e cilindros.
 <p>(e) Os atuadores Hidráulicos são excelentes para grandes cargas e força, comuns em máquinas pesadas.
+
+---
+
+Respostas: (1-c), (2-a), (3-e), (4-b), (5-d), (6-d), (7-d), (8-d), (9-a).

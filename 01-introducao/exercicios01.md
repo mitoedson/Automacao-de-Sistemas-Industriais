@@ -94,3 +94,8 @@ O alto custo inicial do equipamento nunca poderá ser diluído na grande quantid
 (c) Reduzir o tempo da produção<p>
 (d) Reduzir os custos do trabalho<p>
 (e) Não melhorar a qualidade do produto
+
+
+---
+
+Respostas: (1-b), (2-a), (3-c), (4-d), (5-b), (6-e), (7-c), (8-e).

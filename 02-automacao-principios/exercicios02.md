@@ -107,3 +107,7 @@ A. Layout por processo<br>
 B.  Layout de posição fixa<br> 
 C. Layout celular<br>
 D. Layout por produto
+
+---
+
+Respostas: (1-a), (2-d), (3-c).
