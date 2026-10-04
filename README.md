@@ -25,22 +25,28 @@ Componentes de hardware para automação, conversão analógico-digital.
 ### [Controle de Processos por Computador](./05-controle-processos/README.md)
 Indústrias de processo vs. discretas, controle contínuo vs. discreto, controle por computador.
 
-### [Controladores Lógicos Programáveis (CLP)](./06-plc-pac/)
+<!--
+### [Controladores Lógicos Programáveis (CLP)](./06-plc-pac/README.md)
 Controle discreto, diagramas Ladder, arquitetura de PLCs e PACs — Cap. 9 do Groover, com o guia prático do TIA Portal e o exemplo completo em Ladder.
+-->
 
-### [SIL — Safety Integrity Level](./07-sil/)
+<!--
+### [SIL — Safety Integrity Level](./07-sil/README.md)
 Nível de integridade de segurança em sistemas automatizados — não coberto no Groover nem na apostila; consultar norma IEC 61508/61511 e material do AVA.*
+-->
 
-### [IHMs e Sistemas Supervisórios](./08-ihm-supervisorio/)
+### [IHMs e Sistemas Supervisórios](./08-ihm-supervisorio/README.md)
 Interface homem-máquina e conceitos de supervisão (SCADA).
 
-### [Redes Industriais](./09-redes-industriais/)
+<!--
+### [Redes Industriais](./09-redes-industriais/README.md)
 Comunicação entre dispositivos de automação — não coberto no Groover; aplicação prática de rede entre CLP, IHM e inversor de frequência.
+-->
 
-### [Revisão e Avaliação](./revisao-avaliacao/)
+<!--
+### [Revisão e Avaliação](./revisao-avaliacao/README.md)
 Revisão geral dos capítulos 1, 2, 4, 5, 6 e 9 do Groover e das Experiências 1–7 da apostila de laboratório.*
-
----
+-->
 
 ## Escopo: o que o Plano de Ensino realmente cobre no Groover
 
