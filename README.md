@@ -73,8 +73,8 @@ A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usa
 
 | Experiência | Foco |
 |---|---|
-| 1 | Familiarização com o hardware e o software de programação (TIA Portal) |
-| 2 | Aprofundamento da lógica de programação; introdução à *force table* |
+| 1 | <a href="/experimentos/experimento-01-familiarizacao-ladder.md">Familiarização com o hardware e o software de programação (TIA Portal)</a> |
+| 2 | <a href="/experimentos/experimento-02-logica-e-force-table.md">Aprofundamento da lógica de programação; introdução à *force table*</a> |
 | 3 | Uso do CLP para solução de problemas práticos reais |
 | 4 | Aprofundamento da solução de problemas práticos reais |
 | 5 | Introdução da IHM em problemas práticos reais |
