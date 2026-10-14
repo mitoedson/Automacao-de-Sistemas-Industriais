@@ -2,13 +2,6 @@
 
 > **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP)
 
-**Equipe:**
-1. ______________________________
-2. ______________________________
-3. ______________________________
-4. ______________________________
-
----
 
 ## 1. Objetivos
 
@@ -25,17 +18,24 @@ Experimentos 1 e 2. Instruções `TON` e `CTU` (a apostila descreve o `TON` com 
 
 ## 3. Problema 1 — Bomba com modo manual e automático
 
-Controlar a bomba de um reservatório em dois modos, selecionados por uma chave.
+Desenvolver um projeto de controle na linguagem LADDER para a seguinte instalação: 
 
-- **MANUAL:** a bomba liga com o botão **LIGA** e desliga com o botão **DESLIGA**. As boias de nível **não têm ação**.
-- **AUTOMÁTICO:** a bomba **liga 10 s após** a detecção de **NÍVEL BAIXO** e **desliga 10 s após** a detecção de **NÍVEL ALTO**.
+![alt text](image.png)
+
+Controlar a bomba de um reservatório em dois modos, selecionados por uma chave. Através do programa o utilizador deve ser capaz de selecionar o modo se funcionamento: Automático ou Manual. 
+
+* Em MANUAL, a Bomba poderá ser ligada pressionando-se o botão LIGA e desliga pressionando-se o botão desliga. Neste modo, as bóias de Nível não tem nenhuma ação.
+
+* Em AUTOMÁTICO, a bomba será ligada 10 Seg. após a detecção de NÍVEL BAIXO e desligada 10 Seg. após a detecção de NÍVEL ALTO . 
+
+
 
 ### 3.1 Endereçamento (dado no enunciado)
 
 | Endereço | Estado lógico |
 |---|---|
-| `%I0.0` | **1** se NÍVEL < NÍVEL BAIXO; 0 caso contrário |
-| `%I0.1` | **1** se NÍVEL > NÍVEL ALTO; 0 caso contrário |
+| `%I0.0` | **1** se NÍVEL < NÍVEL BAIXO; 0  se NÍVEL > NÍVEL BAIXO |
+| `%I0.1` | **1** se NÍVEL > NÍVEL ALTO; 0 se NÍVEL < NÍVEL ALTO |
 | `%I0.2` | **1** = AUTOMÁTICO; **0** = MANUAL |
 | `%I0.3` | **1** se botão LIGA pressionado |
 | `%I0.4` | **0** se botão DESLIGA pressionado (contato **NF**) |
@@ -89,19 +89,24 @@ Rede 5 — Saída
 - O que deve acontecer com a bomba quando a chave muda de **manual para automático** com a bomba ligada? (A solução acima mantém o estado; uma alternativa é desligar a bomba ao trocar de modo.)
 - Por que o botão DESLIGA costuma ser NF em instalações reais? (Condição de **falha segura**: cabo rompido = desliga.)
 
----
 
 ## 4. Problema 2 — Alimentador de peças com magazine
 
-Um cilindro empurra peças de um magazine (depósito vertical).
+ Um sistema  para alimentação de peças a partir de um magazine (deposito vertical) deve funcionar da seguinte forma: 
+
+![alt text](image-1.png)
 
 ### 4.1 Especificação
 
-1. Condições iniciais: cilindro **recuado** e **peça presente** no magazine.
-2. Com as condições iniciais satisfeitas, ao pressionar **início de ciclo (E1)** o cilindro **S1 avança** até acionar o **fim de curso (E2)** e então **recua**. Ao recuar, o sistema volta à condição inicial.
-3. Se E1 for pressionado **sem peça** no magazine, o **alarme sonoro S2** soa **enquanto E1 estiver pressionado**.
-4. Se o cilindro levar **mais de 10 s** para alcançar o fim de curso, o **alarme S3** é acionado.
-5. A cada fim de curso, um **contador** é incrementado. Após **10 peças**, um alarme avisa o operador para retirar o cesto e **zerar o contador**. Enquanto o contador não for zerado, **o ciclo fica bloqueado**.
+a) O cilindro (S1) encontra-se inicialmente recuado e o sensor de peça no magazine (E3) indica a presença de peça. 
+
+b) Uma vez que as condições iniciais (item a) são verificadas, e o botão de início de ciclo (E1) é pressionado, o cilindro (S1) avança, empurrando a peça, até que o sensor de final de curso do cilindro (E2) seja acionado, iniciando o recuo do cilindro S1. Uma vez recuado o cilindro (S1) o sistema volta a condição inicial. 
+
+c) Caso seja pressionado o botão de início de ciclo (E1) e não haja peça no magazine, um alarme sonoro (S2) deve ser ativado em quanto o botão de início de ciclo (E1) for pressionado. 
+
+d) Caso, a partir do acionamento do botão E1 (considerando que exista peça), o cilindro leve mais que 10 segundos para alcançar o fim de curso, um alarme (S3) deve ser acionado. 
+
+e) Cada vez que o cilindro alcança o fim de curso, um contador deve ser incrementado. Após 10 peças, um alarme deve ser acionado para que o operador retire o cesto de peças e zere o contador. Enquanto o contador não for zerado, o ciclo da máquina deve ser bloqueado. 
 
 ### 4.2 Variáveis lógicas
 
