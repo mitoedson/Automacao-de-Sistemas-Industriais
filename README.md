@@ -25,10 +25,8 @@ Componentes de hardware para automação, conversão analógico-digital.
 ### [Controle de Processos por Computador](./05-controle-processos/README.md)
 Indústrias de processo vs. discretas, controle contínuo vs. discreto, controle por computador.
 
-<!--
 ### [Controladores Lógicos Programáveis (CLP)](./06-plc-pac/README.md)
 Controle discreto, diagramas Ladder, arquitetura de PLCs e PACs — Cap. 9 do Groover, com o guia prático do TIA Portal e o exemplo completo em Ladder.
--->
 
 <!--
 ### [SIL — Safety Integrity Level](./07-sil/README.md)

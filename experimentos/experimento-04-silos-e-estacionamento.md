@@ -2,13 +2,7 @@
 
 > **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP)
 
-**Equipe:**
-1. ______________________________
-2. ______________________________
-3. ______________________________
-4. ______________________________
 
----
 
 ## 1. Objetivos
 
@@ -25,6 +19,8 @@ Experimentos 1 a 3 (`SET`/`RESET`, `TON`, `CTU`; endereçamento de E/S).
 ## 3. Exercício 1 — Sistema de carregamento de silos
 
 ### 3.1 Descrição do processo
+
+![alt text](image-2.png)
 
 Um entreposto agropecuário possui três silos (**S1, S2, S3**). O material sai do silo **S1** pelo **damper D1**, passa por uma **caixa desviadora de 2 vias** (**damper D2**), que o encaminha para **S2** ou **S3**. Dois transportadores de correia (**M1** e **M2**) levam o material.
 
@@ -135,6 +131,8 @@ Rede 5 — Damper D1 (só com desviador na posição correta e S1 com material)
 ## 4. Exercício 2 — Controle de acesso de estacionamento
 
 ### 4.1 Descrição do processo
+
+![alt text](image-3.png)
 
 Um estacionamento com **uma única via** de entrada e saída tem capacidade para **100 veículos** e exibe **“LOTADO”** quando as vagas acabam. O tráfego é controlado por **dois semáforos** (entrada e saída) e por **uma cancela** no meio da via comum.
 
