@@ -28,10 +28,11 @@ Indústrias de processo vs. discretas, controle contínuo vs. discreto, controle
 ### [Controladores Lógicos Programáveis (CLP)](./06-plc-pac/README.md)
 Controle discreto, diagramas Ladder, arquitetura de PLCs e PACs — Cap. 9 do Groover, com o guia prático do TIA Portal e o exemplo completo em Ladder.
 
-<!--
+### [Sistemas Digitais de Controle Distribuído (SDCD / DCS)](./06-plc-pac/sdcddcs.md)
+Controle regulatório, altíssima disponibilidade e supervisão incorporada: história, filosofia, arquitetura, estudo de caso (CENTUM VP), comparação com CLPs, controladores híbridos e sistemas instrumentados de segurança (SIS / Safe PLC).
+
 ### [SIL — Safety Integrity Level](./07-sil/README.md)
 Nível de integridade de segurança em sistemas automatizados — não coberto no Groover nem na apostila; consultar norma IEC 61508/61511 e material do AVA.*
--->
 
 ### [IHMs e Sistemas Supervisórios](./08-ihm-supervisorio/README.md)
 Interface homem-máquina e conceitos de supervisão (SCADA).
@@ -108,26 +109,3 @@ Dois eixos aparecem com destaque no plano de ensino e merecem atenção especial
 - A **apostila cobre isso na prática**, com a IHM KTP400 Basic: configuração de IP, criação de telas, e conexão da IHM com o CLP (seção "IHM detalhamento", p.37–54) — inclusive integrando com o inversor de frequência na Experiência 7. É a referência mais concreta que você tem para essa parte da disciplina.
 
 ---
-
-## Estrutura sugerida para o repositório no GitHub
-
-```
-automacao-sistemas-industriais/
-├── README.md                          # este roteiro
-├── 01-introducao/
-├── 02-automacao-principios/
-├── 03-setores-producao/
-├── 04-sensores-atuadores/
-├── 05-controle-processos/
-├── 06-plc-pac/
-│   ├── teoria-groover/                # Cap. 9
-│   └── lab-tia-portal/                # apostila: TIA Portal, endereçamento, blocos
-├── 07-sil/
-├── 08-ihm-supervisorio/
-│   └── lab-ihm-ktp400/                # apostila: config. IHM, telas, conexão com CLP
-├── 09-redes-industriais/
-│   └── lab-comunicacao-dispositivos/  # apostila: rede CLP+IHM+inversor
-└── revisao-avaliacao/
-```
-
-Cada pasta corresponde a um dos links da seção **Assuntos da disciplina** acima, e pode conter: resumo da aula, slides/anotações, exercícios resolvidos e referências ao(s) capítulo(s) do Groover e/ou à seção correspondente da apostila de laboratório.
