@@ -2,13 +2,9 @@
 
 > **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP) + IHM SIMATIC KTP400 Basic
 
-**Equipe:**
-1. ______________________________
-2. ______________________________
-3. ______________________________
-4. ______________________________
+A partir do problema do 3º trabalho de laboratório desta apostila, crie uma interface com a utilização da IHM em que seja possível monitorar o nível do tanque, selecionar o modo automático ou manual, especificar o delay em segundos com a bomba liga ou desliga quando no modo automático, e no modo manual incluir os botões liga e desliga Utilize uma memória analógica para simular o nível do tanque .
 
----
+![alt text](image-4.png)
 
 ## 1. Objetivos
 
