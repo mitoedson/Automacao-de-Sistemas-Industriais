@@ -2,10 +2,6 @@
 
 > Do conceito à programação Ladder: histórico, arquitetura, entradas e saídas, instalação, hierarquia da automação, norma IEC 61131-3 e metodologia de projeto.
 
-> [!NOTE]
-> **Escopo.** Este documento trata **apenas de CLPs**. Sistemas Digitais de Controle Distribuído (SDCD / DCS) são abordados em material separado: [`SDCD.md`](./SDCD.md) *(ajuste o link para o nome real do arquivo)*.
-
----
 
 ## Sumário
 
@@ -429,32 +425,33 @@ O **Ladder** (diagrama de contatos) é a linguagem mais usada por reproduzir vis
 
 ### 14.1 Funções básicas
 
-**NA (normalmente aberto):** saída replica a entrada.
+**NA (normalmente aberto):** saída replica a entrada. Se a entrada digital é ativada, a saída digital é acionada.
 
 ```
- I1                Q1
-|-| |---------------( )-|        Q1 = I1
+     I1                Q1
+|---| |---------------( )---|        Q1 = I1
 ```
 
-**NF (normalmente fechado):** saída é o inverso da entrada.
+**NF (normalmente fechado):** saída é o inverso da entrada.  Se a entrada digital é desativada, a saída digital é acionada.
 
 ```
- I1                Q1
-|-|/|---------------( )-|        Q1 = NOT I1
+   I1                Q1
+|---|/|---------------( )---|        Q1 = NOT I1
 ```
 
-**E (AND):** contatos em série.
+**E (AND):** contatos em série. A saída digital é acionada quando as duas entradas digitais são ativadas.
 
 ```
- I1       I2       Q1
-|-| |------| |------( )-|        Q1 = I1 · I2
+   I1       I2       Q1
+|---| |------| |------( )---|        Q1 = I1 · I2
 ```
 
-**OU (OR):** contatos em paralelo.
+**OU (OR):** contatos em paralelo. A saída digital é acionada quando pelo menos uma entradas digitais é ativada.
+
 
 ```
  I1                  Q1
-|-+-| |-+------------( )-|
+|-+-| |-+------------( )---|
 | |     |                       Q1 = I1 + I2
 | +-| |-+
     I2
