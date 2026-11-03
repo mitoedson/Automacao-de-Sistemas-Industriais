@@ -96,9 +96,7 @@ Explicação da Lógica Ladder:
 3. Bobina de Saída (O:2.0/10): Representa o acionamento físico do MOTOR conectado à saída digital do CLP.   
 
 (4)
-![alt text](image-9.jpg)
-
-
+![alt text](image-10.png)
 (5)
 ![alt text](image-8.png)
 

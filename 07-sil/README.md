@@ -2,17 +2,6 @@
 
 > Segurança funcional em sistemas automatizados: risco, camadas de proteção, SIS e SIF, normas IEC 61508 / IEC 61511, determinação (gráfico de risco e LOPA), verificação (PFD, SFF, HFT), arquiteturas de votação, fatores humanos e um exemplo completo de projeto de uma função instrumentada de segurança.
 
-> [!NOTE]
-> **Escopo e relação com os outros arquivos.** Este documento aprofunda o tema de segurança que foi apresentado de forma resumida em [`SDCD.md`](./SDCD.md) (seções 13 e 14) e se apoia em [`CLP.md`](./CLP.md) (CLP, IEC 61131-3, redundância). O assunto **não é coberto** pelo Groover nem pela apostila do Zancan.
->
-> **Origem do conteúdo** (indicada em cada seção):
-> - **Slides** = `SDCD_SAFE.pdf` (Prof. Alexandre Acácio de Andrade, UFABC);
-> - **Aula** = transcrição da aula em vídeo (áudio com muitos erros de reconhecimento; só entrou o que pôde ser entendido com segurança);
-> - **Norma / consulta técnica** = pesquisa em fontes públicas sobre IEC 61508, IEC 61511 e normas brasileiras correlatas (a íntegra das normas é paga; este material **resume e não reproduz** o texto normativo).
->
-> O material do **AVA** não foi enviado e, portanto, **não foi usado**. Se quiser incluí-lo, basta enviar os arquivos.
-
----
 
 ## Sumário
 
