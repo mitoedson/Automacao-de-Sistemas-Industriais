@@ -338,11 +338,13 @@ e) Nível de Trip; Nível alto de alarme; Nível de controle; Nível de controle
 ### Questão 18
 Assinale a alternativa falsa em relação aos Safe PLCs  
 
+![alt text](image-14.png)
+
 a) Os Safe PLCs nunca são programados em ladder.
 
 b) Os Safe PLCs em geral são muito redundantes podendo ter inclusive redundância tripla.
 
-c) OOs Safe PLCs em geral possuem Auto- diagnostico completo para minimizar falhas perigosas não detectadas.
+c) OOs Safe PLCs em geral possuem Auto-diagnóstico completo para minimizar falhas perigosas não detectadas.
 
 d) Os Os Safe PLCs frequentemente alcançam SIL 3.
 
