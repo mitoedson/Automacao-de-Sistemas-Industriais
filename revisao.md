@@ -2,7 +2,7 @@
 
 ### Questão 1
 
-Qual a alternativa errado no que tange ao modelo da Piramide de automação?
+Qual a alternativa errada no que tange ao modelo da Pirâmide de Automação?
 
 ![alt text](image.png)
 
@@ -294,6 +294,8 @@ e) Sistemas de trabalho manual: um trabalhador executando uma ou mais tarefas se
 
 O Manufacturing Execution System (MES), ou Sistema de Execução de Manufatura, é um software que monitora, rastreia, documenta e controla o chão de fábrica em tempo real. Ele conecta o planejamento (ERP) à execução física, otimizando processos, garantindo a qualidade e melhorando a eficiência (OEE) desde a matéria-prima até o produto final. O MES é considerado a ponte essencial entre o controle de automação (CLP) e os sistemas de gestão empresarial.
 
+![alt text](image-16.png)
+
 Assinale a alternativa correta sobre o MES
 
 a) Ele é feito exclusivamente com o uso de hardware de automação como sensores e atuadores
@@ -307,7 +309,7 @@ d) Ele está contido no quinto nível da pirâmide de automação onde ajuda no 
 e) Ele está contido no terceiro nível da pirâmide de automação onde ajuda na Supervisão e Controle da Produção
 
 ### Questão 16
-Assinale qual Não é uma razão para investir em automação de um processo
+Assinale qual não é uma razão para investir em automação de um processo
 
 a) Reduzir o tempo da produção  
 
@@ -321,7 +323,7 @@ e) Reduzir os custos do trabalho
 
 
 ### Questão 17
-A figura abaixo mostra as linhas de proteção de um processo, os níveis A;B;C;D correspondem respectivamente a:
+A figura abaixo mostra as linhas de proteção de um processo. Os níveis A, B, C e D correspondem respectivamente a:
 
 ![alt text](image-11.png)
 
@@ -387,7 +389,7 @@ e) Sistemas supervisórios frequentemente, fornecem uma “base” a onde os dad
 Respostas:
 
 (1)<br>
-A alternativa errada é a d). Na pirâmide da imagem, o Nível 2 corresponde à Célula, ou seja, à supervisão e coordenação de um conjunto de máquinas (IHMs, SCADA, coordenação de linha). O “Gerenciamento Corporativo através de sistemas como ERP” pertence ao Nível 5 (Empresa), no topo da pirâmide. A alternativa atribui a função do Nível 5 ao Nível 2.
+A alternativa errada é a (d). Na pirâmide da imagem, o Nível 2 corresponde à Célula, ou seja, à supervisão e coordenação de um conjunto de máquinas (IHMs, SCADA, coordenação de linha). O “Gerenciamento Corporativo através de sistemas como ERP” pertence ao Nível 5 (Empresa), no topo da pirâmide. A alternativa atribui a função do Nível 5 ao Nível 2.
 
 As demais estão corretas:
 
@@ -576,6 +578,10 @@ Nível A: Representa o Nível de Trip (ou intertravamento de segurança). É a b
 Nível B: Corresponde ao Nível alto de alarme, onde o processo entra em valores anormais e a operação humana atua corretivamente para tentar estabilizar o sistema antes que atinja o nível de segurança.   
 
 Níveis C e D: Estão na faixa verde do DCS (Sistema de Controle Distribuído), representando a zona de operação normal e os limites operacionais de controle do processo. 
+
+![alt text](image-15.png)
+Checklist Abrangente para a Qualificação de Camadas de Proteção Independentes (IPLs) de Acordo com a IEC 61511 e os Princípios LOPA
+
 
 (18)<br>
 Por que a alternativa A é falsa? Os Safe PLCs (Controladores Lógicos Programáveis de Segurança) podem ser programados em linguagens padrão da norma IEC 61131-3, incluindo a linguagem Ladder (com instruções e blocos de função certificados para segurança) e Diagrama de Blocos Funcionais (FBD). Portanto, a afirmação de que eles "nunca" são programados em ladder está incorreta.
