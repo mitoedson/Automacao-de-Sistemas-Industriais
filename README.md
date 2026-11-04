@@ -42,10 +42,9 @@ Interface homem-máquina e conceitos de supervisão (SCADA).
 Comunicação entre dispositivos de automação — não coberto no Groover; aplicação prática de rede entre CLP, IHM e inversor de frequência.
 -->
 
-<!--
+
 ### [Revisão e Avaliação](./revisao-avaliacao/README.md)
 Revisão geral dos capítulos 1, 2, 4, 5, 6 e 9 do Groover e das Experiências 1–7 da apostila de laboratório.*
--->
 
 ## Escopo: o que o Plano de Ensino realmente cobre no Groover
 
