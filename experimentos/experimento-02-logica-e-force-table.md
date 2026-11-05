@@ -167,3 +167,9 @@ Na tabela de *tags* do CLP, renomear:
 - Tabelas de endereçamento e tabelas-verdade preenchidas.
 - Capturas do ladder e da *force table*.
 - Comentários do funcionamento observado.
+
+
+---
+
+![alt text](image-8.png)
+![alt text](image-9.png)

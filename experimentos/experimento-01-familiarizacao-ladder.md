@@ -219,3 +219,11 @@ Rede 4 — Atua na saída
 - Tabela de endereçamento.
 - Capturas de tela do ladder (original, simplificado e flip-flop).
 - Comentários do funcionamento observado em bancada.
+
+---
+
+![alt text](image-5.png)
+
+![alt text](image-6.png)
+
+![alt text](image-7.png)
