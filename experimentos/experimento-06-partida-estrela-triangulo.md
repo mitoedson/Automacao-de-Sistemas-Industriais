@@ -265,7 +265,7 @@ O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas platafo
 
 ## Simulação
 
-O repositório inclui uma <a href="https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_estrela_triangulo.html">simulação em HTML</a> que executa a mesma lógica do ladder, com IHM virtual, rotor animado, contatores, temporizadores e variáveis. Basta abrir o arquivo no navegador, sem instalar nada. Também pode ser publicada com o GitHub Pages.
+O repositório inclui uma <a href="https://github.com/mitoedson/Automacao-de-Sistemas-Industriais/simulador/simulacao_estrela_triangulo.html">simulação em HTML</a> que executa a mesma lógica do ladder, com IHM virtual, rotor animado, contatores, temporizadores e variáveis. Basta abrir o arquivo no navegador, sem instalar nada. Também pode ser publicada com o GitHub Pages.
 
 
 ## Questões para o relatório
