@@ -71,13 +71,13 @@ A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usa
 
 | Experiência | Foco |
 |---|---|
-| 1 | <a href="/Automacao-de-Sistemas-Industriais/experimentos/experimento-01-familiarizacao-ladder.md">Familiarização com o hardware e o software de programação (TIA Portal)</a> |
-| 2 | <a href="/Automacao-de-Sistemas-Industriais/experimentos/experimento-02-logica-e-force-table.md">Aprofundamento da lógica de programação; introdução à *force table*</a> |
+| 1 | <a href="/experimentos/experimento-01-familiarizacao-ladder.md">Familiarização com o hardware e o software de programação (TIA Portal)</a> |
+| 2 | <a href="/experimentos/experimento-02-logica-e-force-table.md">Aprofundamento da lógica de programação; introdução à *force table*</a> |
 | 3 | Uso do CLP para solução de problemas práticos reais |
 | 4 | Aprofundamento da solução de problemas práticos reais |
 | 5 | Introdução da IHM em problemas práticos reais |
-| 6 | <a href="/Automacao-de-Sistemas-Industriais/experimentos/experimento-06-partida-estrela-triangulo.md">Partida de motor elétrico trifásico</a> |
-| 7 | <a href="/Automacao-de-Sistemas-Industriais/experimentos/experimento-07-integracao-clp-inversor-ihm.md">Integração do CLP, inversor de frequência e IHM</a> |
+| 6 | <a href="/experimentos/experimento-06-partida-estrela-triangulo.md">Partida de motor elétrico trifásico</a> |
+| 7 | <a href="/experimentos/experimento-07-integracao-clp-inversor-ihm.md">Integração do CLP, inversor de frequência e IHM</a> |
 
 **Sumário técnico da apostila** (para referência rápida):
 - Arquitetura de hardware do CLP S7-1500 (painel, LEDs, display) — p.4–12
