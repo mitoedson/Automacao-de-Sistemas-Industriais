@@ -2,13 +2,6 @@
 
 > **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP)
 
-**Equipe:**
-1. ______________________________
-2. ______________________________
-3. ______________________________
-4. ______________________________
-
----
 
 ## 1. Objetivos
 
@@ -165,3 +158,132 @@ O módulo de saídas é de **24 V DC / 0,5 A**. Verifique no kit como as bobinas
 - Ladder comentado (redes 1 a 7) e tabela de endereços.
 - Diagrama trajeto-passo validado com as saídas observadas.
 - Resultados dos testes e respostas às questões.
+
+## Sobre o experimento
+
+<a href="Manual_Experimento6_Partida_Estrela_Triangulo.pdf">Manual Partida Estrela-Triângulo</a>
+
+Ao ser ligado diretamente à rede, um motor de indução com rotor em gaiola absorve de 4 a 10 vezes a corrente nominal. Em motores maiores, isso causa afundamentos de tensão, exige proteções superdimensionadas e pode gerar multas da concessionária. Por isso, motores acima de cerca de 5 cv costumam usar partida indireta.
+
+Na partida estrela-triângulo, as bobinas são ligadas primeiro em estrela e cada uma recebe cerca de 0,577 da tensão de linha (127 V em uma rede de 220 V). A corrente e o conjugado de partida caem a um terço dos valores da ligação em triângulo. Depois de um tempo fixo, o motor passa para triângulo e opera com a tensão nominal.
+
+## Funcionamento
+
+- O botão **Liga** aciona o motor e o botão **Desliga** o para a qualquer momento.
+- Uma chave de sentido define a rotação: `1` para normal e `0` para inverso.
+- Em qualquer sentido, o motor parte em **estrela** e passa para **triângulo** após **3 s**.
+- Se o sentido mudar com o motor em marcha, o motor **para**. Para religar, é preciso pressionar Liga de novo.
+- Uma botoeira de emergência desliga tudo.
+- Após qualquer parada, há uma espera de **5 s** antes de aceitar nova partida, para o rotor parar e não haver reversão por contracorrente.
+
+### Contatores
+
+| Contator | Função | Saída |
+|:-:|---|---|
+| A | Linha, sentido normal | `%Q0.0` |
+| B | Linha, sentido inverso | `%Q0.1` |
+| C | Fechamento em estrela | `%Q0.2` |
+| D | Fechamento em triângulo | `%Q0.3` |
+
+Nunca devem ficar ligados juntos **A e B**, nem **C e D**, pois ocorre curto-circuito.
+
+### Diagrama trajeto-passo
+
+| Etapa | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| Situação | Normal, estrela | Espera 3 s | Normal, triângulo | Regime | Desligado | Inverso, estrela | Espera 3 s | Inverso, triângulo |
+| A | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
+| B | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| C | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0 |
+| D | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 |
+
+## Lógica de controle
+
+O programa tem 13 redes no OB1, com três temporizadores TON e uma detecção de borda no botão Liga.
+
+| Recurso | Função |
+|---|---|
+| Retenção (selo) por sentido | Mantém o motor ligado só enquanto a chave estiver no sentido em uso. Mudar a chave abre o selo e desliga o motor. |
+| `P_TRIG` no Liga | O Liga vale uma vez por pressão e o motor não religa sozinho se o botão ficar pressionado. |
+| TON01, 3 s | Tempo em estrela. |
+| TON02, 100 ms | Tempo morto entre abrir C e fechar D. |
+| TON03, 5 s | Tempo mínimo de motor parado antes de nova partida. |
+| Intertravamentos | Contatos NF cruzados entre A e B e entre C e D. |
+
+Equações principais:
+
+```
+Retencao = ( Pulso_Liga·Part_Lib·/Sent_1·/Sent_2
+           + Retencao·HMI_Sent·Sent_1
+           + Retencao·/HMI_Sent·Sent_2 ) · /Cmd_Desl · Emerg
+Cont_A = Sent_1 · /Cont_B        Cont_B = Sent_2 · /Cont_A
+Cont_C = (Sent_1 + Sent_2) · /Fim_Estr · /Cont_D
+Cont_D = (Sent_1 + Sent_2) · Libera_D · /Cont_C
+```
+
+## Entradas e saídas
+
+| Tag | Endereço | Descrição |
+|---|---|---|
+| `Liga_Fis` | `%I0.0` | Botão Liga (NA) |
+| `Desl_Fis` | `%I0.1` | Botão Desliga (NA) |
+| `Emerg` | `%I0.3` | Emergência (chave NF, entrada em 1 quando livre) |
+| `Cont_A` a `Cont_D` | `%Q0.0` a `%Q0.3` | Contatores A, B, C e D |
+| `HMI_Liga`, `HMI_Desl`, `HMI_Sent` | `%M10.0` a `%M10.2` | Comandos da IHM |
+
+A tabela completa de variáveis está no manual. Os endereços são sugestões e podem ser trocados por outros livres no projeto. Se o botão Desliga da sua bancada for NF, troque o contato correspondente no ladder.
+
+## Material necessário
+
+- CLP Siemens S7-1200 e IHM KTP400 Basic
+- TIA Portal (STEP 7 e WinCC)
+- Motor de indução trifásico com seis terminais acessíveis
+- Quatro contatores, proteção do motor e botoeira de emergência NF
+- Cabos Ethernet e computador na mesma sub-rede do CLP e da IHM
+
+O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas plataformas.
+
+## Como executar
+
+1. Crie um projeto no TIA Portal e adicione o CLP e a IHM.
+2. Configure os endereços IP na mesma sub-rede.
+3. Crie as variáveis e as 13 redes no OB1, na ordem do manual.
+4. Monte a tela da IHM com os botões Liga e Desliga, a chave de sentido e as lâmpadas dos contatores.
+5. Compile e faça o download.
+6. Teste só com os LEDs das saídas e só depois, com autorização, energize o motor.
+
+## Roteiro de testes
+
+| # | Ação | Resultado esperado |
+|:-:|---|---|
+| 1 | Sentido normal, Liga | A e C ligam. Após 3 s, C desliga e D liga. |
+| 2 | Sentido inverso, Liga | B e C ligam. Após 3 s, C desliga e D liga. |
+| 3 | Desliga em qualquer etapa | Todos desligam. |
+| 4 | Mudar o sentido com o motor em marcha | Todos desligam, sem reversão. |
+| 5 | Religar em menos de 5 s após a parada | O Liga é ignorado. |
+| 6 | Emergência | Todos desligam. |
+
+## Simulação
+
+O repositório inclui uma simulação em HTML (`https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_estrela_triangulo.html`) que executa a mesma lógica do ladder, com IHM virtual, rotor animado, contatores, temporizadores e variáveis. Basta abrir o arquivo no navegador, sem instalar nada. Também pode ser publicada com o GitHub Pages.
+
+
+## Questões para o relatório
+
+1. Por que a corrente de partida é de 4 a 10 vezes a nominal?
+2. Qual a tensão em cada bobina em estrela, em uma rede de 220 V, e como fica o conjugado de partida?
+3. Por que esperar cerca de 90% da rotação nominal antes de chavear?
+4. Quais os riscos de ligar A e B juntos, ou C e D juntos?
+5. Para que serve o TON03 e como escolher o valor?
+6. Que alternativas existem à partida estrela-triângulo?
+
+## Referências
+
+- Roteiro de Prática de Laboratório de Automação (CLP), UFABC, 6º Trabalho de Laboratório.
+- Manual de sistema do S7-1200 e ajuda do TIA Portal, Siemens.
+
+## Equipe e licença
+
+- Integrantes: _preencher_
+- Disciplina e professor: _preencher_
+- Licença: _escolher (por exemplo, MIT)_

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulador da IHM: motor com inversor</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--tx:#1a202c;--mut:#5a6577;--bd:#c5ceda;--ac:#2b6cb0;--ok:#38a169;--er:#e53e3e;--wa:#ecc94b;--off:#cbd5e0;--btn:#e2e8f0;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#171c26;--card:#232b39;--tx:#edf2f7;--mut:#a0aec0;--bd:#3d4a5f;--ac:#63b3ed;--off:#4a5568;--btn:#364156;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,Arial,sans-serif}
+main{max-width:560px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:13px;margin:0 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+p{margin:0 0 12px;color:var(--mut);font-size:13px}
+section{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px}
+.hmi{border:2px solid var(--tx)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.lamps{display:flex;gap:12px;font-size:12px;color:var(--mut)}
+.lamp.ok{background:#38a169}.lamp.er{background:#e53e3e}.lamp.wa{background:#ecc94b}
+.lamp{display:inline-block;width:16px;height:16px;border-radius:50%;background:var(--off);border:1px solid var(--bd);vertical-align:-3px;margin-right:4px}
+#est{margin:0 0 10px;padding:6px 8px;border-radius:6px;background:var(--bg);color:var(--tx);font-size:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+label,.lb{font-size:12px;color:var(--mut);display:block}
+.big{font-size:30px;font-weight:600;line-height:1.1;border:1px solid var(--bd);border-radius:4px;padding:4px 8px;text-align:right}
+.bar{height:10px;background:var(--bg);border:1px solid var(--bd);border-radius:5px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;width:0;background:var(--ac)}
+input[type=number]{width:100%;font-size:17px;padding:5px 8px;border:1px solid var(--bd);border-radius:4px;background:var(--card);color:var(--tx)}
+button{font:inherit;font-weight:600;padding:9px 10px;border:1px solid var(--bd);border-radius:7px;background:var(--btn);color:var(--tx);cursor:pointer}
+button:active{transform:translateY(1px)}
+.row{display:flex;gap:8px;margin-bottom:10px;align-items:flex-end}
+.row>*{flex:1}
+#liga{background:#9ae6b4;color:#12301f;padding:14px}
+#desl{background:#feb2b2;color:#3a1212;padding:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td{padding:3px 6px;border-bottom:1px solid var(--bd)}
+td:last-child{text-align:right;font-family:ui-monospace,Consolas,monospace}
+.sm{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.sm button{font-size:13px;padding:6px 10px}
+.sm div{width:130px}
+</style>
+</head>
+<body>
+<main>
+<h1>Simulador da IHM: motor com inversor</h1>
+<p>Simulação didática da lógica do guia (S7-1200, ladder), com os dois modos de inversão. Não substitui o PLCSIM nem o teste no equipamento.</p>
+
+<section class="hmi" aria-label="Tela da IHM">
+  <div class="top"><b>Motor com inversor</b>
+    <span class="lamps"><span><i class="lamp" id="lM"></i><span id="tM">Marcha</span></span><span><i class="lamp" id="lF"></i><span id="tF">Falha</span></span><span><i class="lamp" id="lR"></i><span id="tR">Invertendo</span></span></span>
+  </div>
+  <p id="est">Motor desligado. Toque em LIGA.</p>
+  <div class="g2">
+    <div><span class="lb">Velocidade atual (rpm)</span><div class="big" id="va">0</div>
+      <div class="bar"><i id="bar"></i></div><span class="lb" id="dir">Parado</span></div>
+    <div><label for="vs">Velocidade desejada (rpm)</label><input type="number" id="vs" min="0" max="1800" step="50" value="900">
+      <button id="sent" style="width:100%;margin-top:8px">Sentido: Horário</button></div>
+  </div>
+  <div class="row"><button id="liga">LIGA</button><button id="desl">DESLIGA</button>
+    <div><label><input type="checkbox" id="ton"> Desligar após (s)</label>
+      <input type="number" id="ts" min="1" max="3600" value="20"><span class="lb" id="rest">Restante: --</span></div></div>
+  <div class="row"><button id="modo">Modo: Direto</button>
+    <div><label for="tp">Tempo de parada (s)</label><input type="number" id="tp" min="0" max="60" value="5"></div></div>
+</section>
+
+<section>
+  <h2>Painel de teste (fora da IHM)</h2>
+  <div class="sm">
+    <div><label for="ramp">Rampa do inversor (rpm/s)</label><input type="number" id="ramp" min="10" max="2000" step="10" value="300"></div>
+    <button id="emerg">Emergência: normal</button><button id="falha">Simular falha</button><button id="reset">Reset de falha</button>
+  </div>
+</section>
+
+<section>
+  <h2>Variáveis do CLP</h2>
+  <table id="tags"></table>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const s={marcha:false,sent:true,ativo:true,modo:0,emRev:false,act:0,left:20,tacc:0,falha:false,emerg:false,liga:false,desl:false,fin:0,parado:true};
+$('liga').onclick=()=>{s.liga=true};
+$('desl').onclick=()=>{s.desl=true};
+$('sent').onclick=()=>{s.sent=!s.sent};
+$('modo').onclick=()=>{s.modo^=1};
+$('falha').onclick=()=>{s.falha=true};
+$('reset').onclick=()=>{s.falha=false};
+$('emerg').onclick=()=>{s.emerg=!s.emerg};
+$('ton').onchange=()=>{s.left=Math.max(1,+$('ts').value||1)};
+$('ts').oninput=()=>{if(!s.marcha)s.left=Math.max(1,+$('ts').value||1)};
+const col=(id,on,c)=>{$(id).style.background=on?c:''};
+
+function scan(){
+  const dt=.1;
+  const v=Math.min(1800,Math.max(0,+$('vs').value||0));
+  const tOn=$('ton').checked, tseg=Math.max(1,+$('ts').value||1);
+  const tp=Math.max(0,+$('tp').value||0), rate=Math.max(10,+$('ramp').value||300);
+
+  let fim=false;
+  if(s.marcha&&tOn){s.left-=dt;if(s.left<=0)fim=true}
+  const ok=!s.emerg&&!s.falha&&!s.desl&&!fim;
+  s.marcha=(s.liga||s.marcha)&&ok;
+  s.liga=false;s.desl=false;
+  if(!s.marcha)s.left=tseg;
+
+  s.emRev=s.marcha&&s.modo===1&&(s.sent!==s.ativo);
+  s.fin=s.emRev?0:v;
+  s.parado=Math.abs(s.act)<5;
+  let revFim=false;
+  if(s.emRev&&s.parado){s.tacc+=dt;if(s.tacc>=tp)revFim=true}else s.tacc=0;
+  if(revFim)s.ativo=s.sent;
+  if(s.modo===0||!s.marcha)s.ativo=s.sent;
+
+  const tgt=s.marcha?(s.ativo?1:-1)*s.fin:0;
+  const d=tgt-s.act,st=rate*dt;
+  s.act+=Math.abs(d)<=st?d:Math.sign(d)*st;
+
+  const a=Math.abs(s.act);
+  const revDir=s.marcha&&a>=1&&((s.act>0)!==s.ativo);
+  const rev=s.emRev||revDir;
+  $('va').textContent=Math.round(a);
+  $('bar').style.width=(a/1800*100)+'%';
+  $('dir').textContent=a<1?'Parado':(s.act>0?'Girando no sentido horário':'Girando no sentido anti-horário');
+  $('lM').className='lamp'+(s.marcha?' ok':'');
+  $('lF').className='lamp'+((s.falha||s.emerg)?' er':'');
+  $('lR').className='lamp'+(rev?' wa':'');
+  $('tM').textContent='Marcha: '+(s.marcha?'LIGADA':'desligada');
+  $('tF').textContent='Falha: '+((s.falha||s.emerg)?'ATIVA':'ok');
+  $('tR').textContent='Invertendo: '+(rev?'SIM':'não');
+  $('sent').textContent='Sentido: '+(s.sent?'Horário':'Anti-horário');
+  $('modo').textContent='Modo: '+(s.modo?'Com parada':'Direto');
+  $('emerg').textContent='Emergência: '+(s.emerg?'ACIONADA':'normal');
+  $('rest').textContent='Restante: '+((s.marcha&&tOn)?Math.ceil(s.left)+' s':'--');
+  $('est').textContent=s.emerg?'Emergência acionada: tudo desligado. Libere a emergência e toque em LIGA.'
+    :s.falha?'Falha ativa: tudo desligado. Use "Reset de falha" e toque em LIGA.'
+    :!s.marcha?'Motor desligado. Toque em LIGA.'
+    :s.emRev?(s.parado?'Invertendo: motor parado, aguardando '+Math.max(0,Math.ceil(tp-s.tacc))+' s.':'Invertendo: desacelerando até parar.')
+    :revDir?'Invertendo (modo Direto): o motor passa por zero pela rampa do inversor.'
+    :'Motor em operação'+(s.modo===0?' (modo Direto).':'.');
+  const b=x=>x?'1':'0';
+  const rows=[['Marcha',b(s.marcha)],['HMI_Sentido',b(s.sent)],['Sent_Ativo',b(s.ativo)],['HMI_Modo',b(s.modo)],
+    ['Em_Reversao',b(s.emRev)],['Invertendo (lâmpada)',b(rev)],['Parado',b(s.parado)],['Vel_Final (rpm)',s.fin.toFixed(0)],
+    ['Velocidade real (rpm)',s.act.toFixed(0)],['Falha',b(s.falha||s.emerg)]];
+  $('tags').innerHTML=rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('');
+}
+setInterval(scan,100);scan();
+</script>
+</body>
+</html>

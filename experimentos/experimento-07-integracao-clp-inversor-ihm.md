@@ -2,14 +2,6 @@
 
 > **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP) + IHM KTP400 Basic + Inversor SINAMICS G120 (CU240E-2 PN) + motor trifásico
 
-**Equipe:**
-1. ______________________________
-2. ______________________________
-3. ______________________________
-4. ______________________________
-
----
-
 ## 1. Objetivos
 
 Integrar todos os conhecimentos dos experimentos anteriores, criando uma **IHM** que permita:
@@ -207,3 +199,18 @@ Rede 7 — Limitação do setpoint (segurança)
 - Projeto TIA Portal (CLP + IHM + inversor) e *tags*.
 - Capturas das telas da IHM e do ladder.
 - Evidências dos testes e respostas às questões.
+
+---
+## Material complementar
+
+**Guia prático: motor com inversor de frequência, CLP Siemens S7-1200 e IHM em ladder**
+([baixar o PDF](Guia_Ladder_IHM_S7-1200.pdf)) · **[Abrir o simulador da IHM](https://SEU-USUARIO.github.io/SEU-REPOSITORIO/simulador/)**
+
+Material didático de 19 páginas para quem está começando em ladder e IHM, adaptado deste
+experimento para o S7-1200 e o TIA Portal. Inclui fundamentos, passo a passo do projeto,
+ladder rede por rede, tela da IHM e roteiro de testes.
+
+> Limitações: o programa não foi testado no TIA Portal. O PLCSIM não simula o inversor nem o
+> motor. O simulador web imita a lógica e a tela, mas não é o CLP.
+
+
