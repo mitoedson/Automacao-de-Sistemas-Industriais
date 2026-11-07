@@ -204,7 +204,7 @@ Rede 7 — Limitação do setpoint (segurança)
 ## Material complementar
 
 **Guia prático: motor com inversor de frequência, CLP Siemens S7-1200 e IHM em ladder**
-([baixar o PDF](Guia_Ladder_IHM_S7-1200.pdf)) · **[Abrir o simulador da IHM](https://github.com/mitoedson/Automacao-de-Sistemas-Industriais/simulador/simulacao_inversor.html)**
+([baixar o PDF](Guia_Ladder_IHM_S7-1200.pdf)) · **[Abrir o simulador da IHM](simulador/simulacao_estrela_triangulo.html)**
 
 Material didático de 19 páginas para quem está começando em ladder e IHM, adaptado deste
 experimento para o S7-1200 e o TIA Portal. Inclui fundamentos, passo a passo do projeto,
