@@ -213,13 +213,6 @@ Rede 4 — Atua na saída
 3. Qual a diferença entre uma bobina simples `( )` e as instruções `SET`/`RESET`?
 4. O que significa o LED `RUN/STOP` da CPU e o que os LEDs `ERROR` e `MAINT` indicam?
 
-## 8. Entregáveis
-
-- Tabelas-verdade preenchidas e simplificações demonstradas.
-- Tabela de endereçamento.
-- Capturas de tela do ladder (original, simplificado e flip-flop).
-- Comentários do funcionamento observado em bancada.
-
 ---
 
 ![alt text](image-5.png)
