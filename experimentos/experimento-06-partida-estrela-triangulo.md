@@ -161,8 +161,7 @@ O módulo de saídas é de **24 V DC / 0,5 A**. Verifique no kit como as bobinas
 
 ## Sobre o experimento
 
-![alt text](image-10.png)
-
+![alt text](image-11.png)
 <a href="Manual_Experimento6_Partida_Estrela_Triangulo.pdf">Manual Partida Estrela-Triângulo</a>
 
 Ao ser ligado diretamente à rede, um motor de indução com rotor em gaiola absorve de 4 a 10 vezes a corrente nominal. Em motores maiores, isso causa afundamentos de tensão, exige proteções superdimensionadas e pode gerar multas da concessionária. Por isso, motores acima de cerca de 5 cv costumam usar partida indireta.
