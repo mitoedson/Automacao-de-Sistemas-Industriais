@@ -146,7 +146,7 @@ O módulo de saídas é de **24 V DC / 0,5 A**. Verifique no kit como as bobinas
 | 6 | Observar o tempo entre C e D | ≈ 3 s + 100 ms |
 
 
-### 8. Sobre o experimento
+## 8. Sobre o experimento
 
 ![alt text](image-11.png)
 <a href="Manual_Experimento6_Partida_Estrela_Triangulo.pdf">Manual Partida Estrela-Triângulo</a>
@@ -155,7 +155,7 @@ Ao ser ligado diretamente à rede, um motor de indução com rotor em gaiola abs
 
 Na partida estrela-triângulo, as bobinas são ligadas primeiro em estrela e cada uma recebe cerca de 0,577 da tensão de linha (127 V em uma rede de 220 V). A corrente e o conjugado de partida caem a um terço dos valores da ligação em triângulo. Depois de um tempo fixo, o motor passa para triângulo e opera com a tensão nominal.
 
-## 8.1 Funcionamento
+### 8.1 Funcionamento
 
 - O botão **Liga** aciona o motor e o botão **Desliga** o para a qualquer momento.
 - Uma chave de sentido define a rotação: `1` para normal e `0` para inverso.
@@ -185,7 +185,7 @@ Nunca devem ficar ligados juntos **A e B**, nem **C e D**, pois ocorre curto-cir
 | C | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0 |
 | D | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 |
 
-## Lógica de controle
+### Lógica de controle
 
 O programa tem 13 redes no OB1, com três temporizadores TON e uma detecção de borda no botão Liga.
 
@@ -209,7 +209,7 @@ Cont_C = (Sent_1 + Sent_2) · /Fim_Estr · /Cont_D
 Cont_D = (Sent_1 + Sent_2) · Libera_D · /Cont_C
 ```
 
-## Entradas e saídas
+### Entradas e saídas
 
 | Tag | Endereço | Descrição |
 |---|---|---|
@@ -221,7 +221,7 @@ Cont_D = (Sent_1 + Sent_2) · Libera_D · /Cont_C
 
 A tabela completa de variáveis está no manual. Os endereços são sugestões e podem ser trocados por outros livres no projeto. Se o botão Desliga da sua bancada for NF, troque o contato correspondente no ladder.
 
-## 8.2 Material necessário
+### 8.2 Material necessário
 
 - CLP Siemens S7-1200 e IHM KTP400 Basic
 - TIA Portal (STEP 7 e WinCC)
@@ -231,7 +231,7 @@ A tabela completa de variáveis está no manual. Os endereços são sugestões e
 
 O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas plataformas.
 
-## 8.3 Como executar
+### 8.3 Como executar
 
 1. Crie um projeto no TIA Portal e adicione o CLP e a IHM.
 2. Configure os endereços IP na mesma sub-rede.
@@ -240,7 +240,7 @@ O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas platafo
 5. Compile e faça o download.
 6. Teste só com os LEDs das saídas e só depois, com autorização, energize o motor.
 
-## 8.4 Roteiro de testes
+### 8.4 Roteiro de testes
 
 | # | Ação | Resultado esperado |
 |:-:|---|---|
@@ -251,7 +251,7 @@ O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas platafo
 | 5 | Religar em menos de 5 s após a parada | O Liga é ignorado. |
 | 6 | Emergência | Todos desligam. |
 
-## 8.5 Simulação
+### 8.5 Simulação
 
 O repositório inclui uma [simulação em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_estrela_triangulo.html) que executa a mesma lógica do ladder, com IHM virtual, rotor animado, contatores, temporizadores e variáveis. Basta abrir o arquivo no navegador, sem instalar nada. Também pode ser publicada com o GitHub Pages.
 
