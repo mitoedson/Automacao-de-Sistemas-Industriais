@@ -145,21 +145,8 @@ O módulo de saídas é de **24 V DC / 0,5 A**. Verifique no kit como as bobinas
 | 5 | Verificar na rede se A e B (ou C e D) ficam 1 ao mesmo tempo | nunca devem coincidir |
 | 6 | Observar o tempo entre C e D | ≈ 3 s + 100 ms |
 
-## 8. Questões para o relatório
 
-1. Por que a corrente de partida de um motor de indução é de 4 a 10 vezes a nominal?
-2. Em estrela, qual a tensão em cada bobina para uma rede de 220 V? E o torque de partida em relação à ligação direta em triângulo?
-3. Por que é necessário esperar o motor chegar a ~90 % da rotação nominal antes do chaveamento?
-4. Que riscos há se A e B forem acionados simultaneamente? E C e D?
-5. Cite outras alternativas à partida estrela-triângulo e quando preferi-las.
-
-## 9. Entregáveis
-
-- Ladder comentado (redes 1 a 7) e tabela de endereços.
-- Diagrama trajeto-passo validado com as saídas observadas.
-- Resultados dos testes e respostas às questões.
-
-## Sobre o experimento
+### 8. Sobre o experimento
 
 ![alt text](image-11.png)
 <a href="Manual_Experimento6_Partida_Estrela_Triangulo.pdf">Manual Partida Estrela-Triângulo</a>
@@ -168,7 +155,7 @@ Ao ser ligado diretamente à rede, um motor de indução com rotor em gaiola abs
 
 Na partida estrela-triângulo, as bobinas são ligadas primeiro em estrela e cada uma recebe cerca de 0,577 da tensão de linha (127 V em uma rede de 220 V). A corrente e o conjugado de partida caem a um terço dos valores da ligação em triângulo. Depois de um tempo fixo, o motor passa para triângulo e opera com a tensão nominal.
 
-## Funcionamento
+## 8.1 Funcionamento
 
 - O botão **Liga** aciona o motor e o botão **Desliga** o para a qualquer momento.
 - Uma chave de sentido define a rotação: `1` para normal e `0` para inverso.
@@ -234,7 +221,7 @@ Cont_D = (Sent_1 + Sent_2) · Libera_D · /Cont_C
 
 A tabela completa de variáveis está no manual. Os endereços são sugestões e podem ser trocados por outros livres no projeto. Se o botão Desliga da sua bancada for NF, troque o contato correspondente no ladder.
 
-## Material necessário
+## 8.2 Material necessário
 
 - CLP Siemens S7-1200 e IHM KTP400 Basic
 - TIA Portal (STEP 7 e WinCC)
@@ -244,7 +231,7 @@ A tabela completa de variáveis está no manual. Os endereços são sugestões e
 
 O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas plataformas.
 
-## Como executar
+## 8.3 Como executar
 
 1. Crie um projeto no TIA Portal e adicione o CLP e a IHM.
 2. Configure os endereços IP na mesma sub-rede.
@@ -253,7 +240,7 @@ O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas platafo
 5. Compile e faça o download.
 6. Teste só com os LEDs das saídas e só depois, com autorização, energize o motor.
 
-## Roteiro de testes
+## 8.4 Roteiro de testes
 
 | # | Ação | Resultado esperado |
 |:-:|---|---|
@@ -264,12 +251,12 @@ O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas platafo
 | 5 | Religar em menos de 5 s após a parada | O Liga é ignorado. |
 | 6 | Emergência | Todos desligam. |
 
-## Simulação
+## 8.5 Simulação
 
 O repositório inclui uma [simulação em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_estrela_triangulo.html) que executa a mesma lógica do ladder, com IHM virtual, rotor animado, contatores, temporizadores e variáveis. Basta abrir o arquivo no navegador, sem instalar nada. Também pode ser publicada com o GitHub Pages.
 
 
-## Questões para o relatório
+## 9. Questões para o relatório
 
 1. Por que a corrente de partida é de 4 a 10 vezes a nominal?
 2. Qual a tensão em cada bobina em estrela, em uma rede de 220 V, e como fica o conjugado de partida?
@@ -282,9 +269,3 @@ O repositório inclui uma [simulação em HTML](https://mitoedson.github.io/Auto
 
 - Roteiro de Prática de Laboratório de Automação (CLP), UFABC, 6º Trabalho de Laboratório.
 - Manual de sistema do S7-1200 e ajuda do TIA Portal, Siemens.
-
-## Equipe e licença
-
-- Integrantes: _preencher_
-- Disciplina e professor: _preencher_
-- Licença: _escolher (por exemplo, MIT)_
