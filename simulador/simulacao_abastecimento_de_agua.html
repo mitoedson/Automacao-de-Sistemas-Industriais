@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulador – Experimento 8: abastecimento de água</title>
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--tx:#1f1f1d;--tx2:#5f5e5a;--bd:#d9d7cf;--ac:#185fa5;--acbg:#e6f1fb;--ok:#27500a;--okbg:#eaf3de;--okbd:#97c459;--er:#a32d2d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1d1b;--card:#2a2a27;--tx:#f1efe8;--tx2:#b4b2a9;--bd:#444441;--ac:#85b7eb;--acbg:#0c447c;--ok:#c0dd97;--okbg:#27500a;--okbd:#639922;--er:#f09595}}
+:root[data-theme="dark"]{--bg:#1d1d1b;--card:#2a2a27;--tx:#f1efe8;--tx2:#b4b2a9;--bd:#444441;--ac:#85b7eb;--acbg:#0c447c;--ok:#c0dd97;--okbg:#27500a;--okbd:#639922;--er:#f09595}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:20px;font-weight:500;margin:0 0 4px}
+h2{font-size:14px;font-weight:500;color:var(--tx2);margin:22px 0 8px}
+p.sub{margin:0;color:var(--tx2);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.sw,.led{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);font-size:13px}
+.sw{cursor:pointer;user-select:none;touch-action:manipulation}
+.tag{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.st{font-weight:500;min-width:14px;text-align:right}
+.sw.on{background:var(--acbg);border-color:var(--ac);color:var(--ac)}
+.led.on{background:var(--okbg);border-color:var(--okbd);color:var(--ok)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+button{font:inherit;font-size:13px;padding:7px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer}
+button:hover{border-color:var(--tx2)}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden}
+.bar>div{height:100%;width:0;background:var(--ac)}
+#tinfo{font-size:13px;color:var(--tx2);margin-top:4px}
+#warn{font-size:13px;color:var(--er);margin-top:10px;min-height:20px}
+</style>
+</head>
+<body>
+<main>
+<h1>Simulador do Experimento 8</h1>
+<p class="sub">Abastecimento automático de água com duas bombas de recalque.</p>
+
+<h2>Entradas (clique para alternar; as botoeiras valem 1 só enquanto pressionadas)</h2>
+<div class="grid" id="inputs"></div>
+<div class="row">
+<button id="n1">Nível baixo (LSL1=0, LSH1=0)</button>
+<button id="n2">Nível médio (LSL1=1, LSH1=0)</button>
+<button id="n3">Nível cheio (LSL1=1, LSH1=1)</button>
+<button id="skip">Pular os 10 s</button>
+<button id="rst">Reiniciar</button>
+</div>
+
+<h2>Temporizador anti-cavitação (TON_0, PT = 10 s)</h2>
+<div class="bar"><div id="bar"></div></div>
+<div id="tinfo"></div>
+
+<h2>Memórias e saídas</h2>
+<div class="grid" id="outs"></div>
+<div id="warn" role="status"></div>
+</main>
+<script>
+var DEF={AUT_MAN:1,SEL_BOMBA_A:1,SEL_BOMBA_B:0,LIGA_A:0,LIGA_B:0,LSL1_BAIXO:0,LSH1_ALTO:0,LSL2_BAIXO:1};
+var I=Object.assign({},DEF),mom=['LIGA_A','LIGA_B'];
+var ativa=0,et=0,Q=0,last=performance.now();
+var box=document.getElementById('inputs');
+Object.keys(I).forEach(function(k){
+var d=document.createElement('div');d.className='sw';d.id='i_'+k;
+d.innerHTML='<span class="tag">'+k+'</span><span class="st"></span>';
+if(mom.indexOf(k)>-1){
+var on=function(){I[k]=1;render()},off=function(){I[k]=0;render()};
+d.addEventListener('pointerdown',on);d.addEventListener('pointerup',off);
+d.addEventListener('pointerleave',off);d.addEventListener('pointercancel',off);
+}else d.addEventListener('click',function(){I[k]=I[k]?0:1;render()});
+box.appendChild(d);});
+function setN(a,b){I.LSL1_BAIXO=a;I.LSH1_ALTO=b;render()}
+document.getElementById('n1').onclick=function(){setN(0,0)};
+document.getElementById('n2').onclick=function(){setN(1,0)};
+document.getElementById('n3').onclick=function(){setN(1,1)};
+document.getElementById('skip').onclick=function(){if(I.LSL2_BAIXO){et=10;render()}};
+document.getElementById('rst').onclick=function(){Object.assign(I,DEF);ativa=0;et=0;render()};
+function scan(){
+if(!I.LSL2_BAIXO)et=0;
+Q=(I.LSL2_BAIXO&&et>=10)?1:0;
+ativa=(((!I.LSL1_BAIXO)||ativa)&&!I.LSH1_ALTO)?1:0;
+var selA=(I.SEL_BOMBA_A&&!I.SEL_BOMBA_B)?1:0,selB=(I.SEL_BOMBA_B&&!I.SEL_BOMBA_A)?1:0,aut=I.AUT_MAN;
+var A=(Q&&selA&&((aut&&ativa)||(!aut&&I.LIGA_A&&!I.LSH1_ALTO)))?1:0;
+var B=(Q&&selB&&!A&&((aut&&ativa)||(!aut&&I.LIGA_B&&!I.LSH1_ALTO)))?1:0;
+return{selA:selA,selB:selB,A:A,B:B};
+}
+function render(){
+Object.keys(I).forEach(function(k){var e=document.getElementById('i_'+k);e.classList.toggle('on',!!I[k]);e.querySelector('.st').textContent=I[k]});
+var r=scan();
+var items=[['SEL_A_OK',r.selA],['SEL_B_OK',r.selB],['ATIVA_NIVEL',ativa],['TON_0.Q',Q],['BOMBA_A',r.A],['BOMBA_B',r.B]];
+document.getElementById('outs').innerHTML=items.map(function(x){return '<div class="led'+(x[1]?' on':'')+'"><span class="tag">'+x[0]+'</span><span class="st">'+x[1]+'</span></div>'}).join('');
+document.getElementById('bar').style.width=(et*10)+'%';
+document.getElementById('tinfo').textContent=I.LSL2_BAIXO?('ET = '+et.toFixed(1)+' s'+(Q?' (Q = 1, bombas liberadas)':' (aguardando 10 s)')):'LSL2_BAIXO = 0: bombas bloqueadas e timer zerado';
+var w='';
+if(I.LSH1_ALTO&&!I.LSL1_BAIXO)w='Combinação impossível na prática: boia alta coberta com a baixa descoberta.';
+else if(!r.selA&&!r.selB)w='Nenhuma posição (ou as duas) da seletora acionada: nenhuma bomba liga.';
+else if(!I.AUT_MAN&&((I.LIGA_A&&r.selB)||(I.LIGA_B&&r.selA)))w='Botoeira da bomba não selecionada: nada acontece.';
+document.getElementById('warn').textContent=w;
+}
+setInterval(function(){var n=performance.now(),dt=(n-last)/1000;last=n;if(I.LSL2_BAIXO&&et<10){et=Math.min(10,et+dt);render()}},100);
+render();
+</script>
+</body>
+</html>
