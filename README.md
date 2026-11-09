@@ -79,7 +79,7 @@ A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usa
 | 8 | <a href="/experimentos/experimento-08-abastecimento-agua.md">Abastecimento de água</a> |
 | 9 | <a href="/experimentos/experimento-09-combate-incendio-ccm.md">Combate a incêncio</a> |
 | 10 | <a href="/experimentos/experimento-10-estampagem-pecas-plasticas.md">Estampagem de peças plásticas</a> |
-| 11 | <a href="/experimentos/experimento-11-maquina-dispensadora-bebidas.md.md">Máquina dispensadora de bebidas</a> |
+| 11 | <a href="/experimentos/experimento-11-maquina-dispensadora-bebidas.md">Máquina dispensadora de bebidas</a> |
 | 12 | <a href="/experimentos/experimento-12-seletora-pecas.md">Seletora de peças</a> |
 | 13 | <a href="/experimentos/experimento-13-carregamento-vagoes.md">Carregamento de vagões</a> |
 | 14 | <a href="/experimentos/experimento-14-extracao-oleo-gas.md">Extração de óleo e gás</a> |
