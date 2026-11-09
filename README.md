@@ -1,12 +1,11 @@
-# Automacao-de-Sistemas-Industriais
+# Automação-de-Sistemas-Industriais
 Estes documentos são baseados na disciplina do Prof. Dr. Alexandre Acácio de Andrade, da UFABC, e constituem um guia didático abrangente sobre controladores lógicos programáveis (CLP), focando em sua aplicação na automação industrial. O material detalha desde a evolução histórica desses dispositivos até sua estrutura interna, explicando o funcionamento de componentes como a CPU, memórias e fontes de alimentação.
 
 **Livro-texto de referência (teoria):** Mikell P. Groover, *Automation, Production Systems, and Computer-Integrated Manufacturing*, 5ª edição, Pearson, 2016.
+
 **Apostila de referência (prática de laboratório):** *Roteiro — Prática de Laboratório de Automação: CLP — Controladores Lógicos Programáveis*, UFABC (Alexandre Acácio de Andrade, Everton Flavio Oliveira de Almeida, Fabio Gomes de Freitas), Draft V8.
 
-> Este roteiro cruza os assuntos do Plano de Ensino com os capítulos do livro do Groover (base teórica) e com a apostila de laboratório (base prática, com o CLP Siemens S7-1500). Quando um assunto não tem correspondência direta em nenhum dos dois materiais, isso está sinalizado.
 
----
 
 ## Assuntos da disciplina
 
@@ -63,11 +62,10 @@ Mas mesmo dentro desse intervalo (Cap. 1–9), nem tudo é usado:
 
 Este roteiro segue **estritamente o conteúdo do cronograma do plano de ensino** — os assuntos listados acima não incluem os capítulos 3, 7 e 8, nem tópicos da ementa (planejamento da produção, escalonamento, ISO 50001 etc.) que não aparecem no cronograma das 9 semanas de conteúdo novo.
 
----
 
 ## Apostila de Laboratório — Estrutura e Experiências
 
-A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usando o kit didático **CLP Siemens S7-1500** + **IHM KTP400 Basic** + **inversor de frequência**, programados no **TIA Portal**. Ela é dividida em 7 experiências progressivas:
+A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usando o kit didático **CLP Siemens S7-1500** + **IHM KTP400 Basic** + **inversor de frequência**, programados no **TIA Portal**. Ela é dividida em 7 experiências progressivas, mais 7 experiências extras:
 
 | Experiência | Foco |
 |---|---|
@@ -99,7 +97,6 @@ A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usa
 
 Essa apostila **é a peça que faltava** para SCADA/IHM e para a aplicação prática de CLP que o Groover só cobre em teoria (Cap. 9). Vale tratá-la como leitura obrigatória nas semanas 4 a 9, em paralelo com o Groover.
 
----
 
 ## Foco em CLPs (PLCs) e SCADA/IHM
 
