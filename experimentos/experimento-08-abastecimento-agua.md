@@ -2,10 +2,6 @@
 
 Lógica ladder para o controle de duas bombas de recalque que levam água de uma caixa subterrânea (50 mil litros) a uma caixa de cobertura (600 litros), em modo automático e manual.
 
-> 8º Trabalho de Laboratório · Universidade Federal do ABC (UFABC) · Laboratório de CLP
-
-## Acesso rápido
-
 | Recurso | Link |
 |---|---|
 | Simulador interativo | [Abrir simulador](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_abastecimento_de_agua.html) |
