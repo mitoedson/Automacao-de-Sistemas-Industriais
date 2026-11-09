@@ -6,19 +6,10 @@ O repositório reúne:
 
 | Material | O que é | Link |
 |---|---|---|
-| Guia em PDF | Passo a passo para replicar o experimento: IO, TIA Portal, ladder, testes e solução de problemas | [`Guia_9_Trabalho_CO2_CCM_S7-1200.pdf`](docs/Guia_9_Trabalho_CO2_CCM_S7-1200.pdf) |
-| Simulador em HTML | Simulação interativa da lógica no navegador, sem precisar de CLP | [`simulador/simulador_ccm_co2.html`](simulador/simulador_ccm_co2.html) |
+| Guia em PDF | Passo a passo para replicar o experimento: IO, TIA Portal, ladder, testes e solução de problemas | [`Guia_9_Trabalho_CO2_CCM_S7-1200.pdf`](Guia_9_Trabalho_CO2_CCM_S7-1200.pdf) |
+| Simulador em HTML | Simulação interativa da lógica no navegador, sem precisar de CLP | [`simulador/simulacao_ccm_co2.html`](simulador/simulacao
+_ccm_co2.html) |
 
-## Estrutura do repositório
-
-```text
-.
-├── README.md
-├── docs/
-│   └── Guia_9_Trabalho_CO2_CCM_S7-1200.pdf
-└── simulador/
-    └── simulador_ccm_co2.html
-```
 
 ## Como o sistema funciona
 
