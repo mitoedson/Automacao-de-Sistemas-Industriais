@@ -85,18 +85,6 @@ A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usa
 | 14 | <a href="/experimentos/experimento-14-extracao-oleo-gas.md">Extração de óleo e gás</a> |
 
 
-**Sumário técnico da apostila** (para referência rápida):
-- Arquitetura de hardware do CLP S7-1500 (painel, LEDs, display) — p.4–12
-- Ligações de entradas/saídas — p.12
-- TIA Portal: configuração de IP, criação de projeto, endereçamento, blocos e comandos — p.13–37
-- IHM: configuração, IP, telas, conexão com CLP — p.37–54
-- Inversor de frequência: IP, driver, ligação elétrica, parametrização — p.56–72
-- Comunicação entre dispositivos (CLP + IHM + inversor) — p.72–80
-- Busca de erros — p.80
-- Exemplo completo de linguagem Ladder (motor de 4 velocidades + controle analógico via potenciômetro) — p.82–86
-
-Essa apostila **é a peça que faltava** para SCADA/IHM e para a aplicação prática de CLP que o Groover só cobre em teoria (Cap. 9). Vale tratá-la como leitura obrigatória nas semanas 4 a 9, em paralelo com o Groover.
-
 
 ## Foco em CLPs (PLCs) e SCADA/IHM
 
