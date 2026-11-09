@@ -1,8 +1,25 @@
 # Experimento 7 — Integração do CLP, inversor de frequência e IHM
 
-> **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP) + IHM KTP400 Basic + Inversor SINAMICS G120 (CU240E-2 PN) + motor trifásico
+## Enunciado
 
-## 1. Objetivos
+![alt text](image-22.png)
+
+Utilizando dos conhecimentos adquiridos do 6º trabalho de laboratório desta apostila, crie uma interface na IHM em que seja possível: 
+
+A - Iniciar e parar o motor 
+
+B - Monitorar a velocidade do motor 
+
+C - Alterar a velocidade do motor 
+
+D - Alterar o sentido em que o motor está girando 
+
+E - Inserir um timer em segundos que faça o motor desligar 
+
+
+## Desenvolvimento do experimento
+
+### 1. Objetivos
 
 Integrar todos os conhecimentos dos experimentos anteriores, criando uma **IHM** que permita:
 
@@ -12,14 +29,14 @@ Integrar todos os conhecimentos dos experimentos anteriores, criando uma **IHM**
 - **D –** Alterar o sentido de rotação.
 - **E –** Inserir um **timer em segundos** que desligue o motor automaticamente.
 
-## 2. Pré-requisitos
+### 2. Pré-requisitos
 
 - Experimentos 5 (IHM) e 6 (motor trifásico).
 - Leitura na apostila das seções: *Inversor de frequência* (IP, *driver*, ligação elétrica, parametrização), *Comunicação entre os dispositivos*, *Busca de erros ou explicações* e *Exemplo da linguagem ladder*.
 
 > ⚠️ **Segurança:** o **kit do inversor funciona apenas em 220 Vac**. Conferir tensão, ligações do motor e cabos **antes** de energizar. Não alterar conexões com o kit ligado. Parta sempre com velocidade baixa.
 
-## 3. Arquitetura
+### 3. Arquitetura
 
 ```mermaid
 flowchart LR
@@ -39,9 +56,9 @@ Todos os dispositivos precisam estar **na mesma sub-rede** (por exemplo `192.168
 | IHM | `192.168.0.2` |
 | Inversor | `192.168.0.3` |
 
-## 4. Configuração do projeto
+### 4. Configuração do projeto
 
-### 4.1 Passo a passo
+#### 4.1 Passo a passo
 
 1. **Projeto:** abrir o projeto da CPU 1516-3 PN/DP (Experimento 5/6) ou criar um novo.
 2. **Inversor:** *Add new device → Drives → SINAMICS G120 → CU240E-2 PN*; selecionar o **modelo e a versão de firmware** impressos no equipamento.
@@ -55,7 +72,7 @@ Todos os dispositivos precisam estar **na mesma sub-rede** (por exemplo `192.168
 6. **Rede:** em *Devices & networks → Network view*, ligar o CLP, a IHM e o inversor à mesma sub-rede PROFINET e **atribuir o inversor ao CLP** como *IO device* (desmarcar a opção *PLC_1 Profinet* do inversor, conforme a apostila).
 7. **Objeto tecnológico:** *Technology objects → Add new object → Motion Control → **SpeedAxis*** (ex.: `SpeedAxis_1`). Em *Hardware interface*, selecionar o **drive**. Definir a unidade de velocidade (**rpm**) e os limites máximos.
 
-### 4.2 Solução de problemas comuns
+#### 4.2 Solução de problemas comuns
 
 | Sintoma | Causa provável | Ação |
 |---|---|---|
@@ -65,9 +82,9 @@ Todos os dispositivos precisam estar **na mesma sub-rede** (por exemplo `192.168
 
 > Use *Help → Show help* do TIA Portal e pesquise o **código de erro** para identificar a causa.
 
-## 5. Variáveis do projeto
+### 5. Variáveis do projeto
 
-### 5.1 *Tags* do CLP
+#### 5.1 *Tags* do CLP
 
 | Tag | Tipo | Endereço | Função |
 |---|---|---|---|
@@ -84,7 +101,7 @@ Todos os dispositivos precisam estar **na mesma sub-rede** (por exemplo `192.168
 
 > ✏️ Ajuste os endereços para não colidir com outras áreas de memória já usadas no seu projeto (`MD40` ocupa `MB40` a `MB43`; `MW44` ocupa `MB44` e `MB45`).
 
-### 5.2 Blocos de movimento usados
+#### 5.2 Blocos de movimento usados
 
 | Bloco | Função | Entradas principais |
 |---|---|---|
@@ -95,7 +112,7 @@ Todos os dispositivos precisam estar **na mesma sub-rede** (por exemplo `192.168
 > `Direction` em `MC_MoveVelocity` aceita (na versão atual): **0** = sentido do sinal da velocidade, **1** = positivo, **2** = negativo. Confirme na ajuda do TIA Portal para a versão instalada.
 > Os blocos reagem à **borda de subida de `Execute`**: para alterar velocidade ou sentido é necessário gerar **um novo pulso** (`Cmd_Aplicar`).
 
-## 6. Programa do CLP
+### 6. Programa do CLP
 
 ```
 Rede 1 — Estado do motor
@@ -142,9 +159,9 @@ Rede 7 — Limitação do setpoint (segurança)
 
 > 💡 O exemplo da apostila para **4 velocidades** (250, 500, 750 e 1000 rpm) usa uma `MOVE` de um valor para uma memória de setpoint e um *clock* (*pulso*) para executar o bloco de velocidade. Aproveite essa técnica na rede 3 se preferir um disparo periódico.
 
-## 7. Configuração da IHM
+### 7. Configuração da IHM
 
-### 7.1 Layout sugerido
+#### 7.1 Layout sugerido
 
 ```
 ┌──────────────────────────────────────────────┐
@@ -173,7 +190,7 @@ Rede 7 — Limitação do setpoint (segurança)
 
 > Se a velocidade for um tipo `LReal` e o campo de IHM exigir `Real`, crie uma *tag* intermediária do tipo `Real` no CLP (conversão com `CONVERT`) para exibição.
 
-## 8. Roteiro de testes
+### 8. Roteiro de testes
 
 | # | Ação | Resultado esperado |
 |---|---|---|
@@ -186,7 +203,7 @@ Rede 7 — Limitação do setpoint (segurança)
 | 7 | DESLIGA | motor para com rampa |
 | 8 | `Vel_SP` acima de `Vel_Max` | valor limitado ao máximo |
 
-## 9. Questões para o relatório
+### 9. Questões para o relatório
 
 1. Qual a diferença entre comandar o inversor por entradas digitais/analógicas e por **PROFINET**? Quais vantagens da rede?
 2. Por que `MC_MoveVelocity` precisa de um pulso (`Execute`) para aceitar um novo setpoint?
@@ -194,14 +211,14 @@ Rede 7 — Limitação do setpoint (segurança)
 4. Por que a **rampa** de aceleração/desaceleração é importante para o motor e para a carga?
 5. Como integrar a lógica do Experimento 6 (sentido com parada obrigatória) a este sistema?
 
-## 10. Entregáveis
+### 10. Entregáveis
 
 - Projeto TIA Portal (CLP + IHM + inversor) e *tags*.
 - Capturas das telas da IHM e do ladder.
 - Evidências dos testes e respostas às questões.
 
 ---
-## Material complementar
+### Material complementar
 
 **Guia prático: motor com inversor de frequência, CLP Siemens S7-1200 e IHM em ladder**
 ([baixar o PDF](Guia_Ladder_IHM_S7-1200.pdf)) · **[Abrir o simulador da IHM](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_inversor.html)**
