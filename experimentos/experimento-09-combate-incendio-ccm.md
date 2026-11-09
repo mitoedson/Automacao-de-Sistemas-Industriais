@@ -1,15 +1,37 @@
 # Experimento 9 - Combate a incêndio com CO2 em sala de CCM
-Lógica em **ladder (LAD)** para um sistema de combate a incêndio por CO2 de uma sala de centro de controle de motores (CCM) de uma plataforma de petróleo, desenvolvida para o **9º Trabalho de Laboratório** de automação (UFABC) com um **CLP Siemens S7-1200** programado no **TIA Portal**.
 
-O repositório reúne:
+![alt text](image-18.png)
 
-| Material | O que é | Link |
-|---|---|---|
-| Guia em PDF | Passo a passo para replicar o experimento: IO, TIA Portal, ladder, testes e solução de problemas | [`Guia_9_Trabalho_CO2_CCM_S7-1200.pdf`](Guia_9_Trabalho_CO2_CCM_S7-1200.pdf) |
-| Simulador em HTML | Simulação interativa da lógica no navegador, sem precisar de CLP | [`simulador/simulacao_ccm_co2.html`](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_ccm_co2.html) |
+## Descrição do projeto
+
+Sistema de combate a incêndio de sala de centro de controle de motores (CCM) (https://pt.wikipedia.org/wiki/Centro_de_Controle_de_Motores) 
+
+Em uma plataforma de petróleo uma sala de CCM possui o seguinte sistema de combate a incêndios: A sala possui uma porta que é hermeticamente fechada e tem fechamento por mola.  
+
+O funcionamento do sistema é da seguinte maneira: 
+
+1. Existem dois sensores de fumaça (DS-1223551 e DS-1223552) se ambos estiverem acionados então gera alarme ESD2. 108 
+
+2. Por uma chave manual (HS-5425510) seleciona-se a bateria de CO2 ativa, ou seja, se HS-5425510 =1 então a bateria CN-5425502A está selecionada, HS-5425510 =0 então a bateria CN-5425502B está selecionada. 
+
+3. A sala possui um sistema de ar condicionado que funciona da seguinte maneira: 
+
+    a. A saída AC-525231-A aciona o ar condicionado A e a saída AC-525231-B aciona o ar condicionado B 
+  
+    b. Para AC-525231-A = 0 o ar condicionado A desliga para AC-525231-B = 0 o ar condicionado B desliga 
+  
+    c. Existem dois dampers (A e B) cujos sensores de aberto são respectivamente ZSH-5252511-A e ZSH-5252511-B (sendo que quando o ZSH-5252511-A =1 ou ZSH-5252511-B = 1 então damper aberto). Esses dampers funcionam com o ar condicionado sendo que AC-525231-A ao ser acionado abre ZSH5252511-A e  AC-525231-B ao ser acionado abre ZSH-5252511-B 
+  
+    d. Caso um damper não abra em até 10 segundos após o seu respectivo ar condicionado ser acionado então se gera um alarme de divergência ZSH5252511-A_ALR ou ZSH-5252511-B_ALR 
+
+4. Existem duas válvulas que abrem o reservatório de CO2  -  XV-5425519-A e XV5425519-B que funcionam da seguinte maneira: 
+
+    i. Apenas um conjunto pode ser acionado de cada vez, para HS-5425510 =1 é possível acionar a XV-5425519-A e respectivamente para HS-5425510 =0 é possível acionar a XV-5425519-B 
+  
+    ii. As válvulas de CO2 abrem seguindo a lógica: ESD2 =1 ou HS-5425506 (BOTOEIRA LOCAL DE DISPARO DE CO2(quebrar o vidro)) então = [aciona os seguintes equipamentos DY-525201(fecha damper) e DY-525202(fecha damper) e YA-5425515(ALARME SONORO) e YB-5425517-B(ALARME VISUAL)  AC525231-A = 0 e AC-525231-B = 0]; após 30s abre a válvula de CO2  
 
 
-## Como o sistema funciona
+### Como o sistema funciona
 
 1. **Detecção:** dois sensores de fumaça (`DS_1223551` e `DS_1223552`). Os dois acionados geram o alarme **ESD2**.
 2. **Seleção da bateria:** a chave `HS_5425510` escolhe a bateria de CO2 (1 = bateria A, 0 = bateria B).
@@ -17,15 +39,11 @@ O repositório reúne:
 4. **Disparo:** ESD2 ou a botoeira local `HS_5425506` (quebrar o vidro) provocam, de imediato, o fechamento dos dampers de exaustão, os alarmes sonoro e visual e o desligamento dos dois ar condicionados.
 5. **Descarga:** **30 s** depois do disparo abre a válvula de CO2 da bateria selecionada. Só uma válvula pode abrir por vez.
 
-## Simulador
+### Simulador
 
 O simulador reproduz o programa rung a rung, com contatos e bobinas que acendem quando conduzem, e os temporizadores correndo.
 
-- **Localmente:** baixe o repositório e abra `simulador/simulador_ccm_co2.html` no navegador. É um arquivo único, sem dependências.
-- **Online (GitHub Pages):** o GitHub não executa HTML dentro da página do repositório. Para ter um link clicável, ative em *Settings, Pages* a publicação a partir da branch principal. O simulador ficará em:
-
-
-  Depois de ativar, substitua o link acima pelo endereço real e adicione-o na tabela do início deste README.
+Baixe o repositório e abra o [simulador](<https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_ccm_co2.html)>) no navegador. É um arquivo único, sem dependências.
 
 **O que testar nele**
 
@@ -35,11 +53,11 @@ O simulador reproduz o programa rung a rung, com contatos e bobinas que acendem 
 - Marcar *Falha damper A* ou *B*, ligar o ar condicionado e esperar o alarme de divergência após 10 s.
 - Velocidade 5× para acelerar os temporizadores.
 
-## Lista de IO (CPU 1214C DC/DC/DC)
+### Lista de IO (CPU 1214C DC/DC/DC)
 
 Os endereços são uma sugestão. Confira com a fiação do seu kit.
 
-### Entradas
+#### Entradas
 
 | Endereço | Tag | Descrição |
 |---|---|---|
@@ -53,7 +71,7 @@ Os endereços são uma sugestão. Confira com a fiação do seu kit.
 | `%I0.7` | `LIGA_AC_B` * | Liga ar condicionado B |
 | `%I1.0` | `RESET` * | Rearme do disparo |
 
-### Saídas
+#### Saídas
 
 | Endereço | Tag | Descrição |
 |---|---|---|
@@ -68,7 +86,7 @@ Os endereços são uma sugestão. Confira com a fiação do seu kit.
 | `%Q1.0` | `ZSH_5252511_A_ALR` | Divergência do damper A |
 | `%Q1.1` | `ZSH_5252511_B_ALR` | Divergência do damper B |
 
-### Memórias e temporizadores
+#### Memórias e temporizadores
 
 | Endereço / DB | Uso |
 |---|---|
@@ -80,7 +98,7 @@ Os endereços são uma sugestão. Confira com a fiação do seu kit.
 
 \* Sinais **acrescentados**, pois o enunciado não diz quem comanda o ar condicionado nem como o disparo é rearmado.
 
-## Programa ladder (resumo das 12 networks)
+#### Programa ladder (resumo das 12 networks)
 
 | # | Função | Lógica |
 |---|---|---|
@@ -99,7 +117,7 @@ Os endereços são uma sugestão. Confira com a fiação do seu kit.
 
 Os diagramas desenhados de cada network estão no [guia em PDF](Guia_9_Trabalho_CO2_CCM_S7-1200.pdf), seção 6.
 
-## Como replicar no TIA Portal
+#### Como replicar no TIA Portal
 
 1. Crie o projeto e adicione a CPU S7-1200 idêntica à do módulo (confira a referência e o firmware).
 2. Ajuste o IP da CPU na mesma faixa do PC.
@@ -109,7 +127,7 @@ Os diagramas desenhados de cada network estão no [guia em PDF](Guia_9_Trabalho_
 
 O passo a passo completo e o roteiro de 10 testes estão no PDF.
 
-## Decisões de projeto e limitações
+#### Decisões de projeto e limitações
 
 - **Selo do disparo:** uma vez disparado, o sistema só é liberado por `RESET`. Isso evita cancelar a descarga se a fumaça sumir durante os 30 s. Para a versão literal do enunciado, remova o selo e o `RESET` da network 2.
 - **Porta da sala:** os sensores `ZSH-5425511A/B` aparecem na figura do enunciado, mas não no texto, e **não foram usados**.
@@ -117,6 +135,14 @@ O passo a passo completo e o roteiro de 10 testes estão no PDF.
 - **Dampers no simulador:** por padrão, o simulador abre o damper junto com o ar condicionado correspondente. Desmarque a opção para acioná-los manualmente.
 - **Endereços:** sugeridos para a CPU 1214C DC/DC/DC. Ajuste conforme o kit do laboratório.
 
-## Créditos
+### Recursos
+
+| Material | O que é | Link |
+|---|---|---|
+| Guia em PDF | Passo a passo para replicar o experimento: IO, TIA Portal, ladder, testes e solução de problemas | [`Guia_9_Trabalho_CO2_CCM_S7-1200.pdf`](Guia_9_Trabalho_CO2_CCM_S7-1200.pdf) |
+| Simulador em HTML | Simulação interativa da lógica no navegador, sem precisar de CLP | [`simulador/simulacao_ccm_co2.html`](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_ccm_co2.html) |
+
+
+### Créditos
 
 Baseado no roteiro do **9º Trabalho de Laboratório** da Universidade Federal do ABC (UFABC). O texto do enunciado original pertence aos seus autores. Este repositório contém a solução, o guia e o simulador desenvolvidos pela equipe.

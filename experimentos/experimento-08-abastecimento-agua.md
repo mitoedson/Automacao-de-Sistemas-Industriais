@@ -2,13 +2,35 @@
 
 Lógica ladder para o controle de duas bombas de recalque que levam água de uma caixa subterrânea (50 mil litros) a uma caixa de cobertura (600 litros), em modo automático e manual.
 
-| Recurso | Link |
-|---|---|
-| Simulador interativo | [Abrir simulador](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_abastecimento_de_agua.html) |
-| Manual do usuário (PDF) | [Abrir manual](Manual_Experimento8.pdf) |
+![alt text](image-17.png)
 
+Um edifício de apartamentos possui o seguinte sistema de abastecimento de agua. 
 
-## 1. Regras do processo
+Trata-se de um prédio de 17 andares, por motivos estruturais, a caixa d’agua no ultimo andar, junto ao poço do elevador possui apenas 600 litros de capacidade, sendo que a agua de todos os apartamentos é abastecida por essa caixa, por gravidade. 
+
+Abaixo da garagem do segundo subsolo existe uma caixa d’agua construída em alvenaria diretamente no solo da fundação do prédio que tem capacidade de 50 mil litros. 
+
+O funcionamento do sistema é da seguinte maneira: 
+
+1. A caixa d’agua maior é abastecida por empresa de abastecimento e a mesma possui uma boia mecânica que a mantem sempre cheia. 
+
+2. Uma bomba(s) de recalque leva agua da caixa d’agua inferior para a superior vencendo com isso aprox. 70 metros. 
+
+3. A caixa d’agua superior possui dois sensores LSL1_BAIXO e LSH1_ALTO se LSL1_BAIXO estiver em zero então à bomba de recalque tem de ser ligada até que LSH1_ALTO esteja em um .(Os sensores são tipo boia e vão para um quando cobertos de agua e vice versa) 
+
+4. Para fins de manutenção existem duas bomba de recalque que são ligadas em tubulações paralelas. 
+
+5. As bombas funcionam apenas uma de cada vez, em um painel local existe uma chave seletora física que possui dois sinais elétricos (SEL_BOMBA_A e SEL_BOMBA_B) 
+
+6. Para evitar cavitação das bombas, a caixa d’água maior possui LSL2_BAIXO que desliga as bombas automaticamente, sendo que as mesmas só podem ligar 10 segundos depois que  LSL2_BAIXO for para um . 
+
+7. As bombas podem funcionar em Automático ou Manual, sendo que há uma chave seletora no campo. AUT_MAN sendo AUT=1 e MAN=0 
+
+8. Caso estejam em MAN às bombas podem funcionar a partir de botoeiras de campo não retentivas  
+
+---
+
+### 1. Regras do processo
 
 | Nº | Regra |
 |---|---|
@@ -20,7 +42,7 @@ Lógica ladder para o controle de duas bombas de recalque que levam água de uma
 
 As boias valem 1 quando cobertas de água. A caixa subterrânea tem boia mecânica que a mantém cheia. As duas bombas ficam em tubulações paralelas, para manutenção.
 
-## 2. Interpretações adotadas
+### 2. Interpretações adotadas
 
 1. A seletora vale nos dois modos e define qual bomba está habilitada.
 2. Em manual, a botoeira confirma a bomba selecionada. `LIGA_A` só liga a A com a seletora na A, e `LIGA_B` só liga a B com a seletora na B.
@@ -30,7 +52,7 @@ As boias valem 1 quando cobertas de água. A caixa subterrânea tem boia mecâni
 
 Confirme com o professor se alguma dessas escolhas precisa mudar.
 
-## 3. Lista de IO
+### 3. Lista de IO
 
 Endereços sugeridos no padrão IEC. Ajuste ao módulo do CLP do laboratório.
 
@@ -51,9 +73,9 @@ Endereços sugeridos no padrão IEC. Ajuste ao módulo do CLP do laboratório.
 | Memória | – | `SEL_B_OK` | Bomba B selecionada e válida |
 | Timer | – | `TON_0` | TON, PT = T#10S |
 
-## 4. Lógica
+### 4. Lógica
 
-### Equações
+#### Equações
 
 ```
 TON_0.IN    = LSL2_BAIXO                  (PT = T#10S)
@@ -66,7 +88,7 @@ BOMBA_B     = TON_0.Q · SEL_B_OK · /BOMBA_A · [ AUT_MAN·ATIVA_NIVEL + /AUT_M
 
 Legenda: `·` é E (série), `+` é OU (paralelo), `/` é contato normalmente fechado.
 
-### Ladder
+#### Ladder
 
 ```
 RUNG 1 - Permissivo anti-cavitação
@@ -94,14 +116,14 @@ RUNG 6 - Bomba B
  |                                            +--[/ AUT_MAN ]--[ LIGA_B ]--[/ LSH1_ALTO ]-----+
 ```
 
-### Por que funciona
+#### Por que funciona
 
 - **Rung 1:** se `LSL2_BAIXO` cai, o timer zera e `TON_0.Q` desliga as bombas. Ao voltar, conta 10 s antes de liberar (R3).
 - **Rung 2:** selo com histerese. Liga em `LSL1_BAIXO = 0` e só desliga com `LSH1_ALTO = 1` (R1).
 - **Rungs 3 e 4:** só são verdadeiras com exatamente uma posição da seletora acionada (R2).
 - **Rungs 5 e 6:** o ramo superior é o automático e o inferior é o manual. O contato `/BOMBA_B` na A e `/BOMBA_A` na B é um intertravamento extra.
 
-## 5. Montagem passo a passo
+### 5. Montagem passo a passo
 
 1. Crie o projeto no software do CLP (por exemplo, `Exp8_Abastecimento`).
 2. Declare as variáveis da lista de IO, com os endereços do seu módulo, além de `ATIVA_NIVEL`, `SEL_A_OK`, `SEL_B_OK` (BOOL) e `TON_0` (TON).
@@ -111,7 +133,7 @@ RUNG 6 - Bomba B
 6. Valide no simulador do software ou no simulador HTML.
 7. Carregue no CLP, coloque em RUN e execute os testes da seção 6.
 
-## 6. Roteiro de testes
+### 6. Roteiro de testes
 
 Condição inicial: `LSL2_BAIXO = 1` e os 10 s do timer já decorridos, salvo indicação.
 
@@ -133,7 +155,7 @@ Condição inicial: `LSL2_BAIXO = 1` e os 10 s do timer já decorridos, salvo in
 | T14 | Qualquer modo | `SEL_BOMBA_A = 0` e `SEL_BOMBA_B = 0` | Nenhuma bomba liga |
 | T15 | Bomba ligada em AUT | Trocar para MAN sem apertar botoeira | Bomba desliga e não parte sozinha |
 
-## 7. Problemas comuns
+### 7. Problemas comuns
 
 | Sintoma | Causa provável | Solução |
 |---|---|---|
@@ -142,6 +164,15 @@ Condição inicial: `LSL2_BAIXO = 1` e os 10 s do timer já decorridos, salvo in
 | Nenhuma bomba liga em AUT | Seletora em posição inválida | Só um entre `SEL_BOMBA_A` e `SEL_BOMBA_B` pode estar em 1 |
 | Manual não responde com caixa cheia | Proteção `/LSH1_ALTO` | Comportamento esperado. Remova o contato se o professor exigir |
 
-## Créditos
+### Recursos
+
+| Recurso | Link |
+|---|---|
+| Simulador interativo | [Abrir simulador](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_abastecimento_de_agua.html) |
+| Manual do usuário (PDF) | [Abrir manual](Manual_Experimento8.pdf) |
+
+
+### Créditos
 
 Baseado no roteiro do **8º Trabalho de Laboratório** da Universidade Federal do ABC (UFABC). O texto do enunciado original pertence aos seus autores. Este repositório contém a solução, o guia e o simulador desenvolvidos pela equipe.
+
