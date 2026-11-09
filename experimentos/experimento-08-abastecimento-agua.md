@@ -11,7 +11,6 @@ Lógica ladder para o controle de duas bombas de recalque que levam água de uma
 | Simulador interativo | [Abrir simulador](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_abastecimento_de_agua.html) |
 | Manual do usuário (PDF) | [Abrir manual](Manual_Experimento8.pdf) |
 
-> Os links acima são privados até serem compartilhados pelo botão *Share* do Claude. Para um acesso público e permanente, hospede o simulador no GitHub Pages e o PDF na pasta do repositório (veja a seção "Publicação").
 
 ## 1. Regras do processo
 
