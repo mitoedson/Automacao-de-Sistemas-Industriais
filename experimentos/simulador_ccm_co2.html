@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulador S7-1200: CO2 da sala de CCM</title>
+<style>
+:root{--bg:#f3f1ec;--sf:#fff;--tx:#1d2330;--mu:#667085;--ln:#d5d9e0;--on:#1f9d55;--onbg:#dff5e8;--al:#d92d20;--albg:#fde4e1;--wn:#b54708;--wnbg:#fdf0d5;--rail:#2b5fd9;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161e;--sf:#1b212c;--tx:#e6e9ef;--mu:#98a2b3;--ln:#323b4a;--on:#47d17f;--onbg:#173a28;--al:#ff6b5e;--albg:#47201d;--wn:#f5b04a;--wnbg:#40300f;--rail:#6f95ff}}
+:root[data-theme="dark"]{--bg:#12161e;--sf:#1b212c;--tx:#e6e9ef;--mu:#98a2b3;--ln:#323b4a;--on:#47d17f;--onbg:#173a28;--al:#ff6b5e;--albg:#47201d;--wn:#f5b04a;--wnbg:#40300f;--rail:#6f95ff}
+html{color-scheme:light dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:1.35rem;margin:0 0 2px}
+h2{font-size:1rem;margin:0 0 8px}
+p.sub{margin:0 0 14px;color:var(--mu)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:12px}
+.row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--ln)}
+.row:last-child{border:0}
+.row .ad{font:12px Consolas,monospace;color:var(--mu);width:46px}
+.row .nm{flex:1;min-width:0}
+.row .nm small{display:block;color:var(--mu)}
+button,select{font:inherit;color:var(--tx);background:var(--sf);border:1px solid var(--ln);border-radius:6px;padding:5px 10px;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--rail);outline-offset:2px}
+.sw{min-width:64px;font-weight:600}
+.sw.on{background:var(--onbg);border-color:var(--on);color:var(--on)}
+.sw[disabled]{opacity:.75;cursor:default}
+.lamp{width:62px;text-align:center;border-radius:6px;padding:4px 0;font-weight:600;border:1px solid var(--ln);color:var(--mu)}
+.lamp.on{background:var(--onbg);border-color:var(--on);color:var(--on)}
+.lamp.alr.on{background:var(--albg);border-color:var(--al);color:var(--al)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.bar label{display:flex;gap:6px;align-items:center}
+.stat{padding:8px 12px;border-radius:8px;font-weight:600;margin-bottom:14px;border:1px solid var(--ln)}
+.stat.ok{background:var(--onbg);color:var(--on);border-color:var(--on)}
+.stat.wn{background:var(--wnbg);color:var(--wn);border-color:var(--wn)}
+.stat.al{background:var(--albg);color:var(--al);border-color:var(--al)}
+.rung{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--ln)}
+.rung:last-child{border:0}
+.rn{font-weight:700;width:26px;color:var(--mu)}
+.rb{flex:1;min-width:0}
+.rd{color:var(--mu);font-size:13px;margin-bottom:4px}
+.net{display:flex;flex-wrap:wrap;align-items:center;gap:0;border-left:3px solid var(--rail);border-right:3px solid var(--rail);padding:4px 0;overflow-x:auto}
+.w{height:3px;width:14px;background:var(--ln);flex:none}
+.w.on{background:var(--on)}
+.ct,.co{font:12px Consolas,monospace;padding:3px 7px;border:1px solid var(--ln);border-radius:4px;white-space:nowrap;color:var(--mu);margin:2px 0}
+.ct.on{border-color:var(--on);color:var(--on);background:var(--onbg)}
+.co.on{border-color:var(--on);color:var(--on);background:var(--onbg);font-weight:700}
+.co.alr.on{border-color:var(--al);color:var(--al);background:var(--albg)}
+.co.tm{border-style:dashed}
+.outs{display:flex;flex-direction:column;gap:2px}
+.or{display:flex;gap:2px;border:1px dashed var(--ln);border-radius:4px;padding:1px 2px;flex-wrap:wrap}
+.full{margin-top:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{text-align:left;padding:4px 6px;border-bottom:1px solid var(--ln)}
+td:first-child{font-family:Consolas,monospace}
+.note{color:var(--mu);font-size:13px;margin:8px 0 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Simulador do 9º trabalho: CO2 da sala de CCM</h1>
+<p class="sub">Lógica ladder para CLP Siemens S7-1200 (CPU 1214C), com endereços do TIA Portal. Os contatos acendem em verde quando conduzem.</p>
+
+<div id="status" class="stat ok">Sala normal</div>
+
+<div class="bar">
+  <button id="fire">Simular incêndio (2 sensores)</button>
+  <button id="rst">Restaurar painel</button>
+  <label>Velocidade <select id="spd"><option value="1">1×</option><option value="5">5×</option></select></label>
+  <label><input type="checkbox" id="auto" checked> Dampers abrem com o ar condicionado</label>
+  <label><input type="checkbox" id="fA"> Falha damper A</label>
+  <label><input type="checkbox" id="fB"> Falha damper B</label>
+</div>
+
+<div class="grid">
+  <section class="card"><h2>Entradas (%I)</h2><div id="ins"></div>
+    <p class="note">Botoeiras (disparo e reset) valem apenas enquanto pressionadas.</p></section>
+  <section class="card"><h2>Saídas (%Q) e memórias</h2><div id="outs"></div></section>
+</div>
+
+<section class="card full"><h2>Programa ladder (OB1)</h2><div id="rungs"></div>
+  <p class="note">Contato ┤/├ é normalmente fechado. Timers TON usam DB de instância (IEC_Timer_0_DB, _1_DB, _2_DB), com PT de T#30s e T#10s.</p></section>
+
+<section class="card full"><h2>Tabela de tags para o TIA Portal</h2>
+  <div style="overflow-x:auto"><table id="tags"><tr><th>Endereço</th><th>Tag</th><th>Descrição</th></tr></table></div>
+  <p class="note">A CPU 1214C DC/DC/DC tem 14 entradas (%I0.0 a %I1.5) e 10 saídas (%Q0.0 a %Q1.1). O ESD2 ficou só em memória (%M0.0) para caber nas 10 saídas. Confirme o modelo no vídeo do laboratório.</p></section>
+</main>
+
+<script>
+const IN=[
+['%I0.0','DS_1223551','Sensor de fumaça 1','sw','ds1'],
+['%I0.1','DS_1223552','Sensor de fumaça 2','sw','ds2'],
+['%I0.2','HS_5425510','Seletora de bateria (1 = A, 0 = B)','sw','hs510'],
+['%I0.3','HS_5425506','Botoeira de disparo de CO2','pb','hs506'],
+['%I0.4','ZSH_5252511_A','Damper A aberto','sw','zshA'],
+['%I0.5','ZSH_5252511_B','Damper B aberto','sw','zshB'],
+['%I0.6','LIGA_AC_A','Liga ar condicionado A','sw','ligaA'],
+['%I0.7','LIGA_AC_B','Liga ar condicionado B','sw','ligaB'],
+['%I1.0','RESET','Rearme do disparo','pb','reset']];
+const OUT=[
+['%Q0.0','AC_525231_A','Ar condicionado A','acA'],
+['%Q0.1','AC_525231_B','Ar condicionado B','acB'],
+['%Q0.2','XV_5425519_A','Válvula CO2 bateria A','xvA'],
+['%Q0.3','XV_5425519_B','Válvula CO2 bateria B','xvB'],
+['%Q0.4','DY_525201','Fecha damper A','dy1'],
+['%Q0.5','DY_525202','Fecha damper B','dy2'],
+['%Q0.6','YA_5425515','Alarme sonoro','ya'],
+['%Q0.7','YB_5425517_B','Alarme visual','yb'],
+['%Q1.0','ZSH_5252511_A_ALR','Divergência damper A','almA','alr'],
+['%Q1.1','ZSH_5252511_B_ALR','Divergência damper B','almB','alr'],
+['%M0.0','ESD2','Alarme ESD2 (memória)','esd2','alr'],
+['%M0.1','DISPARO','Disparo selado (memória)','disp']];
+const L={};IN.concat(OUT).forEach(r=>L[r[r.length>4&&r[4]!=='alr'?4:3]]=r[1]);
+L.t1q='T1.Q';L.t2q='T2.Q';L.t3q='T3.Q';
+const s={};IN.forEach(r=>s[r[4]]=false);OUT.forEach(r=>s[r[3]]=false);
+s.hs510=true;s.ligaA=true;
+const T={t1:{pt:30000,et:0},t2:{pt:10000,et:0},t3:{pt:10000,et:0}};
+const tm=(t,i,dt)=>{t.et=i?Math.min(t.pt,t.et+dt):0;return t.et>=t.pt};
+
+const R=[
+{d:'ESD2: os dois sensores de fumaça acionados',c:[['ds1'],['ds2']],o:[['esd2','%M0.0 ESD2','alr']]},
+{d:'Disparo (ESD2 ou botoeira) com selo; RESET rearma',c:[{or:['esd2','hs506','disp']},['reset',1]],o:[['disp','%M0.1 DISPARO']]},
+{d:'Ações imediatas: fecha dampers e liga alarmes',c:[['disp']],o:[['dy1','%Q0.4 DY_525201'],['dy2','%Q0.5 DY_525202'],['ya','%Q0.6 YA_5425515'],['yb','%Q0.7 YB_5425517_B']]},
+{d:'Atraso de 30 s para abrir o CO2',c:[['disp']],o:[['t1q','TON T1','tm','t1']]},
+{d:'Válvula da bateria A (HS_5425510 = 1)',c:[['t1q'],['hs510'],['xvB',1]],o:[['xvA','%Q0.2 XV_A']]},
+{d:'Válvula da bateria B (HS_5425510 = 0)',c:[['t1q'],['hs510',1],['xvA',1]],o:[['xvB','%Q0.3 XV_B']]},
+{d:'Ar condicionado A (desliga no disparo)',c:[['ligaA'],['disp',1]],o:[['acA','%Q0.0 AC_A']]},
+{d:'Ar condicionado B (desliga no disparo)',c:[['ligaB'],['disp',1]],o:[['acB','%Q0.1 AC_B']]},
+{d:'Damper A não abriu em 10 s',c:[['acA'],['zshA',1]],o:[['t2q','TON T2','tm','t2']]},
+{d:'Alarme de divergência do damper A',c:[['t2q']],o:[['almA','%Q1.0 ALR_A','alr']]},
+{d:'Damper B não abriu em 10 s',c:[['acB'],['zshB',1]],o:[['t3q','TON T3','tm','t3']]},
+{d:'Alarme de divergência do damper B',c:[['t3q']],o:[['almB','%Q1.1 ALR_B','alr']]}];
+
+function scan(dt){
+  if(auto.checked){s.zshA=s.acA&&!fA.checked;s.zshB=s.acB&&!fB.checked}
+  s.esd2=s.ds1&&s.ds2;
+  s.disp=(s.esd2||s.hs506||s.disp)&&!s.reset;
+  s.dy1=s.dy2=s.ya=s.yb=s.disp;
+  s.t1q=tm(T.t1,s.disp,dt);
+  const a=s.t1q&&s.hs510&&!s.xvB, b=s.t1q&&!s.hs510&&!s.xvA;
+  s.xvA=a;s.xvB=b;
+  s.acA=s.ligaA&&!s.disp;s.acB=s.ligaB&&!s.disp;
+  s.t2q=tm(T.t2,s.acA&&!s.zshA,dt);s.almA=s.t2q;
+  s.t3q=tm(T.t3,s.acB&&!s.zshB,dt);s.almB=s.t3q;
+}
+const $=id=>document.getElementById(id);
+const eff=(k,nc)=>nc?!s[k]:!!s[k];
+
+// montagem única
+$('ins').innerHTML=IN.map(r=>`<div class="row"><span class="ad">${r[0]}</span><span class="nm">${r[1]}<small>${r[2]}</small></span><button class="sw" data-k="${r[4]}" data-t="${r[3]}"></button></div>`).join('');
+$('outs').innerHTML=OUT.map(r=>`<div class="row"><span class="ad">${r[0]}</span><span class="nm">${r[1]}<small>${r[2]}</small></span><span class="lamp ${r[4]||''}" data-o="${r[3]}"></span></div>`).join('');
+$('tags').insertAdjacentHTML('beforeend',IN.concat(OUT).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')+
+ '<tr><td>DB de instância</td><td>IEC_Timer_0_DB / _1_DB / _2_DB</td><td>TON de 30 s, 10 s (A) e 10 s (B)</td></tr>');
+document.querySelectorAll('.sw').forEach(b=>{
+  const k=b.dataset.k;
+  if(b.dataset.t==='pb'){
+    b.onpointerdown=()=>s[k]=true;
+    ['pointerup','pointerleave','pointercancel'].forEach(e=>b['on'+e]=()=>s[k]=false);
+  }else b.onclick=()=>{if(!b.disabled)s[k]=!s[k]};
+});
+$('fire').onclick=()=>{s.ds1=s.ds2=true};
+$('rst').onclick=()=>{
+  IN.forEach(r=>s[r[4]]=false);s.hs510=true;s.ligaA=true;
+  Object.values(T).forEach(t=>t.et=0);
+  ['disp','esd2','xvA','xvB','almA','almB'].forEach(k=>s[k]=false);
+};
+
+function render(){
+  document.querySelectorAll('.sw').forEach(b=>{
+    const k=b.dataset.k,on=s[k];
+    b.classList.toggle('on',on);
+    b.textContent=on?'1 (ON)':'0 (OFF)';
+    b.disabled=auto.checked&&(k==='zshA'||k==='zshB');
+  });
+  document.querySelectorAll('.lamp').forEach(l=>{const on=s[l.dataset.o];l.classList.toggle('on',on);l.textContent=on?'1':'0'});
+  $('rungs').innerHTML=R.map((r,i)=>{
+    const ok=r.c.every(c=>c.or?c.or.some(k=>s[k]):eff(c[0],c[1]));
+    const wire=`<span class="w ${ok?'on':''}"></span>`;
+    const cts=r.c.map(c=>{
+      if(c.or)return `<span class="or">${c.or.map(k=>`<span class="ct ${s[k]?'on':''}">┤ ├ ${L[k]}</span>`).join('')}</span>`;
+      return `<span class="ct ${eff(c[0],c[1])?'on':''}">${c[1]?'┤/├':'┤ ├'} ${L[c[0]]}</span>`;
+    }).join(wire);
+    const outs=r.o.map(o=>{
+      if(o[2]==='tm'){const t=T[o[3]];return `<span class="co tm ${s[o[0]]?'on':''}">${o[1]} ${(t.et/1000).toFixed(1)}/${t.pt/1000} s</span>`}
+      return `<span class="co ${o[2]||''} ${s[o[0]]?'on':''}">( ) ${o[1]}</span>`;
+    }).join('');
+    return `<div class="rung"><span class="rn">${i+1}</span><div class="rb"><div class="rd">${r.d}</div><div class="net">${cts}${wire}<div class="outs">${outs}</div></div></div></div>`;
+  }).join('');
+  const st=$('status');let m='Sala normal',c='ok';
+  if(s.xvA||s.xvB){m='CO2 liberado pela bateria '+(s.xvA?'A':'B');c='al'}
+  else if(s.disp){m='Disparo ativo: CO2 abre em '+((T.t1.pt-T.t1.et)/1000).toFixed(1)+' s';c='al'}
+  else if(s.almA||s.almB){m='Alarme de divergência de damper';c='wn'}
+  else if(s.ds1||s.ds2){m='Um sensor de fumaça acionado (sem ESD2)';c='wn'}
+  st.textContent=m;st.className='stat '+c;
+}
+setInterval(()=>{scan(50*+$('spd').value);render()},50);
+</script>
+</body>
+</html>
