@@ -1,6 +1,9 @@
 # Experimento 10 — Estampagem de peças plásticas
 
+
 ![alt text](image-12.png)
+
+## Enunciado
 
 Um equipamento para estampar peças plásticas é formado por um dispositivo de carregamento de peças (por gravidade), um cilindro 1 (alimentador), um cilindro 2 (estampador) e um cilindro 3 (extrator). Todos os três cilindros são de ação simples com retorno por mola, e têm seu avanço comandado pelas eletroválvulas EV1, EV2 e EV3 respectivamente.
 
@@ -11,7 +14,9 @@ O funcionamento prevê como condição inicial que os cilindros não estejam ava
 Assim, com a chave de partida (PTD) acionada e estando a máquina na condição inicial, deve-se iniciar a operação. A seqüência consiste em, primeiramente, colocar uma peça no molde, recuar o êmbolo do cilindro alimentador, prensar o estampo sobre a peça (deve-se aguardar um tempo de dois segundos com a peça sendo prensada), atuar o extrator e o bico de ar para retirada da peça pronta.
 
 
-## 1. Descrição do processo
+## Desenvolvimento do experimento
+
+### 1. Descrição do processo
 
 O equipamento tem um alimentador (cilindro 1), um estampador (cilindro 2) e um extrator (cilindro 3). Todos são de ação simples com retorno por mola e avançam pelas eletroválvulas EV1, EV2 e EV3. A expulsão da peça é feita por um sopro de ar (EV4) e confirmada pelo fotossensor FS.
 
@@ -27,7 +32,7 @@ O ciclo só parte com a chave PTD acionada, o botão de emergência liberado e a
 
 **Emergência e falhas.** Ao pressionar o botão de emergência (EME), todas as etapas são desativadas e todas as eletroválvulas desligam. Como os cilindros têm retorno por mola, a máquina vai ao estado seguro. A máquina só volta à condição inicial depois que EME é liberado **e** PTD é desligada (rearme consciente, para não partir sozinha). Um temporizador de supervisão do ciclo leva ao mesmo estado de emergência se o ciclo demorar mais do que o esperado, por exemplo se um sensor falhar.
 
-## 2. Entradas
+### 2. Entradas
 
 | Endereço | TAG | Descrição |
 |---|---|---|
@@ -38,7 +43,7 @@ O ciclo só parte com a chave PTD acionada, o botão de emergência liberado e a
 | %I0.4 | FS | Fotossensor, peça expulsa |
 | %I0.5 | EME | Botão de emergência, contato NF (1 = normal, 0 = pressionado ou fio rompido) |
 
-## 3. Saídas
+### 3. Saídas
 
 | Endereço | TAG | Descrição |
 |---|---|---|
@@ -47,7 +52,7 @@ O ciclo só parte com a chave PTD acionada, o botão de emergência liberado e a
 | %Q0.2 | EV3 | Avanço do extrator |
 | %Q0.3 | EV4 | Bico de ar |
 
-## 4. Outros recursos
+### 4. Outros recursos
 
 | Recurso | TAG | Descrição |
 |---|---|---|
@@ -66,7 +71,7 @@ O ciclo só parte com a chave PTD acionada, o botão de emergência liberado e a
 | DB "T_CICLO" | T_CICLO | TON, PT = T#20s (supervisão do ciclo, ajustável) |
 | FirstScan | FirstScan | Bit de primeiro ciclo da memória de sistema da CPU |
 
-## 5. Configuração no TIA Portal
+### 5. Configuração no TIA Portal
 
 1. Nas propriedades da CPU, em *Geral → Memória de sistema e de clock*, habilite a memória de sistema. Por padrão ela usa o MB1, e o bit `FirstScan` fica em %M1.0. Cadastre esse bit na tabela de tags com o nome `FirstScan`.
 2. Os bytes MB0 (clock) e MB1 (sistema) ficam reservados, e por isso as etapas usam MB10 e MB11.
@@ -74,7 +79,7 @@ O ciclo só parte com a chave PTD acionada, o botão de emergência liberado e a
 4. Insira dois blocos TON (`T_PRENSA` e `T_CICLO`) com instâncias de DB individuais, como DB de instância única ou múltipla.
 5. A instrução TON deve ser chamada a cada varredura, em uma network própria, como nos exemplos abaixo.
 
-## 6. Código ladder
+### 6. Código ladder
 
 Legenda: `] [` contato NA, `]/[` contato NF, `( )` bobina, `( S )` set, `( R )` reset. As etapas usam bobinas Set/Reset: cada transição liga a etapa seguinte e desliga a atual. Cada bloco abaixo deve ser montado em uma network do TIA Portal, na ordem apresentada. A emergência e o rearme ficam antes das transições para terem prioridade na varredura.
 
@@ -192,7 +197,7 @@ NETWORK 18 – EV4 (bico de ar)
 
 Nas networks 15 a 18, o contato de EME em série em cada saída é uma segunda barreira: as eletroválvulas desligam mesmo que alguma etapa fique ativa por erro de programação.
 
-## 7. Observações e teste
+### 7. Observações e teste
 
 - **Ciclo único.** Se PTD continuar acionada no fim do ciclo, a máquina reinicia sozinha. Para ciclo único, na network 5 troque o contato `"PTD"` por um contato de borda de subida `P` com o bit auxiliar `"M_PTD_P"`. O rearme da network 4 continua exigindo PTD desligada.
 - **Prensagem.** O tempo de 2 s é o `"T_PRENSA"`, que só conta na etapa 4, com EV2 mantida acionada.
