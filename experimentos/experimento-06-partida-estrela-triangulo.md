@@ -1,9 +1,54 @@
 # Experimento 6 — Partida de motor trifásico: chave estrela-triângulo com inversão de sentido
 
-> **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP)
+## Enunciado
 
+Os motores elétricos mais comumente empregados no ambiente industrial é o tipo motor de indução trifásico tipo gaiola de esquilo, isso se dá principalmente devido a robustez desses motores que possuem poucas partes moveis, tornando-os muito confiáveis.  Apesar das suas vantagens esses motores possuem característica de grande corrente de partida, pois ao serem conectados diretamente à rede elétrica, absorvem uma corrente de partida na ordem de 4 a 10 vezes maior que a corrente nominal. Para motores de grande potência, as altas correntes, interagindo com a impedância equivalente entre o ponto de fornecimento, na entrada do ambiente industrial (subestação) e o barramento em que o motor está conectado, provocam reduções de tensão (“afundamentos de tensão”), temporárias durante o qual podem ocorrer alguns transtornos, tais como:
 
-## 1. Objetivos
+● Interferência no funcionamento de equipamentos instalados no mesmo sistema, devido à queda de tensão excessiva.
+
+● Necessidade de super-dimensionar os sistemas de proteção, com consequente aumento de custos.
+
+● Receber multas impostas pela companhia concessionária de energia elétrica, de forma a limitar a queda de tensão na rede.
+
+Por isso, em geral, motores acima de 5 cv não são conectados diretamente durante sua partida. Com muita frequência são utilizados equipamentos ou arranjos de equipamentos para reduzir-se a corrente de partida utilizam métodos de partida eletromecânicos (com relés) ou eletrônicos (com dispositivos de partida soft-starter). 
+
+O sistema de partida indireta mais usado é a partida estrela-triângulo que consiste em ligar, numa primeira instância, as bobinas do enrolamento do motor numa configuração estrela e, portanto, alimentando cada bobina com  1/(3)^(1/2)=  (0,5773) vezes a tensão nominal do motor (Figura 1a), quando o motor atingir aproximadamente a metade de sua rotação nominal, a ligação das bobinas é mudada para a configuração triângulo, com isso alimentando o motor com sua tensão nominal (Figura 1b), essa mudança pode ser feita por um operador, por relés 101 temporizados ou por contatores controlados como é o caso para esta experiência.  
+
+![alt text](image-19.png)
+
+Figura 1. – Tipos de Ligação: a) Ligação Estrela; b) Ligação Triângulo. 
+
+Uma solução para o problema é a utilização de um quatro contatores como mostrado na figura 2, os contatores A, C e D são para mudar-se de delta para estrela enquanto o contator B é para inverter-se o sentido de rotação. A partida deverá ocorrer primeiramente em estágio estrela e permanecer nesse estado por 3 segundos, devendo então ir para o estágio em triângulo. 
+
+![alt text](image-20.png)
+
+Figura 2 – Esquema elétrico do motor e contatores  para partida Estrela / Triângulo. 
+
+1.1 Descrição do problema de automação Nesta montagem deve-se acionar o motor através do botão Liga, deve ainda ser possível desligá-lo em qualquer instante que for necessário através do botão Desliga. O motor contara ainda com uma chave de sentido de rotação sendo que se arbitrou valor logico 1 para sentido normal e 0 para sentido inverso no caso do sentido de rotação ser mudado com o motor funcionando, o mesmo deverá parar. O motor independente do sentido deve acionar em estrela no sentido e após 3 segundos ir para triangulo. 
+
+2. Diagrama Trajeto-Passo Abaixo, segue o diagrama trajeto-passo do processo analisado, seguido da descrição sobre o posicionamento de cada atuador: 
+
+![alt text](image-21.png)
+
+Figura 3: diagrama de passo
+
+● Etapa 1: Sentido normal (A=1, B=0) parte em estrela.  1 
+
+● Etapa 2: Tempo de 3 segundos para motor chegar a pelo menos 90% da rotação nominal. 
+
+● Etapa 3: Sentido normal (A=1, B=0) chaveia para triangulo. 
+
+● Etapa 4: Tempo de 3 segundos para motor chegar a pelo menos 90% da rotação nominal. 
+
+● Etapa 5: Motor desligado(botão de desliga ou mudança de sentido).
+
+● Etapa 6: Sentido inverso (A=0, B=1) parte em estrela.  
+
+● Etapa 7: Tempo de 3 segundos para motor chegar a pelo menos 90% da rotação nominal. ● Etapa 8: Sentido inverso (A=0, B=1) chaveia para triangulo. 
+
+## Desenvolvimento do experimento
+
+### 1. Objetivos
 
 - Entender por que motores de indução trifásicos de maior potência não partem diretamente da rede.
 - Programar o **sequenciamento de partida estrela-triângulo** com quatro contatores.
@@ -12,13 +57,13 @@
 
 > ⚠️ **Antes de energizar o motor:** valide toda a lógica **com LEDs ou apenas com as saídas do CLP**, sem a potência ligada. Um erro de intertravamento causa **curto-circuito entre fases** e danos aos equipamentos.
 
-## 2. Pré-requisitos
+### 2. Pré-requisitos
 
 Experimentos 1 a 3 (ladder, `SET`/`RESET`, `TON`, bordas) e noções de contatores e motor trifásico.
 
-## 3. Fundamentos
+### 3. Fundamentos
 
-### 3.1 Por que não partir direto?
+#### 3.1 Por que não partir direto?
 
 O motor de indução tipo **gaiola de esquilo** é robusto e confiável, mas, ao ser ligado diretamente à rede, absorve uma corrente de partida de **4 a 10 vezes** a nominal. Em motores de maior potência isso pode causar:
 
@@ -28,12 +73,12 @@ O motor de indução tipo **gaiola de esquilo** é robusto e confiável, mas, ao
 
 Por isso, em geral, motores acima de **5 cv** não partem diretamente e usam partida indireta (eletromecânica ou *soft-starter*).
 
-### 3.2 Partida estrela-triângulo
+#### 3.2 Partida estrela-triângulo
 
 1. **Estrela (Y):** cada bobina recebe `V_linha / √3` (≈ 0,577 × V_linha). Ex.: rede de 220 V → 127 V por bobina. A corrente de partida cai (≈ 1/3 do valor em triângulo).
 2. Quando o motor atinge aproximadamente a rotação nominal, as bobinas são reconfiguradas para **triângulo (Δ)** e passam a receber a tensão nominal de 220 V.
 
-### 3.3 Contatores usados
+#### 3.3 Contatores usados
 
 | Contator | Função | Saída do CLP |
 |:-:|---|---|
@@ -46,14 +91,14 @@ Por isso, em geral, motores acima de **5 cv** não partem diretamente e usam par
 
 > 📝 O texto da apostila indica que “A, C e D mudam de triângulo para estrela e B inverte o sentido”. O **diagrama trajeto-passo** (item 5) define o papel de cada contator de forma consistente: **A = sentido normal, B = sentido inverso**. Confira com a figura 2 e com a ligação física do seu kit.
 
-## 4. Descrição do problema de automação
+### 4. Descrição do problema de automação
 
 - O motor é acionado pelo botão **LIGA** e pode ser desligado a qualquer instante pelo botão **DESLIGA**.
 - Uma **chave de sentido** define a rotação: **1 = normal**, **0 = inverso**.
 - Se o sentido for **alterado com o motor em funcionamento**, o motor deve **parar**.
 - Em qualquer sentido, o motor parte em **estrela** e, após **3 s**, passa para **triângulo**.
 
-### 4.1 Entradas e saídas
+#### 4.1 Entradas e saídas
 
 | TAG | Tipo | Endereço | Descrição |
 |---|---|---|---|
@@ -69,7 +114,7 @@ Por isso, em geral, motores acima de **5 cv** não partem diretamente e usam par
 
 **Auxiliares:** `RODANDO` (`%M1.0`), `SENT_ANT` (`%M1.1`), `TROCA` (`%M1.2`), `T_ESTRELA` (`TON`, 3 s), `T_MORTO` (`TON`, 100 ms).
 
-## 5. Diagrama trajeto-passo
+### 5. Diagrama trajeto-passo
 
 | Etapa | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -89,7 +134,7 @@ Por isso, em geral, motores acima de **5 cv** não partem diretamente e usam par
 | 7 | Espera de **3 s** |
 | 8 | Sentido inverso: chaveia para **triângulo** |
 
-## 6. Solução de referência
+### 6. Solução de referência
 
 ```
 Rede 1 — Memória do sentido anterior e detecção de troca
@@ -123,18 +168,18 @@ Rede 7 — Triângulo (regime)
 
 > **Intertravamento duplo.** Os contatos `[/Q0.1]`, `[/Q0.0]`, `[/Q0.3]` e `[/Q0.2]` impedem A+B e C+D **na lógica**. Em instalações reais, use também **intertravamento por contato auxiliar NF** no próprio contator (hardware).
 
-### 6.1 Sobre as saídas do CLP
+#### 6.1 Sobre as saídas do CLP
 
 O módulo de saídas é de **24 V DC / 0,5 A**. Verifique no kit como as bobinas dos contatores são comandadas (diretamente ou por relés de interface) **antes** de ligar.
 
-## 7. Procedimento
+### 7. Procedimento
 
 1. Montar o programa (redes 1 a 7), compilar e fazer o *download*.
 2. **Teste a seco (sem potência):** observe os LEDs das saídas `Q0.0` a `Q0.3` e confira a sequência.
 3. Só depois de validar a sequência, **peça ao professor/técnico** para liberar a potência.
 4. Ligar a maleta com o motor e testar nos dois sentidos.
 
-### 7.1 Testes
+#### 7.1 Testes
 
 | # | Ação | Resultado esperado |
 |---|---|---|
@@ -146,7 +191,7 @@ O módulo de saídas é de **24 V DC / 0,5 A**. Verifique no kit como as bobinas
 | 6 | Observar o tempo entre C e D | ≈ 3 s + 100 ms |
 
 
-## 8. Sobre o experimento
+### 8. Sobre o experimento
 
 ![alt text](image-11.png)
 <a href="Manual_Experimento6_Partida_Estrela_Triangulo.pdf">Manual Partida Estrela-Triângulo</a>
@@ -155,7 +200,7 @@ Ao ser ligado diretamente à rede, um motor de indução com rotor em gaiola abs
 
 Na partida estrela-triângulo, as bobinas são ligadas primeiro em estrela e cada uma recebe cerca de 0,577 da tensão de linha (127 V em uma rede de 220 V). A corrente e o conjugado de partida caem a um terço dos valores da ligação em triângulo. Depois de um tempo fixo, o motor passa para triângulo e opera com a tensão nominal.
 
-### 8.1 Funcionamento
+#### 8.1 Funcionamento
 
 - O botão **Liga** aciona o motor e o botão **Desliga** o para a qualquer momento.
 - Uma chave de sentido define a rotação: `1` para normal e `0` para inverso.
@@ -164,7 +209,7 @@ Na partida estrela-triângulo, as bobinas são ligadas primeiro em estrela e cad
 - Uma botoeira de emergência desliga tudo.
 - Após qualquer parada, há uma espera de **5 s** antes de aceitar nova partida, para o rotor parar e não haver reversão por contracorrente.
 
-### Contatores
+#### Contatores
 
 | Contator | Função | Saída |
 |:-:|---|---|
@@ -175,7 +220,7 @@ Na partida estrela-triângulo, as bobinas são ligadas primeiro em estrela e cad
 
 Nunca devem ficar ligados juntos **A e B**, nem **C e D**, pois ocorre curto-circuito.
 
-### Diagrama trajeto-passo
+#### Diagrama trajeto-passo
 
 | Etapa | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -185,7 +230,7 @@ Nunca devem ficar ligados juntos **A e B**, nem **C e D**, pois ocorre curto-cir
 | C | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0 |
 | D | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 |
 
-### Lógica de controle
+#### Lógica de controle
 
 O programa tem 13 redes no OB1, com três temporizadores TON e uma detecção de borda no botão Liga.
 
@@ -209,7 +254,7 @@ Cont_C = (Sent_1 + Sent_2) · /Fim_Estr · /Cont_D
 Cont_D = (Sent_1 + Sent_2) · Libera_D · /Cont_C
 ```
 
-### Entradas e saídas
+#### Entradas e saídas
 
 | Tag | Endereço | Descrição |
 |---|---|---|
@@ -221,7 +266,7 @@ Cont_D = (Sent_1 + Sent_2) · Libera_D · /Cont_C
 
 A tabela completa de variáveis está no manual. Os endereços são sugestões e podem ser trocados por outros livres no projeto. Se o botão Desliga da sua bancada for NF, troque o contato correspondente no ladder.
 
-### 8.2 Material necessário
+#### 8.2 Material necessário
 
 - CLP Siemens S7-1200 e IHM KTP400 Basic
 - TIA Portal (STEP 7 e WinCC)
@@ -231,7 +276,7 @@ A tabela completa de variáveis está no manual. Os endereços são sugestões e
 
 O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas plataformas.
 
-### 8.3 Como executar
+#### 8.3 Como executar
 
 1. Crie um projeto no TIA Portal e adicione o CLP e a IHM.
 2. Configure os endereços IP na mesma sub-rede.
@@ -240,7 +285,7 @@ O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas platafo
 5. Compile e faça o download.
 6. Teste só com os LEDs das saídas e só depois, com autorização, energize o motor.
 
-### 8.4 Roteiro de testes
+#### 8.4 Roteiro de testes
 
 | # | Ação | Resultado esperado |
 |:-:|---|---|
@@ -251,12 +296,12 @@ O roteiro original da UFABC usa o S7-1500. A lógica é a mesma nas duas platafo
 | 5 | Religar em menos de 5 s após a parada | O Liga é ignorado. |
 | 6 | Emergência | Todos desligam. |
 
-### 8.5 Simulação
+#### 8.5 Simulação
 
 O repositório inclui uma [simulação em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_estrela_triangulo.html) que executa a mesma lógica do ladder, com IHM virtual, rotor animado, contatores, temporizadores e variáveis. Basta abrir o arquivo no navegador, sem instalar nada. Também pode ser publicada com o GitHub Pages.
 
 
-## 9. Questões para o relatório
+### 9. Questões para o relatório
 
 1. Por que a corrente de partida é de 4 a 10 vezes a nominal?
 2. Qual a tensão em cada bobina em estrela, em uma rede de 220 V, e como fica o conjugado de partida?
@@ -265,7 +310,7 @@ O repositório inclui uma [simulação em HTML](https://mitoedson.github.io/Auto
 5. Para que serve o TON03 e como escolher o valor?
 6. Que alternativas existem à partida estrela-triângulo?
 
-## Referências
+### Referências
 
 - Roteiro de Prática de Laboratório de Automação (CLP), UFABC, 6º Trabalho de Laboratório.
 - Manual de sistema do S7-1200 e ajuda do TIA Portal, Siemens.
