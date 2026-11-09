@@ -78,6 +78,14 @@ A apostila é o roteiro oficial do **Laboratório de Automação da UFABC**, usa
 | 5 | Introdução da IHM em problemas práticos reais |
 | 6 | <a href="/experimentos/experimento-06-partida-estrela-triangulo.md">Partida de motor elétrico trifásico</a> |
 | 7 | <a href="/experimentos/experimento-07-integracao-clp-inversor-ihm.md">Integração do CLP, inversor de frequência e IHM</a> |
+| 8 | <a href="/experimentos/experimento-08-abastecimento-agua.md">Abastecimento de água</a> |
+| 9 | <a href="/experimentos/experimento-09-combate-incendio-ccm.md">Combate a incêncio</a> |
+| 10 | <a href="/experimentos/experimento-10-estampagem-pecas-plasticas.md">Estampagem de peças plásticas</a> |
+| 11 | <a href="/experimentos/experimento-11-maquina-dispensadora-bebidas.md.md">Máquina dispensadora de bebidas</a> |
+| 12 | <a href="/experimentos/experimento-12-seletora-pecas.md">Seletora de peças</a> |
+| 13 | <a href="/experimentos/experimento-13-carregamento-vagoes.md">Carregamento de vagões</a> |
+| 14 | <a href="/experimentos/experimento-14-extracao-oleo-gas.md">Extração de óleo e gás</a> |
+
 
 **Sumário técnico da apostila** (para referência rápida):
 - Arquitetura de hardware do CLP S7-1500 (painel, LEDs, display) — p.4–12
