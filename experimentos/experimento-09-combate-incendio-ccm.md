@@ -1,5 +1,4 @@
-# Combate a incêndio com CO2 em sala de CCM (S7-1200 / TIA Portal)
-
+# Experimento 9 - Combate a incêndio com CO2 em sala de CCM
 Lógica em **ladder (LAD)** para um sistema de combate a incêndio por CO2 de uma sala de centro de controle de motores (CCM) de uma plataforma de petróleo, desenvolvida para o **9º Trabalho de Laboratório** de automação (UFABC) com um **CLP Siemens S7-1200** programado no **TIA Portal**.
 
 O repositório reúne:

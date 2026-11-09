@@ -146,6 +146,6 @@ Condição inicial: `LSL2_BAIXO = 1` e os 10 s do timer já decorridos, salvo in
 | Nenhuma bomba liga em AUT | Seletora em posição inválida | Só um entre `SEL_BOMBA_A` e `SEL_BOMBA_B` pode estar em 1 |
 | Manual não responde com caixa cheia | Proteção `/LSH1_ALTO` | Comportamento esperado. Remova o contato se o professor exigir |
 
-## Licença
+## Créditos
 
-MIT.
+Baseado no roteiro do **8º Trabalho de Laboratório** da Universidade Federal do ABC (UFABC). O texto do enunciado original pertence aos seus autores. Este repositório contém a solução, o guia e o simulador desenvolvidos pela equipe.
