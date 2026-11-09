@@ -8,8 +8,8 @@ Lógica ladder para o controle de duas bombas de recalque que levam água de uma
 
 | Recurso | Link |
 |---|---|
-| Simulador interativo | [Abrir simulador](https://claude.ai/artifact/WE2xdPKxNYCQGXp7Gv9yPM) |
-| Manual do usuário (PDF) | [Abrir manual](https://claude.ai/artifact/7qQGpQKxHW3chWYfp37Qpy) |
+| Simulador interativo | [Abrir simulador](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_abastecimento_de_agua.html) |
+| Manual do usuário (PDF) | [Abrir manual](Manual_Experimento8.pdf) |
 
 > Os links acima são privados até serem compartilhados pelo botão *Share* do Claude. Para um acesso público e permanente, hospede o simulador no GitHub Pages e o PDF na pasta do repositório (veja a seção "Publicação").
 
@@ -146,12 +146,6 @@ Condição inicial: `LSL2_BAIXO = 1` e os 10 s do timer já decorridos, salvo in
 | A bomba liga e desliga logo | `ATIVA_NIVEL` sem selo | Confira o contato em paralelo no Rung 2 |
 | Nenhuma bomba liga em AUT | Seletora em posição inválida | Só um entre `SEL_BOMBA_A` e `SEL_BOMBA_B` pode estar em 1 |
 | Manual não responde com caixa cheia | Proteção `/LSH1_ALTO` | Comportamento esperado. Remova o contato se o professor exigir |
-
-## Material complementar
-
-**Guia prático: abastecimento de água**
-([baixar o PDF](Manual_Experimento8.pdf)) · **[Abrir o simulador](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_abastecimento_de_agua.html)**
-
 
 ## Licença
 
