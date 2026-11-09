@@ -1,8 +1,11 @@
 # Experimento 6 — Partida de motor trifásico: chave estrela-triângulo com inversão de sentido
 
-## Enunciado
 
-Os motores elétricos mais comumente empregados no ambiente industrial é o tipo motor de indução trifásico tipo gaiola de esquilo, isso se dá principalmente devido a robustez desses motores que possuem poucas partes moveis, tornando-os muito confiáveis.  Apesar das suas vantagens esses motores possuem característica de grande corrente de partida, pois ao serem conectados diretamente à rede elétrica, absorvem uma corrente de partida na ordem de 4 a 10 vezes maior que a corrente nominal. Para motores de grande potência, as altas correntes, interagindo com a impedância equivalente entre o ponto de fornecimento, na entrada do ambiente industrial (subestação) e o barramento em que o motor está conectado, provocam reduções de tensão (“afundamentos de tensão”), temporárias durante o qual podem ocorrer alguns transtornos, tais como:
+Os motores elétricos mais comumente empregados no ambiente industrial é o tipo motor de indução trifásico tipo gaiola de esquilo, isso se dá principalmente devido a robustez desses motores que possuem poucas partes moveis, tornando-os muito confiáveis.
+
+Apesar das suas vantagens esses motores possuem característica de grande corrente de partida, pois ao serem conectados diretamente à rede elétrica, absorvem uma corrente de partida na ordem de 4 a 10 vezes maior que a corrente nominal. 
+
+Para motores de grande potência, as altas correntes, interagindo com a impedância equivalente entre o ponto de fornecimento, na entrada do ambiente industrial (subestação) e o barramento em que o motor está conectado, provocam reduções de tensão (“afundamentos de tensão”), temporárias durante o qual podem ocorrer alguns transtornos, tais como:
 
 ● Interferência no funcionamento de equipamentos instalados no mesmo sistema, devido à queda de tensão excessiva.
 
