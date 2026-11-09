@@ -7,8 +7,7 @@ O repositório reúne:
 | Material | O que é | Link |
 |---|---|---|
 | Guia em PDF | Passo a passo para replicar o experimento: IO, TIA Portal, ladder, testes e solução de problemas | [`Guia_9_Trabalho_CO2_CCM_S7-1200.pdf`](Guia_9_Trabalho_CO2_CCM_S7-1200.pdf) |
-| Simulador em HTML | Simulação interativa da lógica no navegador, sem precisar de CLP | [`simulador/simulacao_ccm_co2.html`](simulador/simulacao
-_ccm_co2.html) |
+| Simulador em HTML | Simulação interativa da lógica no navegador, sem precisar de CLP | [`simulador/simulacao_ccm_co2.html`](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_ccm_co2.html) |
 
 
 ## Como o sistema funciona
@@ -27,7 +26,7 @@ O simulador reproduz o programa rung a rung, com contatos e bobinas que acendem 
 - **Online (GitHub Pages):** o GitHub não executa HTML dentro da página do repositório. Para ter um link clicável, ative em *Settings, Pages* a publicação a partir da branch principal. O simulador ficará em:
 
   ```text
-https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulador_ccm_co2.html
+https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_ccm_co2.html
   ```
 
   Depois de ativar, substitua o link acima pelo endereço real e adicione-o na tabela do início deste README.
