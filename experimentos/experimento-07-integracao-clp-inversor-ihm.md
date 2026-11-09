@@ -1,6 +1,5 @@
 # Experimento 7 — Integração do CLP, inversor de frequência e IHM
 
-## Enunciado
 
 ![alt text](image-22.png)
 
