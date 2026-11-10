@@ -211,7 +211,9 @@ Nas networks 15 a 18, o contato de EME em série em cada saída é uma segunda b
   3. Rearme: libere EME e desligue PTD. A máquina volta à ETAPA_0, e só parte com um novo acionamento de PTD.
   4. Falha: inicie o ciclo e não acione S1. Após 20 s, `"EMERG"` deve acionar e as saídas desligar.
 
-  ### Recursos
+  
+  
+### Recursos
 
 | Guia em PDF | 
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_maquina-bebidas.html) |

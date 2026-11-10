@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulado – Trabalho 7: estampagem de peças plásticas</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--tx:#17202b;--mu:#5d6b7c;--bd:#cfd6df;--ac:#0a64c8;--on:#16a34a;--of:#c3cad4;--er:#d93f3f;--pc:#c77a10;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0f141a;--pn:#18202a;--tx:#e5eaf1;--mu:#92a1b3;--bd:#2c3745;--ac:#5aa8ff;--on:#37d67a;--of:#374252;--er:#ff7070;--pc:#e0a040;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--pn)}
+h1{font-size:18px;margin:0}h2{font-size:13px;margin:12px 0 6px;color:var(--mu);font-weight:600}h2:first-child{margin-top:0}
+main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;padding:12px;max-width:1100px;margin:auto}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+section{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:12px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.mu{color:var(--mu)}
+button,select{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}button:disabled{opacity:.55;cursor:default}
+.led{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--bd);border-radius:6px}
+.led i{width:10px;height:10px;border-radius:50%;background:var(--of)}.led.on i{background:var(--on);box-shadow:0 0 6px var(--on)}
+.bad{color:var(--er);font-weight:600;min-height:1.4em;margin:6px 0}
+#st{display:flex;flex-wrap:wrap;gap:4px}#st span{padding:2px 7px;border:1px solid var(--bd);border-radius:5px;font-size:12px;color:var(--mu)}#st .a{background:var(--ac);color:#fff;border-color:var(--ac)}
+svg{width:100%;height:auto;display:block}.t{fill:var(--tx);font:11px system-ui}.m{fill:var(--mu);font:10px system-ui}.o{fill:var(--pn);stroke:var(--tx);stroke-width:1.5}
+</style></head><body>
+<header><h1>Trabalho 7 · Estampagem de peças plásticas</h1>
+<div class="row"><label>Velocidade <select id="sp"><option value="1">1×</option><option value="3">3×</option><option value="6">6×</option></select></label><button id="rs">Reiniciar CLP</button></div></header>
+<main>
+<section><h2>Equipamento</h2>
+<svg viewBox="0 0 400 250" role="img" aria-label="Alimentador, estampador e extrator em volta do molde">
+<rect x="100" y="110" width="40" height="62" class="o"/><text x="120" y="104" text-anchor="middle" class="m">Peças</text>
+<rect x="20" y="172" width="60" height="16" class="o"/><text x="50" y="206" text-anchor="middle" class="t">Alimentador</text>
+<line id="r1" x1="80" y1="180" x2="80" y2="180" stroke="var(--tx)" stroke-width="4"/><rect id="h1" x="80" y="174" width="6" height="12" fill="var(--tx)"/>
+<rect x="190" y="14" width="20" height="44" class="o"/><text x="250" y="40" text-anchor="middle" class="t">Estampador</text>
+<line id="r2" x1="200" y1="58" x2="200" y2="58" stroke="var(--tx)" stroke-width="4"/><rect id="h2" x="186" y="58" width="28" height="8" fill="var(--tx)"/>
+<rect x="320" y="172" width="60" height="16" class="o"/><text x="350" y="206" text-anchor="middle" class="t">Extrator</text>
+<line id="r3" x1="320" y1="180" x2="320" y2="180" stroke="var(--tx)" stroke-width="4"/><rect id="h3" x="314" y="174" width="6" height="12" fill="var(--tx)"/>
+<rect x="170" y="170" width="60" height="20" class="o"/><text x="200" y="224" text-anchor="middle" class="m">molde</text>
+<rect id="pc" x="180" y="160" width="40" height="10" rx="2" fill="var(--pc)"/>
+<g id="ar" stroke="var(--ac)" stroke-width="2" opacity="0"><line x1="236" y1="132" x2="262" y2="132"/><line x1="236" y1="144" x2="262" y2="144"/><line x1="236" y1="156" x2="262" y2="156"/></g><text x="270" y="148" class="m" id="art"></text>
+<circle id="c1" cx="92" cy="166" r="5" class="o"/><text x="100" y="164" class="m">S1</text>
+<circle id="c2" cx="170" cy="40" r="5" class="o"/><text x="130" y="43" class="m">S2</text>
+<circle id="c3" cx="306" cy="166" r="5" class="o"/><text x="290" y="162" class="m">S3</text>
+<circle id="c4" cx="244" cy="120" r="5" class="o"/><text x="254" y="118" class="m">FS</text></svg>
+<p class="bad" id="em" role="status"></p>
+<h2>Etapas do ladder</h2><div id="st"></div><p class="mu" id="tm"></p></section>
+<section><h2>Entradas</h2><div class="row" id="in"></div>
+<div class="row"><label><input type="checkbox" id="au" checked> Sensores automáticos</label></div><div class="row" id="ms"></div>
+<h2>Saídas</h2><div class="row" id="out"></div>
+<p class="mu">Reproduz as networks do arquivo .md. EME é NF (acesa = pressionada). Desmarque “Sensores automáticos” para acionar S1, S2, S3 e FS à mão, por exemplo para provocar uma falha de tempo.</p></section>
+</main>
+<script>
+const $=s=>document.querySelector(s),E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e};
+class TON{constructor(p){this.p=p;this.t=0;this.q=0}u(i,d){if(i){this.t=Math.min(this.p,this.t+d);this.q=+(this.t>=this.p)}else{this.t=0;this.q=0}}}
+const I={},O={};
+function btn(par,key,txt,mode,init){const b=E('button','',txt);par.append(b);const nf=mode.includes('n'),tog=mode[0]==='t';
+ const set=v=>{I[key]=nf?(v?0:1):(v?1:0);b.classList.toggle('on',!!v);b.setAttribute('aria-pressed',!!v)};set(init||0);
+ if(tog)b.onclick=()=>set(!b.classList.contains('on'));
+ else{b.onpointerdown=()=>set(1);b.onpointerup=b.onpointerleave=b.onpointercancel=()=>set(0)}return b}
+btn($('#in'),'PTD','PTD (partida)','t');btn($('#in'),'EME','Emergência (EME)','tn');
+const MB=['S1','S2','S3','FS'].map(k=>btn($('#ms'),'m'+k,k+' manual','t'));
+const L={};['EV1','EV2','EV3','EV4'].forEach(k=>{const l=E('span','led','<i></i>'+k);$('#out').append(l);L[k]=l});
+['Repouso','Alim. avança','Alim. recua','Estamp. avança','Prensa 2 s','Estamp. recua','Extrator avança','Sopro de ar','Extrator recua'].forEach((n,i)=>$('#st').append(E('span','',`E${i} ${n}`)));
+const S=Array(9).fill(0),Tp=new TON(2),Tc=new TON(20),P=[0,0,0];let EM=0,first=1,sp=1,pc={in:0,ej:0,sm:0};
+const go=(a,b,c)=>{if(S[a]&&c){S[b]=1;S[a]=0}};
+function scan(d){
+ if(first){first=0;S.fill(0);S[0]=1}
+ Tc.u(!S[0]&&!EM,d);
+ if(!I.EME||Tc.q){EM=1;S.fill(0)}
+ if(EM&&I.EME&&!I.PTD){EM=0;S[0]=1}
+ go(0,1,I.PTD&&I.EME&&!EM&&!I.S1&&!I.S2&&!I.S3);
+ go(1,2,I.S1);go(2,3,!I.S1);go(3,4,I.S2);go(4,5,Tp.q);go(5,6,!I.S2);go(6,7,I.S3);go(7,8,I.FS);go(8,0,!I.S3);
+ Tp.u(S[4],d);
+ const e=I.EME;O.EV1=S[1]&&e;O.EV2=(S[3]||S[4])&&e;O.EV3=(S[6]||S[7])&&e;O.EV4=S[7]&&e;
+}
+function plant(d){
+ [O.EV1,O.EV2,O.EV3].forEach((v,i)=>P[i]=Math.max(0,Math.min(100,P[i]+(v?90:-90)*d)));
+ if(P[0]>=99&&!pc.in){pc.in=1;pc.sm=0}
+ if(P[1]>=99&&pc.in)pc.sm=1;
+ if(O.EV4&&P[2]>=99&&pc.in){pc.ej+=d;if(pc.ej>.6){pc.in=0;pc.ej=0}}else if(!O.EV4)pc.ej=0;
+ const au=$('#au').checked;MB.forEach(b=>b.disabled=au);
+ I.S1=au?+(P[0]>=99):I.mS1;I.S2=au?+(P[1]>=99):I.mS2;I.S3=au?+(P[2]>=99):I.mS3;I.FS=au?+(pc.in&&pc.ej>0):I.mFS;
+}
+function draw(){
+ for(const k in L)L[k].classList.toggle('on',!!O[k]);
+ const x1=80+P[0]*.9,y2=58+P[1]*.92,x3=320-P[2]*.96;
+ $('#r1').setAttribute('x2',x1);$('#h1').setAttribute('x',x1);
+ $('#r2').setAttribute('y2',y2);$('#h2').setAttribute('y',y2);
+ $('#r3').setAttribute('x2',x3);$('#h3').setAttribute('x',x3-6);
+ [['c1','S1'],['c2','S2'],['c3','S3'],['c4','FS']].forEach(([c,k])=>$('#'+c).style.fill=I[k]?'var(--on)':'var(--pn)');
+ const p=$('#pc');p.style.display=pc.in?'':'none';p.style.fill=pc.sm?'var(--on)':'var(--pc)';p.setAttribute('x',180+pc.ej*60);p.setAttribute('opacity',1-pc.ej);
+ $('#ar').setAttribute('opacity',O.EV4?1:0);$('#art').textContent=O.EV4?'EV4':'';
+ [...$('#st').children].forEach((c,i)=>c.classList.toggle('a',!!S[i]));
+ $('#tm').textContent=`T_PRENSA ${Tp.t.toFixed(1)} / 2 s · T_CICLO ${Tc.t.toFixed(1)} / 20 s`;
+ $('#em').textContent=EM?'EMERGÊNCIA / FALHA: libere EME e desligue PTD para rearmar.':'';
+}
+$('#sp').onchange=e=>sp=+e.target.value;
+$('#rs').onclick=()=>{S.fill(0);EM=0;first=1;P.fill(0);pc={in:0,ej:0,sm:0};Tp.u(0,0);Tc.u(0,0)};
+setInterval(()=>{const d=.05*sp;plant(d);scan(d);draw()},50);
+</script></body></html>

@@ -274,4 +274,7 @@ NETWORK 27 – Alimentador de copos (opcional)
   3. Copo retirado no meio do preparo: ponha SC em 0 durante uma etapa. A máquina deve ir à falha.
   4. Rearme: libere EME, solte START e confirme o retorno à ETAPA_0.
 
-  
+### Recursos
+
+| Guia em PDF | 
+| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_maquina-bebidas.html) |

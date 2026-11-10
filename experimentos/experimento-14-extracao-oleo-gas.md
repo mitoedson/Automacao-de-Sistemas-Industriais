@@ -31,3 +31,10 @@ O tanque SD-501 possui um medidor de nível que fornece um sinal de 4 a 20mA a u
     3.4. Caso LTSD501_HH estiver acionado, todas as bombas são ligadas em automático 
 
     
+
+
+
+    ### Recursos
+
+| Guia em PDF | 
+| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_extracao.html) |
