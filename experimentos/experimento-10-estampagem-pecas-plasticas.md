@@ -216,4 +216,4 @@ Nas networks 15 a 18, o contato de EME em série em cada saída é uma segunda b
 ### Recursos
 
 | Guia em PDF | 
-| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_maquina-bebidas.html) |
+| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_estampagem-pecas.html) |
