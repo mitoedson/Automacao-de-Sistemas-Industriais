@@ -473,5 +473,9 @@ NETWORK 37 – Aviso de lotado
   
   ### Recursos
 
-| [Guia em PDF](experimento-10-.pdf) | 
-| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_.html) |
+| [Guia em PDF](experimento-4a-.pdf) | 
+| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao-silos.html) |
+
+
+| [Guia em PDF](experimento-4b-.pdf) | 
+| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao-estacionamento.html) |

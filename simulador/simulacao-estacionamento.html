@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Experimento 4.2 — Controle de acesso de estacionamento</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--ink:#16202b;--mut:#5d6b7a;--ln:#d3dae2;--on:#15803d;--off:#c3ccd6;--ac:#0e7490;--bad:#dc2626;--st:#8a96a3;--pc:#c77a10}
+@media(prefers-color-scheme:dark){:root{--bg:#0e141b;--pn:#16202a;--ink:#e4eaf0;--mut:#8d9bab;--ln:#27333f;--on:#22c55e;--off:#33414f;--ac:#38bdf8;--st:#64748b;--pc:#e0a040}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pn);border-bottom:1px solid var(--ln)}
+h1{font-size:17px;margin:0}header p{margin:0;color:var(--mut);font-size:12px}
+.tools{display:flex;gap:6px}
+main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr);gap:14px;padding:14px;max-width:1240px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+aside{display:grid;gap:14px;align-content:start}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:12px 14px}
+h2{font-size:13px;font-weight:600;margin:0 0 6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln);flex-wrap:wrap}h2+.row{border-top:0}
+code{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--mut)}
+button,select{font:inherit;border:1px solid var(--ln);background:var(--pn);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer;touch-action:manipulation}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);border-color:var(--ac);color:var(--pn)}
+.led{width:13px;height:13px;border-radius:50%;background:var(--off);flex:none}.led.on{background:var(--on);box-shadow:0 0 7px var(--on)}.led.al.on{background:var(--bad);box-shadow:0 0 7px var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}td{padding:3px 4px;border-top:1px solid var(--ln)}td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--ink);font:12px system-ui,sans-serif}svg .m{fill:var(--mut);font-size:11px}
+.lamp{fill:var(--off);stroke:var(--st)}.lamp.g{fill:var(--on)}.lamp.r{fill:var(--bad)}
+.note{font-size:12px;color:var(--mut);margin:8px 0 0}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><div><h1>Experimento 4.2 — Controle de acesso de estacionamento</h1><p>Ladder em varredura de 50 ms (tempo simulado). 100 vagas, espera máxima de 20 s, fila longa com 3 carros ou mais.</p></div>
+<div class="tools"><select id="sp" aria-label="Velocidade"><option value="1">1×</option><option value="2">2×</option><option value="5">5×</option><option value="10">10×</option></select><button id="ps">Pausar</button><button id="rs">Reiniciar</button></div></header>
+<main>
+<section class="card">
+<svg viewBox="0 0 520 330" role="img" aria-label="Via de entrada, via de saída, cancela e contador de veículos">
+<rect x="10" y="60" width="290" height="46" fill="var(--bg)" stroke="var(--st)"/><text x="16" y="54" class="m">ENTRADA</text>
+<rect x="10" y="200" width="290" height="46" fill="var(--bg)" stroke="var(--st)"/><text x="16" y="266" class="m">SAÍDA</text>
+<path d="M300 83L340 143M300 223L340 163" stroke="var(--st)" stroke-width="2" fill="none"/><rect x="340" y="132" width="120" height="42" fill="var(--bg)" stroke="var(--st)"/><text x="400" y="190" text-anchor="middle" class="m">via comum</text>
+<line x1="340" y1="153" x2="340" y2="153" stroke="none"/>
+<g id="cn" transform="rotate(0 342 153)"><rect x="342" y="148" width="80" height="9" fill="var(--pc)" stroke="var(--ink)"/></g><circle cx="342" cy="153" r="7" fill="var(--ink)"/>
+<g id="qe"></g><g id="qs"></g>
+<rect x="250" y="22" width="26" height="52" rx="4" fill="var(--pn)" stroke="var(--ink)"/><circle id="ev" class="lamp" cx="263" cy="36" r="7"/><circle id="em1" class="lamp" cx="263" cy="60" r="7"/><text x="224" y="42" class="m">Sem. ent.</text>
+<rect x="250" y="262" width="26" height="52" rx="4" fill="var(--pn)" stroke="var(--ink)"/><circle id="sv" class="lamp" cx="263" cy="276" r="7"/><circle id="sm" class="lamp" cx="263" cy="300" r="7"/><text x="226" y="282" class="m">Sem. saí.</text>
+<text x="420" y="60" text-anchor="middle" font-size="28" font-weight="700" id="cv">0</text><text x="420" y="78" text-anchor="middle" class="m">veículos / 100 vagas</text>
+<rect id="lt" x="370" y="92" width="100" height="26" rx="4" fill="var(--off)" stroke="var(--st)"/><text id="ltt" x="420" y="110" text-anchor="middle" font-weight="700">LOTADO</text>
+<text x="400" y="230" text-anchor="middle" class="m" id="stt"></text>
+</svg>
+<p class="note">Cada carro entra na fila e o CLP escolhe o lado: primeiro por tempo de espera (mais de 20 s), depois por fila longa (3 carros ou mais) e por fim alternando. Com o estacionamento lotado a entrada não é atendida, e com zero carros a saída não é atendida. Em emergência, os semáforos ficam vermelhos e a cancela fica levantada.</p>
+</section>
+<aside>
+<div class="card"><h2>Veículos</h2>
+<div class="row"><button id="ae">Chega carro (entrada)</button><button id="as">Chega carro (saída)</button><button id="ef">Esvaziar filas</button></div>
+<div class="row"><span>Motoristas</span><button data-t="aut" data-on="Automáticos" data-off="Manuais" class="on">Automáticos</button></div>
+<div class="row"><span>Contador (forçar)</span><span><button data-v="0">0</button> <button data-v="50">50</button> <button data-v="99">99</button> <button data-v="100">100</button></span></div></div>
+<div class="card"><h2>Entradas</h2>
+<div class="row"><span><code>%I0.0</code> SE_ENT</span><i class="led" id="i0"></i></div>
+<div class="row"><span><code>%I0.1</code> SE_SAI</span><i class="led" id="i1"></i></div>
+<div class="row"><span><code>%I0.2</code> FILA_ENT</span><i class="led" id="i2"></i></div>
+<div class="row"><span><code>%I0.3</code> FILA_SAI</span><i class="led" id="i3"></i></div>
+<div class="row"><span><code>%I0.4</code> TIQ_RET (manual)</span><button data-p="tr">Pressionar</button></div>
+<div class="row"><span><code>%I0.5</code> TIQ_INS (manual)</span><button data-p="ti">Pressionar</button></div>
+<div class="row"><span><code>%I0.6</code> SPASS (manual)</span><button data-t="pass" data-on="Sob a cancela (1)" data-off="Livre (0)">Livre (0)</button></div>
+<div class="row"><span><code>%I0.7</code> RESET_CONT</span><button data-p="rc">Pressionar</button></div>
+<div class="row"><span><code>%I1.0</code> EME (NF)</span><button data-t="eme" data-on="Pressionada (0)" data-off="Solta (1)">Solta (1)</button></div></div>
+<div class="card"><h2>Saídas</h2>
+<div class="row"><span><code>%Q0.0</code> SEM_ENT_VD</span><i class="led" id="q0"></i></div>
+<div class="row"><span><code>%Q0.1</code> SEM_ENT_VM</span><i class="led al" id="q1"></i></div>
+<div class="row"><span><code>%Q0.2</code> SEM_SAI_VD</span><i class="led" id="q2"></i></div>
+<div class="row"><span><code>%Q0.3</code> SEM_SAI_VM</span><i class="led al" id="q3"></i></div>
+<div class="row"><span><code>%Q0.4</code> CANCELA</span><i class="led" id="q4"></i></div>
+<div class="row"><span><code>%Q0.5</code> LOTADO</span><i class="led al" id="q5"></i></div></div>
+<div class="card"><h2>Variáveis</h2><table id="tg"></table></div>
+</aside></main>
+<script>
+const $=s=>document.querySelector(s),I={aut:1};
+class TON{constructor(p){this.pt=p;this.et=0;this.q=0}run(i,d){if(i){this.et=Math.min(this.pt,this.et+d);this.q=this.et>=this.pt?1:0}else{this.et=0;this.q=0}}}
+const lab=b=>{if(b.dataset.on)b.textContent=I[b.dataset.t]?b.dataset.on:b.dataset.off};
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{I[b.dataset.t]^=1;b.classList.toggle('on',!!I[b.dataset.t]);lab(b)});
+document.querySelectorAll('[data-p]').forEach(b=>{const k=b.dataset.p,up=()=>setTimeout(()=>{I[k]=0;b.classList.remove('on')},120);b.onpointerdown=e=>{e.preventDefault();I[k]=1;b.classList.add('on')};b.onpointerup=up;b.onpointerleave=()=>{if(I[k])up()}});
+let spd=1,run=1;
+$('#sp').onchange=e=>spd=+e.target.value;$('#ps').onclick=e=>{run^=1;e.target.textContent=run?'Pausar':'Continuar'};$('#rs').onclick=()=>location.reload();
+const O=(i,v)=>$('#'+i).classList.toggle('on',!!v);
+function tbl(el,rows){$(el).innerHTML=rows.map((r,i)=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td><td id="${el.slice(1)}${i}"></td></tr>`).join('')}
+function upd(el,rows){rows.forEach((r,i)=>$(el+i).textContent=r[2]())}
+
+/* ---- Programa ladder (Experimento 4, exercício 2) ---- */
+let qe=0,qs=0,S=[1,0,0,0,0,0],EM=0,ULT=0,CV=0,spP=0,ang=0,GE=0,GS=0,REQe=0,REQs=0,pf=0,aTR=0,aTI=0,aP=0,t1=0,t3=0,t2=0;
+let SE_E=0,SE_S=0,FL_E=0,FL_S=0,Y=[0,0,0,0,0,0];
+const Te=new TON(20),Ts=new TON(20),Tq=new TON(30),Tp=new TON(20),Tf=new TON(3);
+const go=(a,b,c)=>{if(S[a]&&c){S[b]=1;S[a]=0}};
+const T=[['%M10.0–5','ETAPA (0 livre … 5 fechando)',()=>S.indexOf(1)],['DB','C_VEIC (CV / PV)',()=>CV+' / 100'],['%M10.7','ULT_ENT',()=>ULT],['%M11.0','REQ_ENT',()=>REQe],['%M11.1','REQ_SAI',()=>REQs],['%M12.0','GO_ENT',()=>GE],['%M12.1','GO_SAI',()=>GS],['DB','T_ESP_ENT',()=>Te.et.toFixed(1)+' / 20 s'],['DB','T_ESP_SAI',()=>Ts.et.toFixed(1)+' / 20 s'],['DB','T_TIQ',()=>Tq.et.toFixed(1)+' / 30 s'],['DB','T_PASS',()=>Tp.et.toFixed(1)+' / 20 s'],['DB','T_FECHA',()=>Tf.et.toFixed(1)+' / 3 s'],['—','Fila entrada / saída',()=>qe+' / '+qs]];
+tbl('#tg',T);
+$('#ae').onclick=()=>qe=Math.min(8,qe+1);$('#as').onclick=()=>qs=Math.min(8,qs+1);$('#ef').onclick=()=>{qe=0;qs=0};
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>CV=+b.dataset.v);
+function scan(dt){
+  // motoristas automáticos
+  if(I.aut){t1=S[1]?t1+dt:0;aTR=(S[1]&&t1>1.5)?1:0;t3=S[3]?t3+dt:0;aTI=(S[3]&&t3>1.5)?1:0;t2=(S[2]||S[4])?t2+dt:0;aP=((S[2]||S[4])&&t2>1&&t2<3)?1:0}else{aTR=aTI=aP=0;t1=t3=t2=0}
+  SE_E=qe>0?1:0;SE_S=qs>0?1:0;FL_E=qe>=3?1:0;FL_S=qs>=3?1:0;
+  const TR=(I.tr||aTR)?1:0,TI=(I.ti||aTI)?1:0,SP=(I.pass||aP)?1:0,EME=I.eme?0:1;
+  if(!EME){EM=1;S=[0,0,0,0,0,0]}                                        // N2: emergência
+  if(EM&&EME){EM=0;S[0]=1}                                              // N3: rearme
+  const QU=CV>=100,QD=CV<=0;
+  REQe=(SE_E&&!QU&&EME)?1:0;REQs=(SE_S&&!QD&&EME)?1:0;                  // N4, N5
+  Te.run(REQe&&!S[1]&&!S[2],dt);Ts.run(REQs&&!S[3]&&!S[4],dt);           // N6, N7
+  const FE=FL_E&&REQe,FS=FL_S&&REQs,Ue=Te.q,Us=Ts.q;                    // N8, N9
+  const P1E=Ue&&!Us,P1S=Us&&!Ue,P2E=FE&&!FS,P2S=FS&&!FE,AE=!REQs||!ULT,AS=!REQe||ULT; // N10–N15
+  GE=(REQe&&(P1E||(!P1E&&!P1S&&P2E)||(!P1E&&!P1S&&!P2E&&!P2S&&AE)))?1:0; // N16
+  GS=(REQs&&(P1S||(!P1E&&!P1S&&P2S)||(!P1E&&!P1S&&!P2E&&!P2S&&AS)))?1:0; // N17
+  pf=(spP&&!SP)?1:0;spP=SP;                                             // N18: veículo saiu de sob a cancela
+  if(pf&&S[2])qe=Math.max(0,qe-1);if(pf&&S[4])qs=Math.max(0,qs-1);      // processo: o carro foi embora
+  if(I.rc)CV=0;else{if(S[2]&&pf)CV++;if(S[4]&&pf)CV--}                   // N19: contador (antes das transições)
+  Tq.run(S[1]||S[3],dt);Tp.run(S[2]||S[4],dt);Tf.run(S[5],dt);          // N20–N22
+  go(0,1,GE);go(0,3,GS);                                                // N23, N24
+  go(1,2,TR);go(1,0,Tq.q);                                              // N25, N26
+  if(S[2]&&(pf||Tp.q)){S[5]=1;S[2]=0;ULT=1}                             // N27
+  go(3,4,TI);go(3,0,Tq.q);                                              // N28, N29
+  if(S[4]&&(pf||Tp.q)){S[5]=1;S[4]=0;ULT=0}                             // N30
+  go(5,0,Tf.q);                                                         // N31
+  Y=[S[1],!S[1],S[3],!S[3],(S[2]||S[4]||EM),CV>=100].map(v=>v?1:0);     // N32–N37
+}
+function fila(id,n,y){$(id).innerHTML=Array.from({length:n},(_,i)=>`<rect x="${14+i*30}" y="${y}" width="24" height="16" rx="3" fill="var(--pc)" stroke="var(--ink)"/>`).join('')}
+function draw(){
+  ang+=((Y[4]?-70:0)-ang)*.25;$('#cn').setAttribute('transform',`rotate(${ang} 342 153)`);
+  $('#cv').textContent=CV;fila('#qe',qe,74);fila('#qs',qs,214);
+  const lp=(id,c,v)=>{const e=$('#'+id);e.setAttribute('class','lamp'+(v?' '+c:''))};
+  lp('ev','g',Y[0]);lp('em1','r',Y[1]);lp('sv','g',Y[2]);lp('sm','r',Y[3]);
+  $('#lt').setAttribute('fill',Y[5]?'var(--bad)':'var(--off)');
+  Y.forEach((v,i)=>O('q'+i,v));O('i0',SE_E);O('i1',SE_S);O('i2',FL_E);O('i3',FL_S);
+  $('#stt').textContent=EM?'EMERGÊNCIA: libere o EME':['via livre','entrada: aguarda tíquete','entrada: cancela levantada','saída: aguarda tíquete','saída: cancela levantada','cancela fechando'][S.indexOf(1)]||'';
+  upd('#tg',T);
+}
+setInterval(()=>{if(!run)return;for(let k=0;k<spd;k++)scan(.05);draw()},50);draw();
+</script></body></html>

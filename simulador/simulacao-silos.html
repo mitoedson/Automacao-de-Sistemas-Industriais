@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Experimento 4.1 — Carregamento de silos</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--ink:#16202b;--mut:#5d6b7a;--ln:#d3dae2;--on:#15803d;--off:#c3ccd6;--ac:#0e7490;--bad:#dc2626;--w:#38a3c7;--st:#8a96a3;--pc:#c77a10}
+@media(prefers-color-scheme:dark){:root{--bg:#0e141b;--pn:#16202a;--ink:#e4eaf0;--mut:#8d9bab;--ln:#27333f;--on:#22c55e;--off:#33414f;--ac:#38bdf8;--w:#0e7490;--st:#64748b;--pc:#e0a040}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pn);border-bottom:1px solid var(--ln)}
+h1{font-size:17px;margin:0}header p{margin:0;color:var(--mut);font-size:12px}
+.tools{display:flex;gap:6px}
+main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr);gap:14px;padding:14px;max-width:1240px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+aside{display:grid;gap:14px;align-content:start}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:12px 14px}
+h2{font-size:13px;font-weight:600;margin:0 0 6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln)}h2+.row{border-top:0}
+code{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--mut)}
+button,select{font:inherit;border:1px solid var(--ln);background:var(--pn);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer;touch-action:manipulation}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);border-color:var(--ac);color:var(--pn)}
+.led{width:13px;height:13px;border-radius:50%;background:var(--off);flex:none}.led.on{background:var(--on);box-shadow:0 0 7px var(--on)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}td{padding:3px 4px;border-top:1px solid var(--ln)}td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--ink);font:12px system-ui,sans-serif}svg .m{fill:var(--mut);font-size:11px}
+input[type=range]{width:110px}
+.note{font-size:12px;color:var(--mut);margin:8px 0 0}
+@keyframes dsh{to{stroke-dashoffset:-32}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><div><h1>Experimento 4.1 — Carregamento de silos</h1><p>Ladder em varredura de 50 ms (tempo simulado). Detectores de mínimo: 1 = silo vazio; de máximo: 1 = silo cheio.</p></div>
+<div class="tools"><select id="sp" aria-label="Velocidade"><option value="1">1×</option><option value="2">2×</option><option value="5">5×</option><option value="10">10×</option></select><button id="ps">Pausar</button><button id="rs">Reiniciar</button></div></header>
+<main>
+<section class="card">
+<svg viewBox="0 0 520 360" role="img" aria-label="Silo de origem, caixa desviadora e dois silos de destino">
+<rect x="210" y="20" width="100" height="90" fill="none" stroke="var(--ink)" stroke-width="2.5"/><rect id="f1" x="212" y="108" width="96" height="0" fill="var(--pc)"/><text x="260" y="14" text-anchor="middle">S1</text>
+<circle id="d1" cx="260" cy="122" r="8" fill="var(--off)" stroke="var(--ink)" stroke-width="2"/><text x="276" y="126" class="m">D1</text>
+<line id="dv" x1="260" y1="140" x2="200" y2="190" stroke="var(--ac)" stroke-width="6" stroke-linecap="round"/><text x="278" y="156" class="m">D2 (caixa)</text>
+<line x1="60" y1="214" x2="230" y2="214" stroke="var(--st)" stroke-width="10"/><line id="b1" x1="60" y1="214" x2="230" y2="214" stroke="var(--ac)" stroke-width="3" stroke-dasharray="6 10" opacity="0"/><text x="145" y="204" text-anchor="middle" class="m">correia M1</text>
+<line x1="290" y1="214" x2="460" y2="214" stroke="var(--st)" stroke-width="10"/><line id="b2" x1="290" y1="214" x2="460" y2="214" stroke="var(--ac)" stroke-width="3" stroke-dasharray="6 10" opacity="0"/><text x="375" y="204" text-anchor="middle" class="m">correia M2</text>
+<rect x="30" y="234" width="100" height="100" fill="none" stroke="var(--ink)" stroke-width="2.5"/><rect id="f2" x="32" y="332" width="96" height="0" fill="var(--pc)"/><text x="80" y="352" text-anchor="middle">S2</text>
+<rect x="390" y="234" width="100" height="100" fill="none" stroke="var(--ink)" stroke-width="2.5"/><rect id="f3" x="392" y="332" width="96" height="0" fill="var(--pc)"/><text x="440" y="352" text-anchor="middle">S3</text>
+<line x1="30" x2="130" y1="320" y2="320" stroke="var(--bad)" stroke-dasharray="3 3"/><line x1="30" x2="130" y1="244" y2="244" stroke="var(--on)" stroke-dasharray="3 3"/>
+<line x1="390" x2="490" y1="320" y2="320" stroke="var(--bad)" stroke-dasharray="3 3"/><line x1="390" x2="490" y1="244" y2="244" stroke="var(--on)" stroke-dasharray="3 3"/>
+<text x="200" y="300" text-anchor="middle" class="m" id="sm"></text>
+</svg>
+<p class="note">Linhas pontilhadas dos silos: vermelha = nível mínimo (15 %), verde = nível máximo (90 %). O silo de destino é escolhido quando ele esvazia. O damper D1 só abre com a caixa posicionada (CS1 para S2, CS2 para S3). Em emergência, o sistema desliga e a carga é cancelada.</p>
+</section>
+<aside>
+<div class="card"><h2>Entradas</h2>
+<div class="row"><span><code>%I0.0</code> LIGA</span><button data-p="lg">Pressionar</button></div>
+<div class="row"><span><code>%I0.1</code> DESLIGA (NF)</span><button data-p="ds">Pressionar</button></div>
+<div class="row"><span><code>%I1.1</code> EME (NF)</span><button data-t="eme" data-on="Pressionada (0)" data-off="Solta (1)">Solta (1)</button></div>
+<div class="row"><label for="c2">Consumo de S2</label><span><input type="range" id="c2" min="0" max="6" step=".5" value="2"> <output id="o2">2,0 %/s</output></span></div>
+<div class="row"><label for="c3">Consumo de S3</label><span><input type="range" id="c3" min="0" max="6" step=".5" value="2"> <output id="o3">2,0 %/s</output></span></div>
+<div class="row"><span>Silo de origem S1</span><button id="rf">Reabastecer</button></div>
+</div>
+<div class="card"><h2>Sensores (do processo)</h2><table id="ts"></table></div>
+<div class="card"><h2>Saídas</h2>
+<div class="row"><span><code>%Q0.0</code> D1</span><i class="led" id="q0"></i></div>
+<div class="row"><span><code>%Q0.1</code> D2 (0 = S2, 1 = S3)</span><i class="led" id="q1"></i></div>
+<div class="row"><span><code>%Q0.2</code> M1</span><i class="led" id="q2"></i></div>
+<div class="row"><span><code>%Q0.3</code> M2</span><i class="led" id="q3"></i></div></div>
+<div class="card"><h2>Variáveis</h2><table id="tg"></table></div>
+</aside></main>
+<script>
+const $=s=>document.querySelector(s),I={};
+const lab=b=>{if(b.dataset.on)b.textContent=I[b.dataset.t]?b.dataset.on:b.dataset.off};
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{I[b.dataset.t]^=1;b.classList.toggle('on',!!I[b.dataset.t]);lab(b)});
+document.querySelectorAll('[data-p]').forEach(b=>{const k=b.dataset.p,up=()=>setTimeout(()=>{I[k]=0;b.classList.remove('on')},120);b.onpointerdown=e=>{e.preventDefault();I[k]=1;b.classList.add('on')};b.onpointerup=up;b.onpointerleave=()=>{if(I[k])up()}});
+let spd=1,run=1;
+$('#sp').onchange=e=>spd=+e.target.value;$('#ps').onclick=e=>{run^=1;e.target.textContent=run?'Pausar':'Continuar'};$('#rs').onclick=()=>location.reload();
+const O=(i,v)=>$('#'+i).classList.toggle('on',!!v),S=(i,a,v)=>$('#'+i).setAttribute(a,v);
+function tbl(el,rows){$(el).innerHTML=rows.map((r,i)=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td><td id="${el.slice(1)}${i}"></td></tr>`).join('')}
+function upd(el,rows){rows.forEach((r,i)=>$(el+i).textContent=r[2]())}
+
+/* ---- Programa ladder (Experimento 4, exercício 1) ---- */
+let L1=100,L2=40,L3=40,pos=0,c2=2,c3=2;let SIST=0,DEST=0,CARGA=0,D1=0,D2=0,M1=0,M2=0;
+let S1m=0,S2m=0,S2x=0,S3m=0,S3x=0,CS1=1,CS2=0;
+const TS=[['%I0.2','S1_MIN (origem vazia)',()=>S1m],['%I0.3','S2_MIN',()=>S2m],['%I0.4','S2_MAX',()=>S2x],['%I0.5','S3_MIN',()=>S3m],['%I0.6','S3_MAX',()=>S3x],['%I0.7','CS1 (caixa em S2)',()=>CS1],['%I1.0','CS2 (caixa em S3)',()=>CS2]];
+const T=[['%M10.0','SIST',()=>SIST],['%M10.1','DEST (0 = S2, 1 = S3)',()=>DEST],['%M10.2','CARGA',()=>CARGA],['—','Nível S1 / S2 / S3',()=>L1.toFixed(0)+' / '+L2.toFixed(0)+' / '+L3.toFixed(0)+' %']];
+tbl('#ts',TS);tbl('#tg',T);
+$('#c2').oninput=e=>{c2=+e.target.value;$('#o2').textContent=c2.toFixed(1).replace('.',',')+' %/s'};
+$('#c3').oninput=e=>{c3=+e.target.value;$('#o3').textContent=c3.toFixed(1).replace('.',',')+' %/s'};
+$('#rf').onclick=()=>L1=100;
+function scan(dt){
+  // processo
+  const alvo=D2?100:0;pos+=Math.sign(alvo-pos)*Math.min(Math.abs(alvo-pos),80*dt);
+  CS1=pos<=1?1:0;CS2=pos>=99?1:0;
+  if(D1){L1=Math.max(0,L1-3*dt);const f=12*dt;if(CS1)L2=Math.min(100,L2+f);if(CS2)L3=Math.min(100,L3+f)}
+  L2=Math.max(0,L2-c2*dt);L3=Math.max(0,L3-c3*dt);
+  S1m=L1<=10?1:0;S2m=L2<=15?1:0;S2x=L2>=90?1:0;S3m=L3<=15?1:0;S3x=L3>=90?1:0;
+  // ladder
+  const LG=I.lg?1:0,DS=I.ds?0:1,EM=I.eme?0:1;
+  SIST=((LG||SIST)&&DS&&EM)?1:0;                                        // N1
+  if(!CARGA&&S3m)DEST=1;                                                // N2
+  if(!CARGA&&S2m)DEST=0;                                                // N3 (S2 tem prioridade)
+  if(SIST&&!CARGA&&!S1m&&(S2m||S3m))CARGA=1;                            // N4
+  if((!DEST&&S2x)||(DEST&&S3x)||S1m||!SIST)CARGA=0;                     // N5
+  D2=(DEST&&SIST)?1:0;                                                  // N6
+  D1=(CARGA&&SIST&&((DEST&&CS2)||(!DEST&&CS1)))?1:0;                    // N7
+  M1=SIST;M2=SIST;                                                      // N8, N9
+}
+function draw(){
+  S('f1','y',108-L1*.88);S('f1','height',L1*.88);S('f2','y',332-L2);S('f2','height',L2);S('f3','y',332-L3);S('f3','height',L3);
+  const tx=200+pos*1.2;S('dv','x2',tx);S('d1','fill',D1?'var(--on)':'var(--off)');
+  S('b1','opacity',M1?1:0);S('b2','opacity',M2?1:0);
+  S('b1','style','animation:dsh .8s linear infinite');S('b2','style','animation:dsh .8s linear infinite');
+  O('q0',D1);O('q1',D2);O('q2',M1);O('q3',M2);
+  $('#sm').textContent=!SIST?'sistema desligado':CARGA?'carregando '+(DEST?'S3':'S2'):'aguardando silo vazio';
+  upd('#ts',TS);upd('#tg',T);
+}
+setInterval(()=>{if(!run)return;for(let k=0;k<spd;k++)scan(.05);draw()},50);draw();
+</script></body></html>
