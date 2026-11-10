@@ -361,4 +361,352 @@ EME em 0 desliga em qualquer modo. Em automático, ao soltar, a bomba parte apó
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_bomba.html) |
 
 
-### 1.2. 
+### 1.2.  Alimentador de peças com magazine
+
+
+### 1.2.1. Objetivos
+
+- Transformar um problema prático real em uma solução de automação baseada em CLP.
+- Consolidar as instruções do tipo relé (contatos, bobinas, `SET`/`RESET`).
+- Utilizar **temporizadores** (`TON`) e **contadores** (`CTU`).
+- Tratar alarmes, intertravamentos e contatos NA × NF.
+
+### 1.2.2. Pré-requisitos
+
+Experimentos 1 e 2 e o exercício 1 do Experimento 3. Instruções `TON` (parâmetros `IN`, `PT`, `Q` e `ET`) e `CTU` (parâmetros `CU`, `R`, `PV`, `Q` e `CV`).
+
+
+### 1.2.3. Problema — Alimentador de peças com magazine
+
+Um sistema para alimentação de peças a partir de um magazine (depósito vertical) deve funcionar da seguinte forma:
+
+a) O cilindro (S1) encontra-se inicialmente recuado e o sensor de peça no magazine indica a presença de peça.
+
+b) Uma vez verificadas as condições iniciais, e pressionado o botão de início de ciclo (E1), o cilindro (S1) avança, empurrando a peça, até que o sensor de final de curso (E2) seja acionado, iniciando o recuo do cilindro. Uma vez recuado, o sistema volta à condição inicial.
+
+c) Se E1 for pressionado e não houver peça no magazine, um alarme sonoro (S2) deve ser ativado enquanto E1 estiver pressionado.
+
+d) Se, a partir do acionamento de E1 (com peça), o cilindro levar mais de 10 segundos para alcançar o fim de curso, um alarme (S3) deve ser acionado.
+
+e) Cada vez que o cilindro alcança o fim de curso, um contador deve ser incrementado. Após 10 peças, um alarme deve ser acionado para que o operador retire o cesto de peças e zere o contador. Enquanto o contador não for zerado, o ciclo da máquina deve ser bloqueado.
+
+Pede-se:
+
+1. O programa em linguagem ladder que implementa a lógica descrita.
+2. Uma tabela com todos os endereços utilizados com suas descrições (inclusive TMR e CNT).
+3. Devido a um problema técnico, o sensor de peça foi substituído por um do tipo NF (normalmente fechado). Refaça o item 1 usando o novo sensor.
+
+
+### 1.2.4. Descrição do processo
+
+Um cilindro (S1) empurra uma peça de um magazine vertical. O cilindro começa recuado. Com o botão de início (E1) pressionado e peça no magazine, ele avança até o fim de curso (E2) e recua, voltando à condição inicial.
+
+- Se E1 for pressionado e não houver peça, o alarme sonoro S2 toca enquanto E1 estiver pressionado.
+- Se o cilindro levar mais de 10 s para chegar ao fim de curso, ele recua e o alarme S3 é acionado.
+- A cada fim de curso, um contador é incrementado. Ao chegar a 10 peças, o alarme S4 é acionado para o operador retirar o cesto e zerar o contador. Enquanto o contador não for zerado, o ciclo fica bloqueado.
+- No item c do enunciado, o sensor E4 é trocado por um do tipo NF. Só a network 2 muda.
+
+| Situação | Comportamento |
+|---|---|
+| E1 com peça, cilindro recuado, sem alarmes | O cilindro avança (S1 = 1) |
+| E2 acionado | O cilindro recua e o contador sobe |
+| E1 sem peça | S2 soa enquanto E1 estiver pressionado |
+| Avanço com mais de 10 s | S3 aciona, o cilindro recua e o ciclo é bloqueado até E3 |
+| 10 peças contadas | S4 aciona e o ciclo é bloqueado até E3 |
+| E3 | Zera o contador e reconhece o alarme S3 |
+| EME | Zera as etapas, o cilindro recua e o ciclo é bloqueado |
+| Rearme | Soltar EME e soltar E1 |
+
+**Hipóteses adotadas**
+
+- O enunciado cita E3 e E4 de forma inconsistente. Segue-se a tabela: E3 é o botão "operador retirou peças" (zera o contador) e E4 é o sensor de peça no magazine.
+- O enunciado não numera os alarmes de tempo e de cesto cheio. Foram adotados S3 (tempo excedido) e S4 (cesto cheio).
+- O botão E3 também reconhece o alarme de tempo excedido (S3).
+- O início do ciclo exige uma nova pressão de E1 (borda de subida), para um botão mantido apertado não repetir o ciclo.
+- S1 energizada avança o cilindro; desenergizada, ele recua (válvula de simples solenoide com retorno por mola).
+- E2 está em 1 quando o cilindro está avançado. EME é normalmente fechado (1 = normal, 0 = pressionado).
+
+### 1.2.5. Entradas
+
+| Endereço | TAG | Descrição |
+|---|---|---|
+| %I0.0 | E1_START | Botão de início de ciclo (NA, não retentivo) |
+| %I0.1 | E2_FIM_CURSO | Fim de curso do cilindro (avançado) |
+| %I0.2 | E3_RESET | Botão: operador retirou as peças (zera contador e reconhece alarme de tempo) |
+| %I0.3 | E4_PECA | Sensor de peça no magazine (NA: 1 = há peça. No item c, NF: 0 = há peça) |
+| %I0.4 | EME | Botão de emergência (NF) |
+
+### 1.2.6. Saídas
+
+| Endereço | TAG | Descrição |
+|---|---|---|
+| %Q0.0 | S1_CILINDRO | Avanço do cilindro |
+| %Q0.1 | S2_ALM_SEM_PECA | Alarme sonoro: sem peça |
+| %Q0.2 | S3_ALM_TEMPO | Alarme: cilindro demorou mais de 10 s |
+| %Q0.3 | S4_ALM_CESTO | Alarme: 10 peças, retirar o cesto |
+
+### 1.2.7. Outros recursos
+
+| Recurso | TAG | Descrição |
+|---|---|---|
+| %M10.0 a %M10.2 | ETAPA_0 a ETAPA_2 | Repouso, cilindro avançando, cilindro recuando |
+| %M10.3 | EMERG | Emergência memorizada |
+| %M10.4 | PECA | Há peça no magazine (vem de E4) |
+| %M10.5 | ALM_TEMPO | Alarme de tempo excedido memorizado |
+| %M10.6 | E1_PULSO | Pulso de uma varredura na pressão de E1 |
+| %M11.0 | M_E1_ME | Memória de borda de E1 |
+| DB "C_PECAS" | C_PECAS | CTU, PV = 10 (peças) |
+| DB "T_AVANCO" | T_AVANCO | TON, PT = T#10s |
+| FirstScan | FirstScan | Bit de primeiro ciclo da memória de sistema |
+
+### 1.2.8. Configuração no TIA Portal
+
+1. Nas propriedades da CPU, em *Geral → Memória de sistema e de clock*, habilite a memória de sistema (por padrão MB1, com `FirstScan` em %M1.0) e cadastre o bit como `FirstScan`. MB0 e MB1 ficam reservados, por isso os bits usam MB10 e MB11.
+2. Cadastre as tags das seções 2, 3 e 4 na tabela de tags.
+3. Insira o bloco TON e o CTU com DB de instância e os presets da seção 4. Cada bloco deve ser chamado a cada varredura, em uma network própria.
+4. O endereço de bit no TIA vai de 0 a 7 (`byte.bit`).
+5. Para o diagrama de ligação elétrica, veja o manual em PDF.
+
+### 1.2.9. Código ladder
+
+Legenda: `] [` contato NA, `]/[` contato NF, `( )` bobina, `( S )` set, `( R )` reset, `P` contato de borda de subida. Monte cada bloco em uma network, na ordem apresentada.
+
+```
+NETWORK 1 – Inicialização
+   "FirstScan"                      "ETAPA_0"
+ |----] [------+-------------------( S )
+                |                   "ETAPA_1"
+                +-------------------( R )
+                |                   "ETAPA_2"
+                +-------------------( R )
+
+NETWORK 2 – Peça no magazine (E4 tipo NA: 1 = há peça)
+   "E4_PECA"                        "PECA"
+ |----] [---------------------------( )
+
+   Variante do item c (E4 tipo NF: 0 = há peça): troque o contato
+   "E4_PECA"
+ |----]/[---------------------------( ) "PECA"
+
+NETWORK 3 – Emergência (EME pressionado)
+   "EME"                            "EMERG"
+ |----]/[---------+-----------------( S )
+                  |                 "ETAPA_0"
+                  +-----------------( R )
+                  |                 "ETAPA_1"
+                  +-----------------( R )
+                  |                 "ETAPA_2"
+                  +-----------------( R )
+
+NETWORK 4 – Rearme: EME liberado e E1 solto
+   "EMERG"   "EME"     "E1_START"             "EMERG"
+ |----] [-----] [------]/[---------+---------( R )
+                                   |         "ETAPA_0"
+                                   +---------( S )
+
+NETWORK 5 – Pulso de E1 (borda de subida)
+   "E1_START"  "M_E1_ME"            "E1_PULSO"
+ |----] P [---------------------------( )
+
+NETWORK 6 – Contador de peças (vem antes das transições)
+   "ETAPA_1"  "E2_FIM_CURSO"
+ |----] [--------] [---------------[ "C_PECAS" CTU  CU ]
+   "E3_RESET"                          PV := 10
+ |----] [---------------------------[               R  ]
+
+NETWORK 7 – Supervisão de 10 s do avanço
+   "ETAPA_1"
+ |----] [---------------------------[ "T_AVANCO" TON  IN  Q ]
+                                        PT := T#10s
+
+NETWORK 8 – Reconhece o alarme de tempo (E3)
+   "E3_RESET"                       "ALM_TEMPO"
+ |----] [---------------------------( R )
+
+NETWORK 9 – Início do ciclo
+   "ETAPA_0" "E1_PULSO" "PECA" "E2_FIM_CURSO" "C_PECAS".Q "ALM_TEMPO" "EME"      "ETAPA_1"
+ |----] [------] [------] [-------]/[-----------]/[---------]/[--------] [-----+---( S )
+                                                                              |   "ETAPA_0"
+                                                                              +---( R )
+
+NETWORK 10 – Cilindro chegou ao fim de curso
+   "ETAPA_1"  "E2_FIM_CURSO"           "ETAPA_2"
+ |----] [--------] [-----+-------------( S )
+                         |             "ETAPA_1"
+                         +-------------( R )
+
+NETWORK 11 – Tempo de 10 s excedido: recua e aciona o alarme
+   "ETAPA_1"  "T_AVANCO".Q             "ETAPA_0"
+ |----] [--------] [-----+-------------( S )
+                         |             "ETAPA_1"
+                         +-------------( R )
+                         |             "ALM_TEMPO"
+                         +-------------( S )
+
+NETWORK 12 – Cilindro recuou
+   "ETAPA_2"  "E2_FIM_CURSO"           "ETAPA_0"
+ |----] [--------]/[-----+-------------( S )
+                         |             "ETAPA_2"
+                         +-------------( R )
+
+NETWORK 13 – S1: avanço do cilindro
+   "ETAPA_1"    "EME"                  "S1_CILINDRO"
+ |----] [---------] [------------------( )
+
+NETWORK 14 – S2: alarme sem peça (E1 pressionado e magazine vazio)
+   "ETAPA_0" "E1_START" "PECA"  "EME"  "S2_ALM_SEM_PECA"
+ |----] [------] [------]/[-----] [-----( )
+
+NETWORK 15 – S3: alarme de tempo excedido
+   "ALM_TEMPO"                      "S3_ALM_TEMPO"
+ |----] [---------------------------( )
+
+NETWORK 16 – S4: cesto cheio (10 peças)
+   "C_PECAS".Q                      "S4_ALM_CESTO"
+ |----] [---------------------------( )
+```
+
+### 1.2.10. Programação estruturada (SCL)
+
+O mesmo programa como bloco de função `FB_Magazine` (SCL). As etapas ficam em uma variável inteira (`Etapa`: 0 repouso, 1 avançando, 2 recuando, 9 emergência), o contador é `CTU_INT` e o temporizador é `TON_TIME`, ambos multi-instância. O parâmetro `E4Nf` seleciona o tipo do sensor de peça: `FALSE` para NA (itens a e b) e `TRUE` para NF (item c).
+
+**Interface do bloco**
+
+| Seção | Nome | Tipo | Descrição |
+|---|---|---|---|
+| Input | E1Start | Bool | Botão de início de ciclo (NA) |
+| Input | E2FimCurso | Bool | Fim de curso do cilindro |
+| Input | E3Reset | Bool | Operador retirou as peças |
+| Input | E4Peca | Bool | Sensor de peça no magazine |
+| Input | E4Nf | Bool | TRUE se o sensor for NF (item c) |
+| Input | Eme | Bool | Emergência (NF) |
+| Output | S1Cilindro | Bool | Avanço do cilindro |
+| Output | S2AlmSemPeca | Bool | Alarme sem peça |
+| Output | S3AlmTempo | Bool | Alarme de tempo excedido |
+| Output | S4AlmCesto | Bool | Alarme de cesto cheio |
+| Static | Etapa | Int | Etapa atual |
+| Static | Emerg, Peca, AlmTempo, E1Pulso, E1Me, Primeiro | Bool | Memórias (Primeiro inicia em TRUE) |
+| Static | cPecas | CTU_INT | Contador de peças |
+| Static | tAvanco | TON_TIME | Supervisão de 10 s do avanço |
+
+```pascal
+FUNCTION_BLOCK "FB_Magazine"
+VAR_INPUT
+    E1Start    : Bool;
+    E2FimCurso : Bool;
+    E3Reset    : Bool;
+    E4Peca     : Bool;
+    E4Nf       : Bool;   // FALSE = sensor NA, TRUE = sensor NF (item c)
+    Eme        : Bool;   // NF: 1 = solta
+END_VAR
+VAR_OUTPUT
+    S1Cilindro    : Bool;
+    S2AlmSemPeca  : Bool;
+    S3AlmTempo    : Bool;
+    S4AlmCesto    : Bool;
+END_VAR
+VAR
+    Etapa     : Int;     // 0 repouso, 1 avancando, 2 recuando, 9 emergencia
+    Emerg     : Bool;
+    Peca      : Bool;
+    AlmTempo  : Bool;
+    E1Pulso   : Bool;
+    E1Me      : Bool;
+    Primeiro  : Bool := TRUE;
+    cPecas    : CTU_INT;
+    tAvanco   : TON_TIME;
+END_VAR
+
+BEGIN
+    // Inicializacao
+    IF #Primeiro THEN
+        #Etapa := 0;
+        #Primeiro := FALSE;
+    END_IF;
+
+    // Peca no magazine (NA: 1 = ha peca; NF: 0 = ha peca)
+    #Peca := #E4Peca XOR #E4Nf;
+
+    // Emergencia e rearme
+    IF NOT #Eme THEN
+        #Emerg := TRUE;
+        #Etapa := 9;
+    END_IF;
+    IF #Emerg AND #Eme AND NOT #E1Start THEN
+        #Emerg := FALSE;
+        #Etapa := 0;
+    END_IF;
+
+    // Pulso de E1 (borda de subida)
+    #E1Pulso := #E1Start AND NOT #E1Me;
+    #E1Me := #E1Start;
+
+    // Contador (antes das transicoes), supervisao de 10 s e reconhecimento
+    #cPecas(CU := (#Etapa = 1) AND #E2FimCurso, R := #E3Reset, PV := 10);
+    #tAvanco(IN := (#Etapa = 1), PT := T#10s);
+    IF #E3Reset THEN
+        #AlmTempo := FALSE;
+    END_IF;
+
+    // Transicoes
+    CASE #Etapa OF
+        0:  // repouso: inicio de ciclo
+            IF #E1Pulso AND #Peca AND NOT #E2FimCurso AND NOT #cPecas.Q
+               AND NOT #AlmTempo AND #Eme THEN
+                #Etapa := 1;
+            END_IF;
+        1:  // avancando
+            IF #E2FimCurso THEN
+                #Etapa := 2;
+            ELSIF #tAvanco.Q THEN
+                #Etapa := 0;
+                #AlmTempo := TRUE;
+            END_IF;
+        2:  // recuando
+            IF NOT #E2FimCurso THEN
+                #Etapa := 0;
+            END_IF;
+    END_CASE;
+
+    // Saidas
+    #S1Cilindro := (#Etapa = 1) AND #Eme;
+    #S2AlmSemPeca := (#Etapa = 0) AND #E1Start AND NOT #Peca AND #Eme;
+    #S3AlmTempo := #AlmTempo;
+    #S4AlmCesto := #cPecas.Q;
+END_FUNCTION_BLOCK
+```
+
+Chamada no OB1:
+
+```pascal
+"FB_Magazine_DB"(E1Start     := "E1_START",
+                 E2FimCurso  := "E2_FIM_CURSO",
+                 E3Reset     := "E3_RESET",
+                 E4Peca      := "E4_PECA",
+                 E4Nf        := FALSE,      // TRUE com o sensor NF (item c)
+                 Eme         := "EME",
+                 S1Cilindro  => "S1_CILINDRO",
+                 S2AlmSemPeca => "S2_ALM_SEM_PECA",
+                 S3AlmTempo  => "S3_ALM_TEMPO",
+                 S4AlmCesto  => "S4_ALM_CESTO");
+```
+
+### 1.2.12. Observações e teste
+
+- **Contador.** O contador (network 6) vem antes das transições para contar na varredura em que o fim de curso é atingido.
+- **Tempo.** Se o cilindro não chegar ao fim de curso em 10 s, ele recua, o alarme S3 é acionado e o ciclo fica bloqueado até E3.
+- Os botões de emergência reais devem ser cabeados também em hardware (relé de segurança). O ladder não substitui a proteção exigida pela NR-12 e pela ISO 13850.
+- **Teste no PLCSIM:**
+  1. Com E4 em 1, pulse E1: o cilindro avança. Ligue E2 e depois desligue: ele recua e o contador sobe.
+  2. Com E4 em 0, segure E1: S2 deve tocar.
+  3. Não ligue E2 por 10 s: S3 deve acionar e o cilindro recuar.
+  4. Dez ciclos: S4 aciona e o ciclo é bloqueado até pulsar E3.
+  5. Item c (sensor NF): com a variante da network 2, E4 em 0 significa peça presente e E4 em 1 significa magazine vazio.
+
+
+### 1.2.13. Recursos
+
+| [Guia em PDF](experimento-03a-bomba.pdf) | 
+| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_magazine.html) |
+
+

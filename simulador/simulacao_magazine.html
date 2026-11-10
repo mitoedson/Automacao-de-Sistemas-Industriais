@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Experimento 3.2 — Alimentador de peças com magazine</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--ink:#16202b;--mut:#5d6b7a;--ln:#d3dae2;--on:#15803d;--off:#c3ccd6;--ac:#0e7490;--bad:#dc2626;--w:#38a3c7;--st:#8a96a3}
+@media(prefers-color-scheme:dark){:root{--bg:#0e141b;--pn:#16202a;--ink:#e4eaf0;--mut:#8d9bab;--ln:#27333f;--on:#22c55e;--off:#33414f;--ac:#38bdf8;--w:#0e7490;--st:#64748b}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pn);border-bottom:1px solid var(--ln)}
+h1{font-size:17px;margin:0}header p{margin:0;color:var(--mut);font-size:12px}
+.tools{display:flex;gap:6px}
+main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr);gap:14px;padding:14px;max-width:1240px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+aside{display:grid;gap:14px;align-content:start}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:12px 14px}
+h2{font-size:13px;font-weight:600;margin:0 0 6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln)}h2+.row{border-top:0}
+code{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--mut)}
+button,select{font:inherit;border:1px solid var(--ln);background:var(--pn);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer;touch-action:manipulation}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);border-color:var(--ac);color:var(--pn)}
+.led{width:13px;height:13px;border-radius:50%;background:var(--off);flex:none}.led.on{background:var(--on);box-shadow:0 0 7px var(--on)}.led.al.on{background:var(--bad);box-shadow:0 0 7px var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}td{padding:3px 4px;border-top:1px solid var(--ln)}td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--ink);font:12px system-ui,sans-serif}svg .m{fill:var(--mut);font-size:11px}
+.lamp{fill:var(--off);stroke:var(--st)}.lamp.lit{fill:var(--on)}.lamp.al.lit{fill:var(--bad)}
+.note{font-size:12px;color:var(--mut);margin:8px 0 0}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><div><h1>Experimento 3.2 — Alimentador de peças com magazine</h1><p>Ladder em varredura de 50 ms (tempo simulado). Inclui a variante do item c (E4 normalmente fechado).</p></div>
+<div class="tools"><select id="sp" aria-label="Velocidade"><option value="1">1×</option><option value="2">2×</option><option value="5">5×</option><option value="10">10×</option></select><button id="ps">Pausar</button><button id="rs">Reiniciar</button></div></header>
+<main>
+<section class="card">
+<svg viewBox="0 0 540 350" role="img" aria-label="Cilindro empurrando peças de um magazine para um cesto">
+<text class="m" x="252" y="14" text-anchor="middle">Magazine</text>
+<line x1="226" x2="226" y1="20" y2="242" stroke="var(--ink)" stroke-width="3"/><line x1="278" x2="278" y1="20" y2="242" stroke="var(--ink)" stroke-width="3"/>
+<g id="mg"></g>
+<rect x="150" y="270" width="270" height="8" fill="var(--st)"/>
+<rect x="20" y="238" width="130" height="36" rx="4" fill="var(--pn)" stroke="var(--ink)" stroke-width="2"/><text x="85" y="261" text-anchor="middle">Cilindro S1</text>
+<rect id="rod" x="150" y="252" width="10" height="8" fill="var(--st)"/>
+<rect id="hd" x="160" y="232" width="10" height="48" fill="var(--ink)"/>
+<rect id="cp" x="170" y="242" width="44" height="28" rx="3" fill="var(--ac)" visibility="hidden"/>
+<circle id="e4" class="lamp" cx="294" cy="256" r="6"/><text class="m" x="304" y="260">E4</text>
+<circle id="e2" class="lamp" cx="345" cy="296" r="6"/><text class="m" x="345" y="318" text-anchor="middle">E2</text>
+<path d="M410 282V340H520V282" fill="none" stroke="var(--ink)" stroke-width="2"/><text class="m" x="465" y="276" text-anchor="middle">Cesto</text>
+<g id="bk"></g>
+<circle id="a2" class="lamp al" cx="400" cy="34" r="7"/><text x="414" y="38">S2 sem peça</text>
+<circle id="a3" class="lamp al" cx="400" cy="60" r="7"/><text x="414" y="64">S3 tempo &gt; 10 s</text>
+<circle id="a4" class="lamp al" cx="400" cy="86" r="7"/><text x="414" y="90">S4 cesto cheio</text>
+<text id="pc" x="20" y="30" font-size="14">Magazine: 5 peças</text>
+</svg>
+<p class="note">Roteiro: (1) pulse E1 com peça e veja o ciclo; (2) esvazie o magazine e segure E1 para ouvir S2; (3) ligue “emperrado” e inicie o ciclo para S3 após 10 s; (4) complete 10 ciclos para S4 e libere com E3.</p>
+</section>
+<aside>
+<div class="card"><h2>Entradas</h2>
+<div class="row"><span><code>%I0.0</code> E1 início de ciclo (NA)</span><button data-p="e1">Pressionar</button></div>
+<div class="row"><span><code>%I0.2</code> E3 retirou as peças</span><button data-p="e3">Pressionar</button></div>
+<div class="row"><span><code>%I0.3</code> E4 tipo do sensor de peça</span><button data-t="nf" data-on="NF (item c)" data-off="NA">NA</button></div>
+<div class="row"><span><code>%I0.4</code> EME (NF)</span><button data-t="eme" data-on="Pressionada (0)" data-off="Solta (1)">Solta (1)</button></div>
+<div class="row"><span><code>%I0.1</code> E2 fim de curso</span><i class="led" id="i2"></i></div>
+<div class="row"><span>Sinal de E4 no CLP</span><i class="led" id="i4"></i></div>
+</div>
+<div class="card"><h2>Processo</h2>
+<div class="row"><span>Magazine</span><span><button id="rec">Recarregar +5</button> <button id="vaz">Esvaziar</button></span></div>
+<div class="row"><span>Cilindro</span><button data-t="jam" data-on="Emperrado" data-off="Normal">Normal</button></div></div>
+<div class="card"><h2>Saídas</h2>
+<div class="row"><span><code>%Q0.0</code> S1_CILINDRO</span><i class="led" id="q0"></i></div>
+<div class="row"><span><code>%Q0.1</code> S2_ALM_SEM_PECA</span><i class="led al" id="q1"></i></div>
+<div class="row"><span><code>%Q0.2</code> S3_ALM_TEMPO</span><i class="led al" id="q2"></i></div>
+<div class="row"><span><code>%Q0.3</code> S4_ALM_CESTO</span><i class="led al" id="q3"></i></div></div>
+<div class="card"><h2>Variáveis</h2><table id="tg"></table></div>
+</aside></main>
+<script>
+const $=s=>document.querySelector(s),I={};
+class TON{constructor(p){this.pt=p;this.et=0;this.q=0}run(i,d){if(i){this.et=Math.min(this.pt,this.et+d);this.q=this.et>=this.pt?1:0}else{this.et=0;this.q=0}}}
+const lab=b=>{if(b.dataset.on)b.textContent=I[b.dataset.t]?b.dataset.on:b.dataset.off};
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{I[b.dataset.t]^=1;b.classList.toggle('on',!!I[b.dataset.t]);lab(b)});
+document.querySelectorAll('[data-p]').forEach(b=>{const k=b.dataset.p,up=()=>setTimeout(()=>{I[k]=0;b.classList.remove('on')},120);b.onpointerdown=e=>{e.preventDefault();I[k]=1;b.classList.add('on')};b.onpointerup=up;b.onpointerleave=()=>{if(I[k])up()}});
+let spd=1,run=1;
+$('#sp').onchange=e=>spd=+e.target.value;$('#ps').onclick=e=>{run^=1;e.target.textContent=run?'Pausar':'Continuar'};$('#rs').onclick=()=>location.reload();
+const S=(i,a,v)=>$('#'+i).setAttribute(a,v),L=(i,v)=>$('#'+i).classList.toggle('lit',!!v),O=(i,v)=>$('#'+i).classList.toggle('on',!!v);
+function tbl(el,rows){$(el).innerHTML=rows.map((r,i)=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td><td id="${el.slice(1)}${i}"></td></tr>`).join('')}
+function upd(el,rows){rows.forEach((r,i)=>$(el+i).textContent=r[2]())}
+
+/* ---- Programa ladder (Experimento 3, exercício 2) ---- */
+const m={s0:1,s1:0,s2:0,em:0,peca:0,alm:0,e1p:0,me:0},cn={cv:0,cu:0,q:0},ta=new TON(10);
+let pos=0,cnt=5,bsk=0,done=0,first=1,S1=0,S2=0,S3=0,S4=0,E2=0,E4=0;
+const T=[['%M10.0','ETAPA_0 repouso',()=>m.s0],['%M10.1','ETAPA_1 avançando',()=>m.s1],['%M10.2','ETAPA_2 recuando',()=>m.s2],['%M10.3','EMERG',()=>m.em],['%M10.4','PECA',()=>m.peca],['%M10.5','ALM_TEMPO',()=>m.alm],['%M10.6','E1_PULSO',()=>m.e1p],['DB','C_PECAS CV / PV',()=>cn.cv+' / 10'],['DB','T_AVANCO ET / PT',()=>ta.et.toFixed(1)+' / 10 s']];
+tbl('#tg',T);
+$('#rec').onclick=()=>cnt=Math.min(20,cnt+5);$('#vaz').onclick=()=>cnt=0;
+function scan(dt){
+  const E1=I.e1?1:0,E3=I.e3?1:0,EM=I.eme?0:1,nf=I.nf?1:0;
+  E2=pos>=99.5?1:0;E4=nf?(cnt>0?0:1):(cnt>0?1:0);
+  if(first){m.s0=1;m.s1=0;m.s2=0;first=0}                      // N1
+  m.peca=nf?(E4?0:1):E4;                                        // N2 (NA ou NF)
+  if(!EM){m.em=1;m.s0=m.s1=m.s2=0}                              // N3
+  if(m.em&&EM&&!E1){m.em=0;m.s0=1}                              // N4
+  m.e1p=E1&&!m.me?1:0;m.me=E1;                                  // N5
+  const cu=m.s1&&E2?1:0;                                        // N6 CTU
+  if(E3)cn.cv=0;else if(cu&&!cn.cu)cn.cv++;
+  cn.cu=cu;cn.q=cn.cv>=10?1:0;
+  ta.run(m.s1,dt);                                              // N7
+  if(E3)m.alm=0;                                                // N8
+  if(m.s0&&m.e1p&&m.peca&&!E2&&!cn.q&&!m.alm&&EM){m.s1=1;m.s0=0}// N9
+  if(m.s1&&E2){m.s2=1;m.s1=0}                                   // N10
+  if(m.s1&&ta.q){m.s0=1;m.s1=0;m.alm=1}                         // N11
+  if(m.s2&&!E2){m.s0=1;m.s2=0}                                  // N12
+  S1=m.s1&&EM?1:0;S2=m.s0&&E1&&!m.peca&&EM?1:0;S3=m.alm;S4=cn.q;// N13-N16
+  const v=50*dt;                                                // processo
+  if(S1)pos=Math.min(I.jam?55:100,pos+v);else pos=Math.max(0,pos-v);
+  if(pos>=99.5&&!done){done=1;if(cnt>0){cnt--;bsk++}}if(pos<30)done=0;
+  if(E3)bsk=0;
+}
+function draw(){
+  const px=160+pos*1.8,car=pos>31&&!done&&cnt>0&&(S1||pos>=99.5);
+  S('rod','width',px-150);S('hd','x',px);S('cp','x',px+10);S('cp','visibility',car?'visible':'hidden');
+  let h='';const n=cnt-(car?1:0);for(let i=0;i<Math.min(n,7);i++)h+=`<rect x="230" y="${242-30*i}" width="44" height="28" rx="3" fill="var(--ac)"/>`;
+  $('#mg').innerHTML=h;
+  let b='';for(let i=0;i<Math.min(bsk,10);i++)b+=`<rect x="${418+(i%5)*20}" y="${318-Math.floor(i/5)*20}" width="16" height="16" rx="2" fill="var(--ac)"/>`;
+  $('#bk').innerHTML=b;
+  $('#pc').textContent='Magazine: '+cnt+(cnt==1?' peça':' peças')+' · Cesto: '+bsk;
+  L('e4',cnt>0);L('e2',E2);L('a2',S2);L('a3',S3);L('a4',S4);
+  O('i2',E2);O('i4',E4);O('q0',S1);O('q1',S2);O('q2',S3);O('q3',S4);upd('#tg',T);
+}
+setInterval(()=>{if(!run)return;for(let k=0;k<spd;k++)scan(.05);draw()},50);draw();
+</script></body></html>
