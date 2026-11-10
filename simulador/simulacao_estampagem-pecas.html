@@ -1,97 +1,196 @@
-<!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Simulado – Trabalho 7: estampagem de peças plásticas</title>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulador — Experimento 10: estampagem de peças plásticas</title>
 <style>
-:root{--bg:#eef1f4;--pn:#fff;--tx:#17202b;--mu:#5d6b7c;--bd:#cfd6df;--ac:#0a64c8;--on:#16a34a;--of:#c3cad4;--er:#d93f3f;--pc:#c77a10;color-scheme:light}
-@media(prefers-color-scheme:dark){:root{--bg:#0f141a;--pn:#18202a;--tx:#e5eaf1;--mu:#92a1b3;--bd:#2c3745;--ac:#5aa8ff;--on:#37d67a;--of:#374252;--er:#ff7070;--pc:#e0a040;color-scheme:dark}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
-header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--pn)}
-h1{font-size:18px;margin:0}h2{font-size:13px;margin:12px 0 6px;color:var(--mu);font-weight:600}h2:first-child{margin-top:0}
-main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;padding:12px;max-width:1100px;margin:auto}
-@media(max-width:760px){main{grid-template-columns:1fr}}
-section{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:12px}
-.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.mu{color:var(--mu)}
-button,select{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;cursor:pointer}
-button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-button.on{background:var(--ac);color:#fff;border-color:var(--ac)}button:disabled{opacity:.55;cursor:default}
-.led{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--bd);border-radius:6px}
-.led i{width:10px;height:10px;border-radius:50%;background:var(--of)}.led.on i{background:var(--on);box-shadow:0 0 6px var(--on)}
-.bad{color:var(--er);font-weight:600;min-height:1.4em;margin:6px 0}
-#st{display:flex;flex-wrap:wrap;gap:4px}#st span{padding:2px 7px;border:1px solid var(--bd);border-radius:5px;font-size:12px;color:var(--mu)}#st .a{background:var(--ac);color:#fff;border-color:var(--ac)}
-svg{width:100%;height:auto;display:block}.t{fill:var(--tx);font:11px system-ui}.m{fill:var(--mu);font:10px system-ui}.o{fill:var(--pn);stroke:var(--tx);stroke-width:1.5}
-</style></head><body>
-<header><h1>Trabalho 7 · Estampagem de peças plásticas</h1>
-<div class="row"><label>Velocidade <select id="sp"><option value="1">1×</option><option value="3">3×</option><option value="6">6×</option></select></label><button id="rs">Reiniciar CLP</button></div></header>
+:root{--bg:#eef1f4;--pn:#fff;--ink:#16222d;--mut:#5d6b78;--ln:#cfd7de;--st:#7f98ae;--st2:#3f5a73;--on:#e0a100;--ok:#1f9d55;--bad:#d03c35;--pc:#4aa3c7;--dn:#1c6e91;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1820;--pn:#18232e;--ink:#e4ebf1;--mut:#92a1af;--ln:#2c3b49;--st:#58758f;--st2:#8fb0cc;--on:#f0b429;--ok:#3ec97c;--bad:#ff6b63;--pc:#5bb6da;--dn:#2d8fb8;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:18px 20px 6px;max-width:1180px;margin:auto}
+h1{font-size:1.35rem;margin:0 0 2px}header p{margin:0;color:var(--mut)}
+main{max-width:1180px;margin:auto;padding:10px 20px 30px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:14px}
+section{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:12px 14px}
+h2{font-size:.95rem;margin:0 0 8px}
+.full{grid-column:1/-1}
+svg{width:100%;height:auto;display:block}
+.b{fill:var(--st2)}.r{fill:var(--st)}.t{fill:var(--mut);font:11px system-ui,sans-serif}
+.blk{fill:var(--st2);opacity:.55}.pcs{fill:var(--pc)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button,select{font:inherit;color:var(--ink);background:var(--pn);border:1px solid var(--ln);border-radius:7px;padding:7px 12px;cursor:pointer}
+button[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#fff}
+#eme[aria-pressed=true]{background:var(--bad);border-color:var(--bad)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--on);outline-offset:2px}
+label{display:flex;gap:6px;align-items:center;margin:6px 0}
+.msg{margin-top:10px;padding:9px 11px;border-radius:7px;background:var(--bg);border-left:4px solid var(--st)}
+.msg.bad{border-color:var(--bad)}.msg.run{border-color:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.led{display:flex;align-items:center;gap:8px;padding:2px 0;font-size:.88rem}
+.led code{min-width:68px;font-weight:600}.led small{color:var(--mut)}
+.d{width:12px;height:12px;border-radius:50%;background:var(--ln);border:1px solid var(--mut);flex:none}
+.led.on .d{background:var(--on);border-color:var(--on);box-shadow:0 0 6px var(--on)}
+.led.em.on .d{background:var(--bad);border-color:var(--bad);box-shadow:0 0 6px var(--bad)}
+.bar{height:9px;border-radius:5px;background:var(--bg);border:1px solid var(--ln);overflow:hidden;margin:3px 0 9px}
+.bar i{display:block;height:100%;width:0;background:var(--st)}
+code{font-family:ui-monospace,Consolas,monospace}
+.cnt{font-size:1.5rem;font-weight:700}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+<h1>Experimento 10 — Estampagem de peças plásticas</h1>
+<p>O programa ladder do experimento roda aqui em ciclos de varredura de 20 ms. Ligue PTD para iniciar.</p>
+</header>
 <main>
-<section><h2>Equipamento</h2>
-<svg viewBox="0 0 400 250" role="img" aria-label="Alimentador, estampador e extrator em volta do molde">
-<rect x="100" y="110" width="40" height="62" class="o"/><text x="120" y="104" text-anchor="middle" class="m">Peças</text>
-<rect x="20" y="172" width="60" height="16" class="o"/><text x="50" y="206" text-anchor="middle" class="t">Alimentador</text>
-<line id="r1" x1="80" y1="180" x2="80" y2="180" stroke="var(--tx)" stroke-width="4"/><rect id="h1" x="80" y="174" width="6" height="12" fill="var(--tx)"/>
-<rect x="190" y="14" width="20" height="44" class="o"/><text x="250" y="40" text-anchor="middle" class="t">Estampador</text>
-<line id="r2" x1="200" y1="58" x2="200" y2="58" stroke="var(--tx)" stroke-width="4"/><rect id="h2" x="186" y="58" width="28" height="8" fill="var(--tx)"/>
-<rect x="320" y="172" width="60" height="16" class="o"/><text x="350" y="206" text-anchor="middle" class="t">Extrator</text>
-<line id="r3" x1="320" y1="180" x2="320" y2="180" stroke="var(--tx)" stroke-width="4"/><rect id="h3" x="314" y="174" width="6" height="12" fill="var(--tx)"/>
-<rect x="170" y="170" width="60" height="20" class="o"/><text x="200" y="224" text-anchor="middle" class="m">molde</text>
-<rect id="pc" x="180" y="160" width="40" height="10" rx="2" fill="var(--pc)"/>
-<g id="ar" stroke="var(--ac)" stroke-width="2" opacity="0"><line x1="236" y1="132" x2="262" y2="132"/><line x1="236" y1="144" x2="262" y2="144"/><line x1="236" y1="156" x2="262" y2="156"/></g><text x="270" y="148" class="m" id="art"></text>
-<circle id="c1" cx="92" cy="166" r="5" class="o"/><text x="100" y="164" class="m">S1</text>
-<circle id="c2" cx="170" cy="40" r="5" class="o"/><text x="130" y="43" class="m">S2</text>
-<circle id="c3" cx="306" cy="166" r="5" class="o"/><text x="290" y="162" class="m">S3</text>
-<circle id="c4" cx="244" cy="120" r="5" class="o"/><text x="254" y="118" class="m">FS</text></svg>
-<p class="bad" id="em" role="status"></p>
-<h2>Etapas do ladder</h2><div id="st"></div><p class="mu" id="tm"></p></section>
-<section><h2>Entradas</h2><div class="row" id="in"></div>
-<div class="row"><label><input type="checkbox" id="au" checked> Sensores automáticos</label></div><div class="row" id="ms"></div>
-<h2>Saídas</h2><div class="row" id="out"></div>
-<p class="mu">Reproduz as networks do arquivo .md. EME é NF (acesa = pressionada). Desmarque “Sensores automáticos” para acionar S1, S2, S3 e FS à mão, por exemplo para provocar uma falha de tempo.</p></section>
+<section aria-label="Máquina">
+<svg viewBox="0 0 640 350" role="img" aria-label="Esquema da máquina de estampagem com alimentador, estampador e extrator">
+<rect class="blk" x="240" y="236" width="45" height="20"/><rect class="blk" x="315" y="236" width="45" height="20"/>
+<rect class="blk" x="96" y="236" width="144" height="6"/>
+<rect x="108" y="120" width="34" height="102" fill="none" stroke="var(--st)" stroke-width="2"/>
+<rect class="pcs" opacity=".45" x="112" y="132" width="26" height="12"/><rect class="pcs" opacity=".45" x="112" y="148" width="26" height="12"/><rect class="pcs" opacity=".45" x="112" y="164" width="26" height="12"/>
+<text class="t" x="94" y="112">magazine (gravidade)</text>
+<rect class="b" x="10" y="214" width="70" height="26" rx="3"/><rect id="r1" class="r" x="80" y="224" width="16" height="6"/><rect id="h1" class="b" x="96" y="217" width="10" height="20"/>
+<text class="t" x="10" y="258">Cilindro 1 (alimentador)</text>
+<rect class="b" x="282" y="8" width="36" height="56" rx="3"/><rect id="r2" class="r" x="297" y="64" width="6" height="6"/><rect id="h2" class="b" x="270" y="70" width="60" height="14"/>
+<text class="t" x="326" y="30">Cilindro 2 (estampador)</text>
+<rect class="b" x="560" y="214" width="70" height="26" rx="3"/><rect id="r3" class="r" x="540" y="224" width="20" height="6"/><rect id="h3" class="b" x="526" y="212" width="14" height="24"/>
+<text class="t" x="520" y="258">Cilindro 3 (extrator)</text>
+<g id="air" opacity="0" stroke="var(--pc)" stroke-width="2" stroke-dasharray="6 5" fill="none"><path id="a1" d="M0 0"/><path id="a2" d="M0 0"/></g>
+<rect id="pc" class="pcs" x="0" y="222" width="36" height="14" rx="2"/>
+<rect id="pf" class="pcs" x="282" y="222" width="36" height="14" rx="2" display="none"/>
+<line id="beam" x1="240" y1="285" x2="360" y2="285" stroke="var(--ok)" stroke-width="2" stroke-dasharray="4 4"/>
+<circle cx="236" cy="285" r="5" class="b"/><circle cx="364" cy="285" r="5" class="b"/>
+<text class="t" x="372" y="289">FS</text>
+<path d="M250 305h100v35H250z" fill="none" stroke="var(--st)" stroke-width="2"/><text class="t" x="262" y="325">peças prontas</text>
+<circle id="l1" cx="272" cy="203" r="6" fill="var(--ln)" stroke="var(--mut)"/><text class="t" x="260" y="192">S1</text>
+<circle id="l2" cx="342" cy="60" r="6" fill="var(--ln)" stroke="var(--mut)"/><text class="t" x="352" y="64">S2</text>
+<circle id="l3" cx="352" cy="203" r="6" fill="var(--ln)" stroke="var(--mut)"/><text class="t" x="360" y="192">S3</text>
+</svg>
+<div id="msg" class="msg" role="status" aria-live="polite"></div>
+</section>
+<section aria-label="Comandos">
+<h2>Comandos</h2>
+<div class="btns">
+<button id="ptd" aria-pressed="false">PTD: desligada</button>
+<button id="eme" aria-pressed="false">EME: normal</button>
+</div>
+<label><input type="checkbox" id="single"> Ciclo único (PTD com borda de subida)</label>
+<label>Velocidade <select id="spd"><option value="1">1×</option><option value="2">2×</option><option value="5">5×</option></select></label>
+<div class="btns"><button id="pause">Pausar</button><button id="rst">Reiniciar CLP (primeira varredura)</button></div>
+<h2 style="margin-top:12px">Falhas simuladas</h2>
+<label><input type="checkbox" data-f="S1"> S1 preso em 0</label>
+<label><input type="checkbox" data-f="S2"> S2 preso em 0</label>
+<label><input type="checkbox" data-f="S3"> S3 preso em 0</label>
+<label><input type="checkbox" data-f="FS"> FS preso em 0</label>
+<label><input type="checkbox" data-f="EME"> Fio de EME rompido</label>
+<h2 style="margin-top:12px">Peças prontas</h2><div class="cnt" id="cnt">0</div>
+</section>
+<section class="full" aria-label="Entradas, saídas e memória">
+<div class="grid">
+<div><h2>Entradas</h2><div id="li"></div></div>
+<div><h2>Saídas</h2><div id="lo"></div></div>
+<div><h2>Etapas e estados</h2><div id="ls"></div></div>
+<div><h2>Temporizadores</h2>
+<div>T_PRENSA <code id="tp">0.0 / 2 s</code></div><div class="bar"><i id="bp"></i></div>
+<div>T_CICLO <code id="tc">0.0 / 20 s</code></div><div class="bar"><i id="bc"></i></div>
+<small style="color:var(--mut)">T_CICLO só conta fora do repouso e sem emergência. Ao chegar a 20 s, aciona EMERG.</small></div>
+</div>
+</section>
 </main>
 <script>
-const $=s=>document.querySelector(s),E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e};
-class TON{constructor(p){this.p=p;this.t=0;this.q=0}u(i,d){if(i){this.t=Math.min(this.p,this.t+d);this.q=+(this.t>=this.p)}else{this.t=0;this.q=0}}}
-const I={},O={};
-function btn(par,key,txt,mode,init){const b=E('button','',txt);par.append(b);const nf=mode.includes('n'),tog=mode[0]==='t';
- const set=v=>{I[key]=nf?(v?0:1):(v?1:0);b.classList.toggle('on',!!v);b.setAttribute('aria-pressed',!!v)};set(init||0);
- if(tog)b.onclick=()=>set(!b.classList.contains('on'));
- else{b.onpointerdown=()=>set(1);b.onpointerup=b.onpointerleave=b.onpointercancel=()=>set(0)}return b}
-btn($('#in'),'PTD','PTD (partida)','t');btn($('#in'),'EME','Emergência (EME)','tn');
-const MB=['S1','S2','S3','FS'].map(k=>btn($('#ms'),'m'+k,k+' manual','t'));
-const L={};['EV1','EV2','EV3','EV4'].forEach(k=>{const l=E('span','led','<i></i>'+k);$('#out').append(l);L[k]=l});
-['Repouso','Alim. avança','Alim. recua','Estamp. avança','Prensa 2 s','Estamp. recua','Extrator avança','Sopro de ar','Extrator recua'].forEach((n,i)=>$('#st').append(E('span','',`E${i} ${n}`)));
-const S=Array(9).fill(0),Tp=new TON(2),Tc=new TON(20),P=[0,0,0];let EM=0,first=1,sp=1,pc={in:0,ej:0,sm:0};
-const go=(a,b,c)=>{if(S[a]&&c){S[b]=1;S[a]=0}};
-function scan(d){
- if(first){first=0;S.fill(0);S[0]=1}
- Tc.u(!S[0]&&!EM,d);
- if(!I.EME||Tc.q){EM=1;S.fill(0)}
- if(EM&&I.EME&&!I.PTD){EM=0;S[0]=1}
- go(0,1,I.PTD&&I.EME&&!EM&&!I.S1&&!I.S2&&!I.S3);
- go(1,2,I.S1);go(2,3,!I.S1);go(3,4,I.S2);go(4,5,Tp.q);go(5,6,!I.S2);go(6,7,I.S3);go(7,8,I.FS);go(8,0,!I.S3);
- Tp.u(S[4],d);
- const e=I.EME;O.EV1=S[1]&&e;O.EV2=(S[3]||S[4])&&e;O.EV3=(S[6]||S[7])&&e;O.EV4=S[7]&&e;
+const $=id=>document.getElementById(id),SC=.02,STROKE=[.8,.8,.8];
+const IN=[['PTD','%I0.0','Chave de partida'],['S1','%I0.1','Alimentador avançado'],['S2','%I0.2','Estampador avançado'],['S3','%I0.3','Extrator avançado'],['FS','%I0.4','Peça expulsa'],['EME','%I0.5','Emergência (NF: 1 = normal)']];
+const OUT=[['EV1','%Q0.0','Avanço do alimentador'],['EV2','%Q0.1','Avanço do estampador'],['EV3','%Q0.2','Avanço do extrator'],['EV4','%Q0.3','Bico de ar']];
+const ST=['Repouso (condição inicial)','Alimentador avançando','Alimentador recuando','Estampador avançando','Prensagem (2 s)','Estampador recuando','Extrator avançando','Extrator avançado e sopro de ar','Extrator recuando'];
+const ui={ptd:0,eme:0,single:0,run:1,speed:1,f:{S1:0,S2:0,S3:0,FS:0,EME:0}};
+let st;
+function reset(){st={pos:[0,0,0],M:{E:Array(9).fill(0),EMERG:0},T:{p:{et:0,q:0},c:{et:0,q:0}},first:1,prev:0,mold:null,fall:null,count:st?st.count:0,io:{I:{},O:{}}}}
+function ton(t,i,pt,dt){if(i){t.et=Math.min(pt,t.et+dt);t.q=t.et>=pt}else{t.et=0;t.q=0}}
+function scan(dt){
+ const s=st,M=s.M,E=M.E,T=s.T,I={};
+ // leitura das entradas
+ I.PTD=+ui.ptd;I.EME=(ui.eme||ui.f.EME)?0:1;
+ ['S1','S2','S3'].forEach((k,i)=>I[k]=+(s.pos[i]>=.97&&!ui.f[k]));
+ I.FS=+(!!s.fall&&s.fall.y>=268&&s.fall.y<=300&&!ui.f.FS);
+ const P=I.PTD&&!s.prev;s.prev=I.PTD;
+ const go=(a,b)=>{E[a]=0;E[b]=1};
+ // NETWORK 1: inicialização
+ if(s.first){E.fill(0);E[0]=1;s.first=0}
+ // NETWORK 2: supervisão do ciclo
+ ton(T.c,!E[0]&&!M.EMERG,20,dt);
+ // NETWORK 3: emergência ou falha
+ if(!I.EME||T.c.q){M.EMERG=1;E.fill(0)}
+ // NETWORK 4: rearme
+ if(M.EMERG&&I.EME&&!I.PTD){M.EMERG=0;E[0]=1}
+ // NETWORKS 5 a 13: transições
+ if(E[0]&&(ui.single?P:I.PTD)&&I.EME&&!M.EMERG&&!I.S1&&!I.S2&&!I.S3)go(0,1);
+ if(E[1]&&I.S1)go(1,2);
+ if(E[2]&&!I.S1)go(2,3);
+ if(E[3]&&I.S2)go(3,4);
+ if(E[4]&&T.p.q)go(4,5);
+ if(E[5]&&!I.S2)go(5,6);
+ if(E[6]&&I.S3)go(6,7);
+ if(E[7]&&I.FS)go(7,8);
+ if(E[8]&&!I.S3)go(8,0);
+ // NETWORK 14: temporizador da prensagem
+ ton(T.p,E[4],2,dt);
+ // NETWORKS 15 a 18: saídas
+ const O={EV1:+!!(E[1]&&I.EME),EV2:+!!((E[3]||E[4])&&I.EME),EV3:+!!((E[6]||E[7])&&I.EME),EV4:+!!(E[7]&&I.EME)};
+ // planta: cilindros com retorno por mola
+ [O.EV1,O.EV2,O.EV3].forEach((v,i)=>s.pos[i]=Math.max(0,Math.min(1,s.pos[i]+(v?1:-1)*dt/STROKE[i])));
+ if(s.pos[0]>=.97&&!s.mold&&!s.fall)s.mold={press:0,blow:0};
+ if(s.mold){
+  if(s.pos[1]>=.97)s.mold.press+=dt;
+  if(O.EV4&&s.pos[2]>=.97){s.mold.blow+=dt;if(s.mold.blow>=.5){s.fall={y:222,ok:s.mold.press>=1.9};s.mold=null}}
+ }
+ if(s.fall){s.fall.y+=dt*130;if(s.fall.y>330){if(s.fall.ok)s.count++;s.fall=null}}
+ s.io={I,O};
 }
-function plant(d){
- [O.EV1,O.EV2,O.EV3].forEach((v,i)=>P[i]=Math.max(0,Math.min(100,P[i]+(v?90:-90)*d)));
- if(P[0]>=99&&!pc.in){pc.in=1;pc.sm=0}
- if(P[1]>=99&&pc.in)pc.sm=1;
- if(O.EV4&&P[2]>=99&&pc.in){pc.ej+=d;if(pc.ej>.6){pc.in=0;pc.ej=0}}else if(!O.EV4)pc.ej=0;
- const au=$('#au').checked;MB.forEach(b=>b.disabled=au);
- I.S1=au?+(P[0]>=99):I.mS1;I.S2=au?+(P[1]>=99):I.mS2;I.S3=au?+(P[2]>=99):I.mS3;I.FS=au?+(pc.in&&pc.ej>0):I.mFS;
-}
+function mk(el,list,cls){$(el).innerHTML=list.map(([k,a,d])=>`<div class="led ${cls||''}" id="led-${k}"><span class="d"></span><code>${k}</code><small>${a} ${d}</small></div>`).join('')}
+mk('li',IN);mk('lo',OUT);
+$('ls').innerHTML=ST.map((d,i)=>`<div class="led" id="led-E${i}"><span class="d"></span><code>ETAPA_${i}</code><small>${d}</small></div>`).join('')+'<div class="led em" id="led-EMERG"><span class="d"></span><code>EMERG</code><small>Emergência ou falha</small></div>';
+const set=(k,v)=>$('led-'+k).classList.toggle('on',!!v);
 function draw(){
- for(const k in L)L[k].classList.toggle('on',!!O[k]);
- const x1=80+P[0]*.9,y2=58+P[1]*.92,x3=320-P[2]*.96;
- $('#r1').setAttribute('x2',x1);$('#h1').setAttribute('x',x1);
- $('#r2').setAttribute('y2',y2);$('#h2').setAttribute('y',y2);
- $('#r3').setAttribute('x2',x3);$('#h3').setAttribute('x',x3-6);
- [['c1','S1'],['c2','S2'],['c3','S3'],['c4','FS']].forEach(([c,k])=>$('#'+c).style.fill=I[k]?'var(--on)':'var(--pn)');
- const p=$('#pc');p.style.display=pc.in?'':'none';p.style.fill=pc.sm?'var(--on)':'var(--pc)';p.setAttribute('x',180+pc.ej*60);p.setAttribute('opacity',1-pc.ej);
- $('#ar').setAttribute('opacity',O.EV4?1:0);$('#art').textContent=O.EV4?'EV4':'';
- [...$('#st').children].forEach((c,i)=>c.classList.toggle('a',!!S[i]));
- $('#tm').textContent=`T_PRENSA ${Tp.t.toFixed(1)} / 2 s · T_CICLO ${Tc.t.toFixed(1)} / 20 s`;
- $('#em').textContent=EM?'EMERGÊNCIA / FALHA: libere EME e desligue PTD para rearmar.':'';
+ const s=st,{I,O}=s.io,E=s.M.E,p=s.pos;
+ const hx=96+p[0]*176;$('h1').setAttribute('x',hx);$('r1').setAttribute('width',hx-80);
+ const hy=70+p[1]*138;$('h2').setAttribute('y',hy);$('r2').setAttribute('height',hy-64);
+ const h3=540-p[2]*190;$('h3').setAttribute('x',h3);$('r3').setAttribute('x',h3);$('r3').setAttribute('width',560-h3);
+ const pc=$('pc');
+ if(s.mold){pc.setAttribute('x',282);pc.style.fill=s.mold.press>=1.9?'var(--dn)':'';pc.style.display=''}
+ else if(!s.fall){pc.setAttribute('x',Math.max(124,Math.min(300,hx+28))-18);pc.style.fill='';pc.style.display=''}
+ else pc.style.display='none';
+ const pf=$('pf');if(s.fall){pf.style.display='';pf.setAttribute('y',s.fall.y);pf.style.fill=s.fall.ok?'var(--dn)':''}else pf.style.display='none';
+ $('air').setAttribute('opacity',O.EV4?1:0);
+ $('a1').setAttribute('d',`M${h3-14} 218L${h3-70} 232`);$('a2').setAttribute('d',`M${h3-14} 228L${h3-70} 246`);
+ $('beam').setAttribute('stroke',I.FS?'var(--bad)':'var(--ok)');
+ [['l1',I.S1],['l2',I.S2],['l3',I.S3]].forEach(([i,v])=>$(i).style.fill=v?'var(--on)':'var(--ln)');
+ IN.forEach(([k])=>set(k,I[k]));OUT.forEach(([k])=>set(k,O[k]));
+ E.forEach((v,i)=>set('E'+i,v));set('EMERG',s.M.EMERG);
+ $('tp').textContent=s.T.p.et.toFixed(1)+' / 2 s';$('bp').style.width=s.T.p.et/2*100+'%';
+ $('tc').textContent=s.T.c.et.toFixed(1)+' / 20 s';$('bc').style.width=s.T.c.et/20*100+'%';
+ $('bc').style.background=s.T.c.et>14?'var(--bad)':'var(--st)';
+ $('cnt').textContent=s.count;
+ const m=$('msg');let c='msg',t;
+ if(s.M.EMERG){c+=' bad';t=I.EME?'Emergência ou falha memorizada. Desligue PTD para rearmar.':'Emergência ativa: saídas desligadas e cilindros recuando por mola. Libere EME e desligue PTD.'}
+ else{const i=E.indexOf(1);t=i==0?(ui.single?'Repouso. Desligue e ligue PTD para um novo ciclo.':'Repouso. Ligue PTD para iniciar.'):'ETAPA_'+i+': '+ST[i]+'.';if(i>0)c+=' run'}
+ if(m.className!=c)m.className=c;if(m.textContent!=t)m.textContent=t;
 }
-$('#sp').onchange=e=>sp=+e.target.value;
-$('#rs').onclick=()=>{S.fill(0);EM=0;first=1;P.fill(0);pc={in:0,ej:0,sm:0};Tp.u(0,0);Tc.u(0,0)};
-setInterval(()=>{const d=.05*sp;plant(d);scan(d);draw()},50);
-</script></body></html>
+const tg=(id,k,a,b)=>$(id).onclick=()=>{ui[k]=+!ui[k];$(id).setAttribute('aria-pressed',!!ui[k]);$(id).textContent=ui[k]?a:b};
+tg('ptd','ptd','PTD: acionada','PTD: desligada');tg('eme','eme','EME: pressionada','EME: normal');
+$('single').onchange=e=>ui.single=+e.target.checked;
+$('spd').onchange=e=>ui.speed=+e.target.value;
+$('pause').onclick=()=>{ui.run=!ui.run;$('pause').textContent=ui.run?'Pausar':'Continuar'};
+$('rst').onclick=()=>reset();
+document.querySelectorAll('[data-f]').forEach(c=>c.onchange=()=>ui.f[c.dataset.f]=+c.checked);
+reset();scan(SC);draw();
+let last=performance.now(),acc=0;
+(function loop(n){const dt=Math.min((n-last)/1000,.1);last=n;
+ if(ui.run){acc+=dt*ui.speed;while(acc>=SC){scan(SC);acc-=SC}}
+ draw();requestAnimationFrame(loop)})(last);
+</script>
+</body>
+</html>
