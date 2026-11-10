@@ -1,7 +1,5 @@
 # Experimento 3 — Problemas práticos reais: controle de bomba e alimentador de peças
 
-> **Laboratório de Automação — UFABC** · CLP Siemens S7-1500 (CPU 1516F-3 PN/DP)
-
 
 ## 1. Objetivos
 
@@ -29,65 +27,7 @@ Controlar a bomba de um reservatório em dois modos, selecionados por uma chave.
 * Em AUTOMÁTICO, a bomba será ligada 10 Seg. após a detecção de NÍVEL BAIXO e desligada 10 Seg. após a detecção de NÍVEL ALTO . 
 
 
-
-### 3.1 Endereçamento (dado no enunciado)
-
-| Endereço | Estado lógico |
-|---|---|
-| `%I0.0` | **1** se NÍVEL < NÍVEL BAIXO; 0  se NÍVEL > NÍVEL BAIXO |
-| `%I0.1` | **1** se NÍVEL > NÍVEL ALTO; 0 se NÍVEL < NÍVEL ALTO |
-| `%I0.2` | **1** = AUTOMÁTICO; **0** = MANUAL |
-| `%I0.3` | **1** se botão LIGA pressionado |
-| `%I0.4` | **0** se botão DESLIGA pressionado (contato **NF**) |
-| `%Q0.1` | **1** = BOMBA LIGADA |
-
-> ⚠️ `%I0.4` é lido em **0 quando o botão é pressionado**. No ladder, a condição “DESLIGA pressionado” é um contato **NF** `[/I0.4]`.
-
-**Memórias e temporizadores auxiliares**
-
-| Símbolo | Endereço | Função |
-|---|---|---|
-| `BOMBA_ON` | `%M1.0` | estado retido da bomba |
-| `T_BAIXO` | `TON` (DB de instância) | atraso de 10 s para ligar |
-| `T_ALTO` | `TON` (DB de instância) | atraso de 10 s para desligar |
-
-### 3.2 Solução de referência
-
-```
-Rede 1 — Temporizador de nível baixo (somente automático)
-  [ I0.2 ]·[ I0.0 ]  → TON T_BAIXO ( IN, PT = T#10s )
-
-Rede 2 — Temporizador de nível alto (somente automático)
-  [ I0.2 ]·[ I0.1 ]  → TON T_ALTO  ( IN, PT = T#10s )
-
-Rede 3 — Condição de ligar
-  ( [/I0.2 ]·[ I0.3 ] )  ‖  [ T_BAIXO.Q ]            →( SET  M1.0 )
-
-Rede 4 — Condição de desligar (domina sobre ligar)
-  ( [/I0.2 ]·[/I0.4 ] )  ‖  [ T_ALTO.Q ]             →( RESET M1.0 )
-
-Rede 5 — Saída
-  [ M1.0 ]                                           →( Q0.1 )
-```
-
-> **Dica:** posicione o `RESET` **depois** do `SET` na rede. Como o CLP executa as redes em ordem, a última instrução vence: assim o **desligar tem prioridade**.
-> Alternativa: usar o bloco `RS` (reset dominante) no lugar de `SET`/`RESET`.
-
-### 3.3 Testes sugeridos
-
-| # | Modo | Condição | Resultado esperado |
-|---|---|---|---|
-| 1 | Manual | LIGA pressionado | bomba liga e permanece ligada |
-| 2 | Manual | DESLIGA pressionado | bomba desliga |
-| 3 | Manual | nível baixo/alto ativo | **nenhuma ação** das boias |
-| 4 | Automático | `I0.0 = 1` por menos de 10 s e depois `0` | bomba **não** liga (TON reinicia) |
-| 5 | Automático | `I0.0 = 1` por mais de 10 s | bomba liga após 10 s |
-| 6 | Automático | `I0.1 = 1` por mais de 10 s | bomba desliga após 10 s |
-
-### 3.4 Pontos de projeto a discutir
-
-- O que deve acontecer com a bomba quando a chave muda de **manual para automático** com a bomba ligada? (A solução acima mantém o estado; uma alternativa é desligar a bomba ao trocar de modo.)
-- Por que o botão DESLIGA costuma ser NF em instalações reais? (Condição de **falha segura**: cabo rompido = desliga.)
+![alt text](image-25.png)
 
 
 ## 4. Problema 2 — Alimentador de peças com magazine
@@ -108,106 +48,276 @@ d) Caso, a partir do acionamento do botão E1 (considerando que exista peça), o
 
 e) Cada vez que o cilindro alcança o fim de curso, um contador deve ser incrementado. Após 10 peças, um alarme deve ser acionado para que o operador retire o cesto de peças e zere o contador. Enquanto o contador não for zerado, o ciclo da máquina deve ser bloqueado. 
 
-### 4.2 Variáveis lógicas
+![alt text](image-24.png)
 
-> 📝 O enunciado da apostila cita o sensor de peça como “E3” no texto, mas a **tabela de variáveis** o chama de **E4** (e E3 é o botão de retirada de peças). Este roteiro segue a **tabela**.
+Pede-se:
 
-| TAG | Tipo | Dispositivo | Normal | Acionado | Endereço |
-|---|:-:|---|---|:-:|---|
-| E1 | E | Botão de início de ciclo | NA, não retentivo | 1 | `%I0.0` |
-| E2 | E | Fim de curso do cilindro | NA | 1 | `%I0.1` |
-| E3 | E | Botão “operador retirou peças” | NA, não retentivo | 1 | `%I0.2` |
-| E4 | E | Sensor de peça no magazine | NA | 1 | `%I0.3` |
-| S1 | S | Cilindro (1 = avançado) | recuado = 0 | 1 | `%Q0.0` |
-| S2 | S | Alarme: **sem peça** | desligado = 0 | 1 | `%Q0.1` |
-| S3 | S | Alarme: **tempo excedido** | desligado = 0 | 1 | `%Q0.2` |
-| S4* | S | Alarme: **cesto cheio (10 peças)** | desligado = 0 | 1 | `%Q0.3` |
+a) O programa em linguagem ladder que implementa a lógica descrita.
 
-\* O enunciado exige o alarme de cesto cheio mas não o nomeia: adotamos `S4`.
+b) Uma tabela com todos os endereços utilizados com suas descrições (inclusive TMR e CNT).
 
-**Auxiliares**
+c) Devido a um problema técnico, o sensor E4 foi substituído por um do tipo NF(Normal fechado). Refaça o item a utilizando o novo E4.
 
-| Símbolo | Endereço | Função |
+
+# Desenvolvimento dos experimentos
+
+O trabalho tem dois exercícios independentes, cada um com seu programa. Os dois reaproveitam os mesmos endereços de E/S porque são montados em bancadas ou projetos separados.
+
+
+## 1. Descrição do processo
+
+### Exercício 1 — Controle de bomba
+
+Uma bomba enche um tanque com duas boias de nível (baixo e alto), uma chave automático/manual e os botões LIGA e DESLIGA.
+
+- **Manual:** a bomba liga com LIGA e desliga com DESLIGA. As boias não têm nenhuma ação.
+- **Automático:** a bomba liga 10 s após a detecção de NÍVEL BAIXO e desliga 10 s após a detecção de NÍVEL ALTO. Se a condição desaparecer antes dos 10 s, a contagem recomeça.
+
+**Hipóteses adotadas**
+
+- A passagem de manual para automático é sem solavanco: o estado da bomba é mantido até o próximo evento de nível.
+- DESLIGA e EME são normalmente fechados (1 = normal, 0 = pressionado).
+- O botão de emergência desliga a bomba nos dois modos.
+
+### Exercício 2 — Alimentador de peças por magazine
+
+Um cilindro (S1) empurra uma peça de um magazine vertical. O cilindro começa recuado. Com o botão de início (E1) pressionado e peça no magazine, ele avança até o fim de curso (E2) e recua, voltando à condição inicial.
+
+- Se E1 for pressionado e não houver peça, o alarme sonoro S2 toca enquanto E1 estiver pressionado.
+- Se o cilindro levar mais de 10 s para chegar ao fim de curso, o alarme S3 é acionado.
+- A cada fim de curso, um contador é incrementado. Ao chegar a 10 peças, o alarme S4 é acionado para o operador retirar o cesto e zerar o contador. Enquanto o contador não for zerado, o ciclo fica bloqueado.
+- No item c do enunciado, o sensor E4 é trocado por um do tipo NF. Só a network 2 muda.
+
+**Hipóteses adotadas**
+
+- O enunciado cita E3 e E4 de forma inconsistente. Segue-se a tabela: E3 é o botão "operador retirou peças" (zera o contador) e E4 é o sensor de peça no magazine.
+- O enunciado não numera os alarmes de tempo e de cesto cheio. Foram adotados S3 (tempo excedido) e S4 (cesto cheio).
+- O botão E3 também reconhece o alarme de tempo excedido (S3).
+- O início do ciclo exige uma nova pressão de E1 (borda de subida), para um botão mantido apertado não repetir o ciclo.
+
+## 2. Entradas
+
+**Exercício 1**
+
+| Endereço | TAG | Descrição |
 |---|---|---|
-| `P_E1` | `%M0.0` | pulso (borda) de E1 |
-| `P_E2` | `%M0.1` | pulso (borda) de E2 |
-| `P_E3` | `%M0.2` | pulso (borda) de E3 |
-| `CICLO_OK` | `%M1.0` | condições para iniciar |
-| `CHEIO` | `%M1.1` | contador chegou a 10 |
-| `TMR_AV` | `TON` | supervisão de 10 s do avanço |
-| `CNT_PCS` | `CTU` | contador de peças (PV = 10) |
+| %I0.0 | NIVEL_BAIXO | 1 = nível abaixo da boia baixa |
+| %I0.1 | NIVEL_ALTO | 1 = nível acima da boia alta |
+| %I0.2 | AUTO | 1 = automático, 0 = manual |
+| %I0.3 | LIGA | Botão liga |
+| %I0.4 | DESLIGA | Botão desliga (NF) |
+| %I0.5 | EME | Botão de emergência (NF) |
 
-### 4.3 Solução de referência
+**Exercício 2**
+
+| Endereço | TAG | Descrição |
+|---|---|---|
+| %I0.0 | E1_START | Botão de início de ciclo (NA, não retentivo) |
+| %I0.1 | E2_FIM_CURSO | Fim de curso do cilindro (avançado) |
+| %I0.2 | E3_RESET | Botão: operador retirou as peças (zera contador e reconhece alarme de tempo) |
+| %I0.3 | E4_PECA | Sensor de peça no magazine (NA: 1 = há peça) |
+| %I0.4 | EME | Botão de emergência (NF) |
+
+## 3. Saídas
+
+**Exercício 1**
+
+| Endereço | TAG | Descrição |
+|---|---|---|
+| %Q0.1 | BOMBA | Comando da bomba |
+
+**Exercício 2**
+
+| Endereço | TAG | Descrição |
+|---|---|---|
+| %Q0.0 | S1_CILINDRO | Avanço do cilindro |
+| %Q0.1 | S2_ALM_SEM_PECA | Alarme sonoro: sem peça |
+| %Q0.2 | S3_ALM_TEMPO | Alarme: cilindro demorou mais de 10 s |
+| %Q0.3 | S4_ALM_CESTO | Alarme: 10 peças, retirar o cesto |
+
+## 4. Outros recursos
+
+**Exercício 1**
+
+| Recurso | TAG | Descrição |
+|---|---|---|
+| %M10.0 | AUT_ON | Estado da bomba no modo automático (memorizado) |
+| DB "T_LIGA" | T_LIGA | TON, PT = T#10s |
+| DB "T_DESL" | T_DESL | TON, PT = T#10s |
+
+**Exercício 2**
+
+| Recurso | TAG | Descrição |
+|---|---|---|
+| %M10.0 a %M10.2 | ETAPA_0 a ETAPA_2 | Repouso, cilindro avançando, cilindro recuando |
+| %M10.3 | EMERG | Emergência memorizada |
+| %M10.4 | PECA | Há peça no magazine (vem de E4) |
+| %M10.5 | ALM_TEMPO | Alarme de tempo excedido memorizado |
+| %M10.6 | E1_PULSO | Pulso de uma varredura na pressão de E1 |
+| %M11.0 | M_E1_ME | Memória de borda de E1 |
+| DB "C_PECAS" | C_PECAS | CTU, PV = 10 (peças) |
+| DB "T_AVANCO" | T_AVANCO | TON, PT = T#10s |
+| FirstScan | FirstScan | Bit de primeiro ciclo da memória de sistema |
+
+## 5. Configuração no TIA Portal
+
+1. Nas propriedades da CPU, em *Geral → Memória de sistema e de clock*, habilite a memória de sistema (por padrão MB1, com `FirstScan` em %M1.0) e cadastre o bit como `FirstScan`. MB0 e MB1 ficam reservados, por isso os bits usam MB10 e MB11.
+2. Cadastre as tags das seções 2, 3 e 4 na tabela de tags.
+3. Insira os blocos TON e o CTU com DB de instância e os presets da seção 4. Cada bloco deve ser chamado a cada varredura, em uma network própria.
+4. O endereço de bit no TIA vai de 0 a 7 (`byte.bit`).
+
+## 6. Código ladder
+
+Legenda: `] [` contato NA, `]/[` contato NF, `( )` bobina, `( S )` set, `( R )` reset, `P` contato de borda de subida. Monte cada bloco em uma network, na ordem apresentada.
+
+**Exercício 1 — Bomba**
 
 ```
-Rede 1 — Bordas
-  [ I0.0 ] → P_TRIG → ( M0.0 )      // P_E1
-  [ I0.1 ] → P_TRIG → ( M0.1 )      // P_E2
-  [ I0.2 ] → P_TRIG → ( M0.2 )      // P_E3
+NETWORK 1 – Retardo de 10 s para ligar (automático, nível baixo)
+   "AUTO"    "NIVEL_BAIXO"
+ |--] [---------] [---------------[ "T_LIGA" TON  IN  Q ]
+                                      PT := T#10s
 
-Rede 2 — Contador de peças
-  CTU CNT_PCS ( CU = M0.1 , R = M0.2 , PV = 10 )
-  [ CNT_PCS.Q ]                                   →( M1.1 )   // CHEIO
+NETWORK 2 – Retardo de 10 s para desligar (automático, nível alto)
+   "AUTO"    "NIVEL_ALTO"
+ |--] [---------] [---------------[ "T_DESL" TON  IN  Q ]
+                                      PT := T#10s
 
-Rede 3 — Condições iniciais
-  [/Q0.0 ]·[ I0.3 ]·[/M1.1 ]                      →( M1.0 )   // recuado, com peça, não cheio
+NETWORK 3 – Em manual, AUT_ON acompanha a bomba (liga)
+   "AUTO"    "BOMBA"                "AUT_ON"
+ |--]/[--------] [-----------------( S )
 
-Rede 4 — Avança o cilindro
-  [ M0.0 ]·[ M1.0 ]                               →( SET Q0.0 )
+NETWORK 4 – Em manual, AUT_ON acompanha a bomba (desliga)
+   "AUTO"    "BOMBA"                "AUT_ON"
+ |--]/[--------]/[----------------( R )
 
-Rede 5 — Recua no fim de curso
-  [ I0.1 ]                                        →( RESET Q0.0 )
+NETWORK 5 – Nível baixo por 10 s liga a bomba em automático
+   "T_LIGA".Q                       "AUT_ON"
+ |-----] [-------------------------( S )
 
-Rede 6 — Alarme sem peça (enquanto E1 pressionado)
-  [ I0.0 ]·[/I0.3 ]                               →( Q0.1 )
+NETWORK 6 – Nível alto por 10 s desliga a bomba em automático
+   "T_DESL".Q                       "AUT_ON"
+ |-----] [-------------------------( R )
 
-Rede 7 — Supervisão de tempo (10 s)
-  [ Q0.0 ]·[/I0.1 ]  → TON TMR_AV ( IN, PT = T#10s )
-  [ TMR_AV.Q ]                                    →( Q0.2 )
-
-Rede 8 — Alarme de cesto cheio
-  [ M1.1 ]                                        →( Q0.3 )
+NETWORK 7 – Comando da bomba
+   "AUTO"    "AUT_ON"
+ |--] [--------] [-------------------------+
+ |                                          |
+ |  "AUTO"    "LIGA"          "DESLIGA"     |
+ |--]/[--+----] [--+------------] [---------+---] [---( ) "BOMBA"
+ |       | "BOMBA" |                           "EME"
+ |       +----] [--+
 ```
 
-> **Por que usar bordas (`P_TRIG`) em E1 e E2?**
-> - Em E1, para iniciar **um** ciclo por toque.
-> - Em E2, para contar **uma** peça por avanço. O fim de curso pode continuar acionado enquanto o cilindro recua e, sem a borda, a contagem seria incrementada a cada varredura.
+**Exercício 2 — Alimentador por magazine**
 
-### 4.4 Item (c): sensor E4 substituído por tipo **NF**
+```
+NETWORK 1 – Inicialização
+   "FirstScan"                      "ETAPA_0"
+ |----] [------+-------------------( S )
+                |                   "ETAPA_1"
+                +-------------------( R )
+                |                   "ETAPA_2"
+                +-------------------( R )
 
-Com o sensor **normalmente fechado**, o nível lógico é **invertido**: `E4 = 0` passa a significar **peça presente** e `E4 = 1` significa **sem peça**. Basta trocar o tipo de contato nas redes que usam `I0.3`:
+NETWORK 2 – Peça no magazine (E4 tipo NA: 1 = há peça)
+   "E4_PECA"                        "PECA"
+ |----] [---------------------------( )
 
-| Rede | Antes (E4 NA) | Depois (E4 NF) |
-|---|---|---|
-| 3 | `[ I0.3 ]` (peça presente) | `[/I0.3 ]` |
-| 6 | `[/I0.3 ]` (sem peça) | `[ I0.3 ]` |
+   Variante do item c (E4 tipo NF: 0 = há peça): troque o contato
+   "E4_PECA"
+ |----]/[---------------------------( ) "PECA"
 
-> ⚠️ Com NF, o **cabo rompido** também aparece como “sem peça” e o alarme S2 sinaliza o problema. Essa é a vantagem de usar contatos NF em sensores de segurança.
+NETWORK 3 – Emergência (EME pressionado)
+   "EME"                            "EMERG"
+ |----]/[---------+-----------------( S )
+                  |                 "ETAPA_0"
+                  +-----------------( R )
+                  |                 "ETAPA_1"
+                  +-----------------( R )
+                  |                 "ETAPA_2"
+                  +-----------------( R )
 
-### 4.5 Tabela de endereços (item b)
+NETWORK 4 – Rearme: EME liberado e E1 solto
+   "EMERG"   "EME"     "E1_START"             "EMERG"
+ |----] [-----] [------]/[---------+---------( R )
+                                   |         "ETAPA_0"
+                                   +---------( S )
 
-Entregue a tabela completa, **incluindo os endereços de TMR e CNT** (instâncias `TMR_AV` e `CNT_PCS`) e as memórias auxiliares do item 4.2.
+NETWORK 5 – Pulso de E1 (borda de subida)
+   "E1_START"  "M_E1_ME"            "E1_PULSO"
+ |----] P [---------------------------( )
 
-### 4.6 Testes sugeridos
+NETWORK 6 – Contador de peças (vem antes das transições)
+   "ETAPA_1"  "E2_FIM_CURSO"
+ |----] [--------] [---------------[ "C_PECAS" CTU  CU ]
+   "E3_RESET"                          PV := 10
+ |----] [---------------------------[               R  ]
 
-| # | Situação | Esperado |
-|---|---|---|
-| 1 | E4=1, E1 pressionado | S1 avança até E2 e recua |
-| 2 | E4=0, E1 pressionado | S2 soa enquanto E1 estiver pressionado; S1 não avança |
-| 3 | Não acionar E2 por >10 s | S3 liga |
-| 4 | 10 ciclos | S4 liga e o ciclo é bloqueado |
-| 5 | Pressionar E3 | contador zera, S4 desliga, ciclo liberado |
-| 6 | Trocar E4 para NF e repetir | mesmo comportamento com a lógica ajustada |
+NETWORK 7 – Supervisão de 10 s do avanço
+   "ETAPA_1"
+ |----] [---------------------------[ "T_AVANCO" TON  IN  Q ]
+                                        PT := T#10s
 
-## 5. Questões para o relatório
+NETWORK 8 – Reconhece o alarme de tempo (E3)
+   "E3_RESET"                       "ALM_TEMPO"
+ |----] [---------------------------( R )
 
-1. Qual a diferença entre `TON`, `TOF` e `TP`? Por que o `TON` é a escolha para a supervisão de tempo?
-2. O que ocorre com `T_BAIXO` se o nível oscilar em torno do ponto de nível baixo? Como isso protege a bomba?
-3. Como evitar que o cilindro fique avançado indefinidamente caso o alarme S3 dispare?
-4. Quais as vantagens e desvantagens de sensores NA e NF?
+NETWORK 9 – Início do ciclo
+   "ETAPA_0" "E1_PULSO" "PECA" "E2_FIM_CURSO" "C_PECAS".Q "ALM_TEMPO" "EME"      "ETAPA_1"
+ |----] [------] [------] [-------]/[-----------]/[---------]/[--------] [-----+---( S )
+                                                                              |   "ETAPA_0"
+                                                                              +---( R )
 
-## 6. Entregáveis
+NETWORK 10 – Cilindro chegou ao fim de curso
+   "ETAPA_1"  "E2_FIM_CURSO"           "ETAPA_2"
+ |----] [--------] [-----+-------------( S )
+                         |             "ETAPA_1"
+                         +-------------( R )
 
-- Ladder comentado dos Problemas 1 e 2 (incluindo a versão com E4 NF).
-- Tabela de endereços com TMR e CNT.
-- Resultado dos testes das tabelas 3.3 e 4.6.
+NETWORK 11 – Tempo de 10 s excedido: recua e aciona o alarme
+   "ETAPA_1"  "T_AVANCO".Q             "ETAPA_0"
+ |----] [--------] [-----+-------------( S )
+                         |             "ETAPA_1"
+                         +-------------( R )
+                         |             "ALM_TEMPO"
+                         +-------------( S )
+
+NETWORK 12 – Cilindro recuou
+   "ETAPA_2"  "E2_FIM_CURSO"           "ETAPA_0"
+ |----] [--------]/[-----+-------------( S )
+                         |             "ETAPA_2"
+                         +-------------( R )
+
+NETWORK 13 – S1: avanço do cilindro
+   "ETAPA_1"    "EME"                  "S1_CILINDRO"
+ |----] [---------] [------------------( )
+
+NETWORK 14 – S2: alarme sem peça (E1 pressionado e magazine vazio)
+   "ETAPA_0" "E1_START" "PECA"  "EME"  "S2_ALM_SEM_PECA"
+ |----] [------] [------]/[-----] [-----( )
+
+NETWORK 15 – S3: alarme de tempo excedido
+   "ALM_TEMPO"                      "S3_ALM_TEMPO"
+ |----] [---------------------------( )
+
+NETWORK 16 – S4: cesto cheio (10 peças)
+   "C_PECAS".Q                      "S4_ALM_CESTO"
+ |----] [---------------------------( )
+```
+
+## 7. Observações e teste
+
+- **Exercício 1.** O reset do temporizador acontece quando a condição de nível termina. Uma oscilação do nível com menos de 10 s não liga nem desliga a bomba.
+- **Exercício 2.** O contador (network 6) vem antes das transições para contar na varredura em que o fim de curso é atingido.
+- **Exercício 2.** Se o cilindro não chegar ao fim de curso em 10 s, ele recua, o alarme S3 é acionado e o ciclo fica bloqueado até E3.
+- Os botões de emergência reais devem ser cabeados também em hardware (relé de segurança). O ladder não substitui a proteção exigida pela NR-12 e pela ISO 13850.
+- **Teste no PLCSIM, exercício 1:**
+  1. Automático: NIVEL_BAIXO em 1 por 10 s liga a bomba. NIVEL_ALTO em 1 por 10 s desliga.
+  2. Manual: LIGA liga, DESLIGA desliga, e as boias não têm efeito.
+  3. EME em 0 desliga a bomba em qualquer modo.
+- **Teste no PLCSIM, exercício 2:**
+  1. Com E4 em 1, pulse E1: o cilindro avança. Ligue E2 e depois desligue: ele recua e o contador sobe.
+  2. Com E4 em 0, segure E1: S2 deve tocar.
+  3. Não ligue E2 por 10 s: S3 deve acionar e o cilindro recuar.
+  4. Dez ciclos: S4 aciona e o ciclo é bloqueado até pulsar E3.
