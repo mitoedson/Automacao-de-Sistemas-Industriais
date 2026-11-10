@@ -215,5 +215,5 @@ Nas networks 15 a 18, o contato de EME em série em cada saída é uma segunda b
   
 ### Recursos
 
-| [Guia em PDF](manual_experimento10_estampagem.pdf) | 
+| [Guia em PDF](experimento-10-estampagem-pecas.pdf) | 
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_estampagem-pecas.html) |
