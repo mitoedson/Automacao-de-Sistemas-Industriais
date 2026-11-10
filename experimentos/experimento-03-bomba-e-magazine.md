@@ -116,25 +116,35 @@ AUTO_ME deve ser não retentivo. Assim, se o CLP energizar com a chave em autom�
 O botão de emergência desliga a bomba nos dois modos.
 
 2. Entradas
-Endereço	TAG	Descrição
-%I0.0	NIVEL_BAIXO	1 = nível na boia baixa ou abaixo
-%I0.1	NIVEL_ALTO	1 = nível na boia alta ou acima
-%I0.2	AUTO	1 = automático, 0 = manual
-%I0.3	LIGA	Botão liga
-%I0.4	DESLIGA	Botão desliga (NF)
-%I0.5	EME	Botão de emergência (NF)
+<pre>
+Endereço	TAG	           Descrição
+%I0.0	    NIVEL_BAIXO	   1 = nível na boia baixa ou abaixo
+%I0.1	    NIVEL_ALTO	   1 = nível na boia alta ou acima
+%I0.2	    AUTO	   1 = automático, 0 = manual
+%I0.3	    LIGA           Botão liga
+%I0.4	    DESLIGA        Botão desliga (NF)
+%I0.5	    EME	           Botão de emergência (NF)
+</pre>
+
 3. Saídas
-Endereço	TAG	Descrição
-%Q0.1	BOMBA	Comando da bomba (contator KM1)
+<pre>
+Endereço     TAG     Descrição
+%Q0.1        BOMBA   Comando da bomba (contator KM1)
+</pre>
+
 4. Outros recursos
-Recurso	TAG	Descrição
-%M10.0	AUT_ON	Estado da bomba no modo automático (memorizado)
-%M10.1	RETOMA	Aguardando a contagem de partida (troca para automático ou EME)
-%M10.2	AUTO_ME	Memória do modo anterior (não retentiva)
-%M10.3	TROCA_MODO	Pulso de uma varredura na troca de modo
-DB "T_LIGA"	T_LIGA	TON, PT = T#10s (liga, nível baixo)
-DB "T_DESL"	T_DESL	TON, PT = T#10s (desliga, nível alto)
-DB "T_RETOMA"	T_RETOMA	TON, PT = T#10s (partida após troca para automático ou EME)
+
+<pre>
+Recurso	        TAG	    Descrição
+%M10.0	        AUT_ON	    Estado da bomba no modo automático (memorizado)
+%M10.1	        RETOMA	    Aguardando a contagem de partida (troca para automático ou EME)
+%M10.2	        AUTO_ME	    Memória do modo anterior (não retentiva)
+%M10.3	        TROCA_MODO  Pulso de uma varredura na troca de modo
+DB "T_LIGA"	T_LIGA	    TON, PT = T#10s (liga, nível baixo)
+DB "T_DESL"	T_DESL	    TON, PT = T#10s (desliga, nível alto)
+DB "T_RETOMA"	T_RETOMA    TON, PT = T#10s (partida após troca para automático ou EME)
+</pre>
+
 5. Configuração no TIA Portal
 Crie o projeto, adicione a CPU S7-1500 e os módulos de entrada e saída digitais.
 Cadastre as tags das seções 2, 3 e 4 na tabela de tags. Os bits de memória usam MB10 (MB0 e MB1 ficam reservados se a memória de sistema estiver habilitada).
@@ -148,6 +158,7 @@ Para o diagrama de ligação elétrica, veja o manual em PDF.
 
 Legenda: ] [ contato NA, ]/[ contato NF, ( ) bobina, ( S ) set, ( R ) reset. Monte cada bloco em uma network, na ordem apresentada.
 
+<pre>
 NETWORK 1 – Pulso de troca de modo (AUTO diferente do modo anterior)
    "AUTO"   "AUTO_ME"                "TROCA_MODO"
  |--] [-------]/[--------+-----------( )
@@ -223,6 +234,7 @@ NETWORK 16 – Comando da bomba
  |                +--]/[---+--] [--+----] [--------]/[--+-----] [---( ) "BOMBA"
  |                         | "BOMBA"|
  |                         +--] [---+
+</pre>
 
 7. Programação estruturada (SCL)
 
@@ -230,16 +242,19 @@ O mesmo programa como bloco de função FB_Bomba (SCL). Os temporizadores são m
 
 Interface do bloco
 
-Seção	Nome	Tipo	Descrição
+<pre>
+Seção	Nome	        Tipo	Descrição
 Input	NivelBaixo	Bool	Boia baixa
 Input	NivelAlto	Bool	Boia alta
-Input	Auto	Bool	1 = automático
-Input	Liga	Bool	Botão liga
-Input	Desliga	Bool	Botão desliga (NF)
-Input	Eme	Bool	Emergência (NF)
-Output	Bomba	Bool	Comando da bomba
-Static	AutOn, Retoma, AutoMe, TrocaModo	Bool	Memórias (AutoMe não retentiva)
-Static	tLiga, tDesl, tRetoma	TON_TIME	Temporizadores de 10 s
+Input	Auto	        Bool	1 = automático
+Input	Liga	        Bool	Botão liga
+Input	Desliga	        Bool	Botão desliga (NF)
+Input	Eme	        Bool	Emergência (NF)
+Output	Bomba	        Bool	Comando da bomba
+Static	AutOn, Retoma,
+        AutoMe, TrocaModo	Bool	Memórias (AutoMe não retentiva)
+Static	tLiga, tDesl,
+        tRetoma         TON_TIME Temporizadores de 10 s
 pascal
 FUNCTION_BLOCK "FB_Bomba"
 VAR_INPUT
@@ -310,9 +325,11 @@ BEGIN
                    OR (NOT #Auto AND (#Liga OR #Bomba) AND #Desliga AND NOT #NivelAlto))
               AND #Eme;
 END_FUNCTION_BLOCK
+</pre>
 
 Chamada no OB1:
 
+<pre>
 pascal
 "FB_Bomba_DB"(NivelBaixo := "NIVEL_BAIXO",
               NivelAlto  := "NIVEL_ALTO",
@@ -321,15 +338,20 @@ pascal
               Desliga    := "DESLIGA",
               Eme        := "EME",
               Bomba      => "BOMBA");
+</pre>
 
 8. Observações e teste
 
 A contagem dos temporizadores é zerada quando a condição termina. Uma oscilação de nível com menos de 10 s não liga nem desliga a bomba.
 Em automático, o nível ainda varia durante os 10 s de atraso, então a bomba pode ligar abaixo da boia baixa e desligar acima da boia alta.
+
 Os botões de emergência reais devem ser cabeados também em hardware (relé de segurança). O ladder não substitui a proteção exigida pela NR-12 e pela ISO 13850.
 Teste no PLCSIM:
+
 Automático: acione AUTO. Depois de 10 s a bomba liga. NIVEL_ALTO em 1 por 10 s desliga.
+
 Manual: LIGA liga e DESLIGA desliga. Com NIVEL_ALTO em 1, a bomba desliga na hora e o LIGA não funciona.
+
 Com a bomba ligada, troque o modo: a bomba para. Para automático, liga após 10 s. Para manual, só com LIGA.
 EME em 0 desliga em qualquer modo. Em automático, ao soltar, a bomba parte após 10 s.
 
