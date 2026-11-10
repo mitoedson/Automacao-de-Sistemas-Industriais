@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulado – Trabalho 10: carregamento de vagões</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--tx:#17202b;--mu:#5d6b7c;--bd:#cfd6df;--ac:#0a64c8;--on:#16a34a;--of:#c3cad4;--er:#d93f3f;--fl:#c77a10;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0f141a;--pn:#18202a;--tx:#e5eaf1;--mu:#92a1b3;--bd:#2c3745;--ac:#5aa8ff;--on:#37d67a;--of:#374252;--er:#ff7070;--fl:#e0a040;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--pn)}
+h1{font-size:18px;margin:0}h2{font-size:13px;margin:12px 0 6px;color:var(--mu);font-weight:600}h2:first-child{margin-top:0}
+main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;padding:12px;max-width:1100px;margin:auto}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+section{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:12px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.mu{color:var(--mu)}
+button,select{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.led{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--bd);border-radius:6px}
+.led i{width:10px;height:10px;border-radius:50%;background:var(--of)}.led.on i{background:var(--on);box-shadow:0 0 6px var(--on)}
+.bad{color:var(--er);font-weight:600;min-height:1.4em;margin:6px 0}
+svg{width:100%;height:auto;display:block}.t{fill:var(--tx);font:11px system-ui}.m{fill:var(--mu);font:10px system-ui}.o{fill:var(--pn);stroke:var(--tx);stroke-width:1.5}
+@media(prefers-reduced-motion:no-preference){.mv{animation:mv .5s linear infinite}}@keyframes mv{to{stroke-dashoffset:-12}}
+</style></head><body>
+<header><h1>Trabalho 10 · Carregamento de vagões</h1>
+<div class="row"><label>Velocidade <select id="sp"><option value="1">1×</option><option value="5">5×</option><option value="10">10×</option></select></label><button id="rs">Reiniciar CLP</button></div></header>
+<main>
+<section><h2>Pátio de carregamento</h2>
+<svg viewBox="0 0 400 250" role="img" aria-label="Silo, esteira e vagões sobre os trilhos">
+<rect x="150" y="10" width="60" height="50" class="o"/><text x="180" y="40" text-anchor="middle" class="t">Silo</text>
+<circle id="y1" cx="180" cy="68" r="7" class="o"/><text x="194" y="71" class="m">Y1</text>
+<line id="fl" x1="180" y1="75" x2="180" y2="165" stroke="var(--fl)" stroke-width="4" opacity="0"/>
+<rect x="100" y="88" width="170" height="12" rx="6" class="o"/><line id="bt" x1="108" y1="94" x2="262" y2="94" stroke="var(--mu)" stroke-width="2" stroke-dasharray="6 6"/><text x="276" y="98" class="m">Esteira M</text>
+<line x1="0" y1="206" x2="400" y2="206" stroke="var(--tx)" stroke-width="2"/>
+<rect id="tr" x="238" y="196" width="8" height="12" class="o"/><text x="242" y="228" text-anchor="middle" class="m">trava Y2</text>
+<g id="wg"></g></svg>
+<p class="bad" id="em" role="status"></p><p class="mu" id="tm"></p></section>
+<section><h2>Entradas</h2><div class="row" id="in"></div><div class="row"><button id="nv">Enviar vagão</button></div>
+<div class="row" id="ss"></div><h2>Saídas</h2><div class="row" id="out"></div>
+<p class="mu">Reproduz as networks do arquivo .md. S3 e B1 vêm do vagão posicionado; EME é NF (acesa = pressionada).</p></section>
+</main>
+<script>
+const $=s=>document.querySelector(s),E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e};
+class TON{constructor(p){this.p=p;this.t=0;this.q=0}u(i,d){if(i){this.t=Math.min(this.p,this.t+d);this.q=+(this.t>=this.p)}else{this.t=0;this.q=0}}}
+const I={S3:0,B1:0},O={};
+function btn(par,key,txt,mode,init){const b=E('button','',txt);par.append(b);const nf=mode.includes('n'),tog=mode[0]==='t';
+ const set=v=>{I[key]=nf?(v?0:1):(v?1:0);b.classList.toggle('on',!!v);b.setAttribute('aria-pressed',!!v)};set(init||0);
+ if(tog)b.onclick=()=>set(!b.classList.contains('on'));
+ else{b.onpointerdown=()=>set(1);b.onpointerup=b.onpointerleave=b.onpointercancel=()=>set(0)}}
+btn($('#in'),'PTD','PTD (partida)','t');btn($('#in'),'EME','Emergência (EME)','tn');
+const L={};['M','Y1','Y2'].forEach(k=>{const l=E('span','led','<i></i>'+k);$('#out').append(l);L[k]=l});
+['S3 presença','B1 cheio','CHEIO (memória)'].forEach((k,i)=>{const l=E('span','led','<i></i>'+k);$('#ss').append(l);L['s'+i]=l});
+const T7=new TON(7),T15=new TON(15);let M=0,CH=0,sp=1,wag=[];
+function scan(d){
+ M=+!!(I.PTD&&(I.S3||M)&&I.EME&&!T15.q);
+ T15.u(M&&!I.S3,d);
+ if(I.B1&&I.S3)CH=1;if(!I.S3)CH=0;
+ O.Y1=+!!(I.PTD&&M&&I.S3&&!CH&&I.EME);
+ T7.u(CH&&I.S3,d);
+ O.Y2=+!!(T7.q&&I.EME);O.M=M;
+}
+function plant(d){
+ wag.sort((a,b)=>b.p-a.p);
+ wag.forEach((w,i)=>{let n=w.p+14*d;const pv=wag[i-1];if(pv)n=Math.min(n,pv.p-22);if(w.p<=50&&!O.Y2)n=Math.min(n,50);w.p=n});
+ wag=wag.filter(w=>w.p<112);
+ const st=wag.find(w=>Math.abs(w.p-50)<3);
+ if(st&&O.Y1)st.lv=Math.min(100,st.lv+12*d);
+ I.S3=+!!st;I.B1=+!!(st&&st.lv>=100);
+}
+function draw(){
+ for(const k of ['M','Y1','Y2'])L[k].classList.toggle('on',!!O[k]);
+ L.s0.classList.toggle('on',!!I.S3);L.s1.classList.toggle('on',!!I.B1);L.s2.classList.toggle('on',!!CH);
+ $('#y1').style.fill=O.Y1?'var(--on)':'var(--pn)';$('#fl').setAttribute('opacity',O.Y1&&I.S3?1:0);
+ $('#bt').classList.toggle('mv',!!O.M);$('#tr').setAttribute('y',O.Y2?206:196);
+ let h='';wag.forEach(w=>{const x=20+w.p*3.6-35,f=w.lv*.3;
+  h+=`<rect x="${x}" y="166" width="70" height="34" rx="3" class="o"/><rect x="${x+2}" y="${198-f}" width="66" height="${f}" fill="var(--fl)"/><circle cx="${x+16}" cy="203" r="5" class="o"/><circle cx="${x+54}" cy="203" r="5" class="o"/>`});
+ $('#wg').innerHTML=h;
+ $('#tm').textContent=`T_ESVAZ ${T7.t.toFixed(1)} / 7 s · T_ULTIMO ${T15.t.toFixed(1)} / 15 s · vagões no pátio: ${wag.length}`;
+ $('#em').textContent=I.EME?'':'EMERGÊNCIA: motor, Y1 e Y2 desligados. Libere EME para retomar.';
+}
+$('#nv').onclick=()=>{if(wag.length<5&&!wag.some(w=>w.p<10))wag.push({p:-12,lv:0})};
+$('#sp').onchange=e=>sp=+e.target.value;
+$('#rs').onclick=()=>{M=0;CH=0;wag=[];T7.u(0,0);T15.u(0,0)};
+setInterval(()=>{const d=.05*sp;plant(d);scan(d);draw()},50);
+</script></body></html>

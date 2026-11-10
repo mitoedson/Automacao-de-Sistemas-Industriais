@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulado – Trabalho 8: máquina de bebidas</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--tx:#17202b;--mu:#5d6b7c;--bd:#cfd6df;--ac:#0a64c8;--on:#16a34a;--of:#c3cad4;--er:#d93f3f;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0f141a;--pn:#18202a;--tx:#e5eaf1;--mu:#92a1b3;--bd:#2c3745;--ac:#5aa8ff;--on:#37d67a;--of:#374252;--er:#ff7070;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--pn)}
+h1{font-size:18px;margin:0}h2{font-size:13px;margin:12px 0 6px;color:var(--mu);font-weight:600}h2:first-child{margin-top:0}
+main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;padding:12px;max-width:1100px;margin:auto}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+section{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:12px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.mu{color:var(--mu)}
+button,select{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.led{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--bd);border-radius:6px}
+.led i{width:10px;height:10px;border-radius:50%;background:var(--of)}.led.on i{background:var(--on);box-shadow:0 0 6px var(--on)}
+.bad{color:var(--er);font-weight:600;min-height:1.4em;margin:6px 0}
+#st{display:flex;flex-wrap:wrap;gap:4px}#st span{padding:2px 7px;border:1px solid var(--bd);border-radius:5px;font-size:12px;color:var(--mu)}#st .a{background:var(--ac);color:#fff;border-color:var(--ac)}
+svg{width:100%;height:auto;display:block}.t{fill:var(--tx);font:11px system-ui}.m{fill:var(--mu);font:10px system-ui}.o{fill:none;stroke:var(--tx);stroke-width:1.5}
+</style></head><body>
+<header><h1>Trabalho 8 · Máquina de bebidas quentes</h1>
+<div class="row"><label>Velocidade <select id="sp"><option value="1">1×</option><option value="5">5×</option><option value="10">10×</option></select></label><button id="rs">Reiniciar CLP</button></div></header>
+<main>
+<section><h2>Máquina</h2>
+<svg viewBox="0 0 400 270" role="img" aria-label="Reservatórios, válvulas e copo"><g id="hp"></g>
+<g id="cp"><rect x="165" y="150" width="70" height="86" class="o"/><g id="ly"></g></g>
+<text x="200" y="256" text-anchor="middle" class="m" id="cl">sem copo</text></svg>
+<p class="bad" id="em" role="status"></p>
+<h2>Etapas do ladder</h2><div id="st"></div><p class="mu" id="tm"></p></section>
+<section><h2>Entradas</h2><div id="in"></div><h2>Saídas</h2><div class="row" id="out"></div>
+<p class="mu">Reproduz as networks do arquivo .md. Clique nas entradas; a chave de emergência é NF (acesa = pressionada).</p></section>
+</main>
+<script>
+const $=s=>document.querySelector(s),E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e};
+class TON{constructor(p){this.p=p;this.t=0;this.q=0}u(i,d){if(i){this.t=Math.min(this.p,this.t+d);this.q=+(this.t>=this.p)}else{this.t=0;this.q=0}}}
+const I={},O={},SET={};
+function btn(par,key,txt,mode,init){const b=E('button','',txt);par.append(b);const nf=mode.includes('n'),tog=mode[0]==='t';
+ const set=v=>{I[key]=nf?(v?0:1):(v?1:0);b.classList.toggle('on',!!v);b.setAttribute('aria-pressed',!!v)};set(init||0);SET[key]=set;
+ if(tog)b.onclick=()=>set(!b.classList.contains('on'));
+ else{b.onpointerdown=()=>set(1);b.onpointerup=b.onpointerleave=b.onpointercancel=()=>set(0);
+  b.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();set(1)}};b.onkeyup=()=>set(0)}}
+function grp(par,title,keys,labels,def){const w=E('div','row');w.append(E('span','mu',title));
+ const bs=keys.map((k,i)=>{const b=E('button','',labels[i]);b.onclick=()=>sel(i);w.append(b);return b});
+ const sel=i=>{keys.forEach((k,j)=>I[k]=+(i===j));bs.forEach((b,j)=>b.classList.toggle('on',i===j))};sel(def);par.append(w)}
+const inp=$('#in');let r=E('div','row');inp.append(r);
+btn(r,'SC','Copo posicionado (SC)','t');btn(r,'START','START','m');btn(r,'BTC','Alimentador de copos','m');btn(r,'EME','Emergência (EME)','tn');
+grp(inp,'Chave B',['B1','B2','B3'],['B1 café','B2 café com leite','B3 chocolate'],0);
+grp(inp,'Chave A',['A1','A2','A3'],['A1 amargo','A2 doce','A3 extradoce'],1);
+const V=[['VR1','#7a4a2b','Café'],['VR2','#efe6d2','Leite'],['VR3','#4b2c1d','Chocolate'],['VR4','#ffffff','Açúcar'],['VR5','#58b4e8','Água']];
+const L={};[...V,['AC']].forEach(v=>{const l=E('span','led','<i></i>'+v[0]);$('#out').append(l);L[v[0]]=l});
+let hp='';V.forEach((v,i)=>{const x=20+80*i;hp+=`<rect x="${x}" y="10" width="56" height="60" rx="6" fill="${v[1]}" class="o"/><text x="${x+28}" y="86" text-anchor="middle" class="t">${v[2]}</text><text x="${x+28}" y="98" text-anchor="middle" class="m">${v[0]}</text><line id="s${i}" x1="${x+28}" y1="70" x2="200" y2="150" stroke="${v[1]}" stroke-width="3" stroke-dasharray="4 3" opacity="0"/>`});
+$('#hp').innerHTML=hp;
+const NM=['Repouso','Açúcar doce','Açúcar extra','Despacho','Café: café','Café: água','C+L: café','C+L: leite','C+L: água','Choc: leite','Choc: choc.','Choc: água','Retirar copo'];
+NM.forEach((n,i)=>$('#st').append(E('span','',`E${i} ${n}`)));
+const S=Array(13).fill(0),T={1:new TON(4),2:new TON(6),4:new TON(3),5:new TON(5),6:new TON(2),7:new TON(3),8:new TON(7),9:new TON(2),10:new TON(3),11:new TON(6)};
+let EM=0,first=1,lay=[],sp=1;
+const go=(a,b,c)=>{if(S[a]&&c){S[b]=1;S[a]=0}};
+function scan(d){
+ if(first){first=0;S.fill(0);S[0]=1}
+ if(!I.EME||(!I.SC&&!S[0]&&!S[12]&&!EM)){EM=1;S.fill(0)}
+ if(EM&&I.EME&&!I.START){EM=0;S[0]=1}
+ const st=I.START&&I.SC&&(I.B1||I.B2||I.B3);
+ go(0,3,st&&I.A1);go(0,1,st&&I.A2);go(0,2,st&&I.A3);
+ go(1,3,T[1].q);go(2,3,T[2].q);go(3,4,I.B1);go(3,6,I.B2);go(3,9,I.B3);
+ go(4,5,T[4].q);go(5,12,T[5].q);go(6,7,T[6].q);go(7,8,T[7].q);go(8,12,T[8].q);
+ go(9,10,T[9].q);go(10,11,T[10].q);go(11,12,T[11].q);go(12,0,!I.SC);
+ for(const k in T)T[k].u(S[k],d);
+ const e=I.EME;O.VR1=(S[4]||S[6])&&e;O.VR2=(S[7]||S[9])&&e;O.VR3=S[10]&&e;O.VR4=(S[1]||S[2])&&e;O.VR5=(S[5]||S[8]||S[11])&&e;O.AC=S[0]&&I.BTC&&!I.SC&&e;
+}
+function plant(d){
+ if(O.AC&&!I.SC)SET.SC(1);
+ if(!I.SC){lay=[];return}
+ V.forEach(v=>{if(O[v[0]]){const tot=lay.reduce((a,l)=>a+l.h,0),add=Math.min(d*4,80-tot);if(add<=0)return;
+  const t=lay[lay.length-1];t&&t.c===v[1]?t.h+=add:lay.push({c:v[1],h:add})}})}
+function draw(){
+ for(const k in L)L[k].classList.toggle('on',!!O[k]);
+ V.forEach((v,i)=>$('#s'+i).setAttribute('opacity',O[v[0]]&&I.SC?1:0));
+ let y=234,h='';lay.forEach(l=>{y-=l.h;h+=`<rect x="167" y="${y}" width="66" height="${l.h}" fill="${l.c}" stroke="currentColor" stroke-opacity=".2"/>`});
+ $('#ly').innerHTML=h;$('#cp').style.opacity=I.SC?1:.25;$('#cl').textContent=I.SC?'copo posicionado':'sem copo';
+ [...$('#st').children].forEach((c,i)=>c.classList.toggle('a',!!S[i]));
+ const a=S.findIndex((v,i)=>v&&T[i]);$('#tm').textContent=a>=0?`Temporizador T_E${a}: ${T[a].t.toFixed(1)} / ${T[a].p} s`:'';
+ $('#em').textContent=EM?'EMERGÊNCIA / FALHA: libere EME, solte START e reponha o copo para rearmar.':'';
+}
+$('#sp').onchange=e=>sp=+e.target.value;
+$('#rs').onclick=()=>{S.fill(0);EM=0;first=1;lay=[];for(const k in T)T[k].u(0,0)};
+setInterval(()=>{const d=.05*sp;plant(d);scan(d);draw()},50);
+</script></body></html>

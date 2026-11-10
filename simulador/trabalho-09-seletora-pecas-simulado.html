@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulado – Trabalho 9: seletora de peças</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--tx:#17202b;--mu:#5d6b7c;--bd:#cfd6df;--ac:#0a64c8;--on:#16a34a;--of:#c3cad4;--er:#d93f3f;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0f141a;--pn:#18202a;--tx:#e5eaf1;--mu:#92a1b3;--bd:#2c3745;--ac:#5aa8ff;--on:#37d67a;--of:#374252;--er:#ff7070;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--pn)}
+h1{font-size:18px;margin:0}h2{font-size:13px;margin:12px 0 6px;color:var(--mu);font-weight:600}h2:first-child{margin-top:0}
+main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;padding:12px;max-width:1100px;margin:auto}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+section{background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:12px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.mu{color:var(--mu)}
+button,select{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}button:disabled{opacity:.55;cursor:default}
+.led{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--bd);border-radius:6px}
+.led i{width:10px;height:10px;border-radius:50%;background:var(--of)}.led.on i{background:var(--on);box-shadow:0 0 6px var(--on)}
+.bad{color:var(--er);font-weight:600;min-height:1.4em;margin:6px 0}
+#st{display:flex;flex-wrap:wrap;gap:4px}#st span{padding:2px 7px;border:1px solid var(--bd);border-radius:5px;font-size:12px;color:var(--mu)}#st .a{background:var(--ac);color:#fff;border-color:var(--ac)}
+svg{width:100%;height:auto;display:block}.t{fill:var(--tx);font:11px system-ui}.m{fill:var(--mu);font:10px system-ui}.o{fill:var(--pn);stroke:var(--tx);stroke-width:1.5}
+</style></head><body>
+<header><h1>Trabalho 9 · Seletora de peças por altura</h1>
+<div class="row"><label>Velocidade <select id="sp"><option value="1">1×</option><option value="3">3×</option><option value="6">6×</option></select></label><button id="rs">Reiniciar CLP</button></div></header>
+<main>
+<section><h2>Esteira</h2>
+<svg viewBox="0 0 400 230" role="img" aria-label="Esteira com caixas de altas e baixas">
+<rect x="10" y="130" width="46" height="60" class="o"/><text x="33" y="205" text-anchor="middle" class="t">ALTAS</text>
+<rect x="344" y="130" width="46" height="60" class="o"/><text x="367" y="205" text-anchor="middle" class="t">BAIXAS</text>
+<rect x="60" y="150" width="280" height="14" rx="7" class="o"/>
+<rect x="170" y="20" width="60" height="50" class="o"/><text x="200" y="48" text-anchor="middle" class="t">Magazine</text><text x="200" y="62" text-anchor="middle" class="m">Y_PECA</text>
+<circle id="c3" cx="244" cy="136" r="5" class="o"/><text x="254" y="139" class="m">S3</text>
+<circle id="c4" cx="244" cy="112" r="5" class="o"/><text x="254" y="115" class="m">S4</text>
+<circle id="c1" cx="60" cy="146" r="5" class="o"/><text x="42" y="124" class="m">S1</text>
+<circle id="c2" cx="340" cy="146" r="5" class="o"/><text x="346" y="124" class="m">S2</text>
+<rect id="pc" x="0" y="0" width="22" height="20" rx="3" fill="#c77a10" stroke="#000" stroke-opacity=".4"/>
+<text id="dir" x="200" y="186" text-anchor="middle" class="t"></text></svg>
+<p class="bad" id="em" role="status"></p>
+<h2>Etapas do ladder</h2><div id="st"></div><p class="mu" id="tm"></p></section>
+<section><h2>Entradas</h2><div class="row" id="in"></div>
+<div class="row"><span class="mu">Próxima peça</span><select id="pt"><option value="1">Alta (S3 + S4)</option><option value="0">Baixa (só S3)</option></select>
+<button id="rp">Remover peça</button></div>
+<div class="row"><label><input type="checkbox" id="au" checked> Sensores automáticos</label></div>
+<div class="row" id="ms"></div>
+<h2>Saídas</h2><div class="row" id="out"></div>
+<p class="mu">Reproduz as networks do arquivo .md. STOP e EME são NF (acesos = pressionados). Desmarque “Sensores automáticos” para acionar S1 a S4 à mão.</p></section>
+</main>
+<script>
+const $=s=>document.querySelector(s),E=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e};
+class TON{constructor(p){this.p=p;this.t=0;this.q=0}u(i,d){if(i){this.t=Math.min(this.p,this.t+d);this.q=+(this.t>=this.p)}else{this.t=0;this.q=0}}}
+const I={},O={};
+function btn(par,key,txt,mode,init){const b=E('button','',txt);par.append(b);const nf=mode.includes('n'),tog=mode[0]==='t';
+ const set=v=>{I[key]=nf?(v?0:1):(v?1:0);b.classList.toggle('on',!!v);b.setAttribute('aria-pressed',!!v)};set(init||0);
+ if(tog)b.onclick=()=>set(!b.classList.contains('on'));
+ else{b.onpointerdown=()=>set(1);b.onpointerup=b.onpointerleave=b.onpointercancel=()=>set(0);
+  b.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();set(1)}};b.onkeyup=()=>set(0)}return b}
+btn($('#in'),'START','START','m');btn($('#in'),'STOP','STOP (NF)','n');btn($('#in'),'EME','Emergência (EME)','tn');
+const MB=['S1','S2','S3','S4'].map(k=>btn($('#ms'),'m'+k,k+' manual','t'));
+const L={};['M1_ALTAS','M1_BAIXAS','LAMP','Y_PECA'].forEach(k=>{const l=E('span','led','<i></i>'+k);$('#out').append(l);L[k]=l});
+const NM=['Repouso','Peça caindo','Estabiliza 2 s','Vai p/ ALTAS','Vai p/ BAIXAS'];NM.forEach((n,i)=>$('#st').append(E('span','',`E${i} ${n}`)));
+const S=Array(5).fill(0),Tz=new TON(2),Tc=new TON(20);let EM=0,first=1,sp=1,pc={on:0,x:50,hi:1,rm:0};
+const go=(a,b,c)=>{if(S[a]&&c){S[b]=1;S[a]=0}};
+function scan(d){
+ if(first){first=0;S.fill(0);S[0]=1}
+ Tc.u(!S[0]&&!EM,d);
+ if(!I.EME||Tc.q){EM=1;S.fill(0)}
+ if(EM&&I.EME&&!I.START){EM=0;S[0]=1}
+ if(!I.STOP&&!EM){S.fill(0);S[0]=1}
+ go(0,1,I.START&&I.STOP);go(1,2,I.S3);go(2,3,Tz.q&&I.S4);go(2,4,Tz.q&&!I.S4);go(3,0,I.S1);go(4,0,I.S2);
+ Tz.u(S[2],d);
+ const e=I.EME;O.Y_PECA=S[1]&&e;O.M1_ALTAS=S[3]&&!O.M1_BAIXAS&&e;O.M1_BAIXAS=S[4]&&!O.M1_ALTAS&&e;O.LAMP=!S[0]&&!EM;
+}
+function plant(d){
+ if(O.Y_PECA&&!pc.on)pc={on:1,x:50,hi:+$('#pt').value,rm:0};
+ if(pc.on){if(O.M1_ALTAS)pc.x-=25*d;if(O.M1_BAIXAS)pc.x+=25*d;pc.x=Math.max(0,Math.min(100,pc.x));
+  if((pc.x<=6||pc.x>=94)&&!O.M1_ALTAS&&!O.M1_BAIXAS){pc.rm+=d;if(pc.rm>1.5)pc.on=0}}
+ const au=$('#au').checked;MB.forEach(b=>b.disabled=au);
+ const c3=pc.on&&Math.abs(pc.x-50)<4;
+ I.S3=au?+!!c3:I.mS3;I.S4=au?+!!(c3&&pc.hi):I.mS4;I.S1=au?+!!(pc.on&&pc.x<=6):I.mS1;I.S2=au?+!!(pc.on&&pc.x>=94):I.mS2;
+}
+function draw(){
+ for(const k in L)L[k].classList.toggle('on',!!O[k]);
+ [['c1','S1'],['c2','S2'],['c3','S3'],['c4','S4']].forEach(([c,k])=>$('#'+c).style.fill=I[k]?'var(--on)':'var(--pn)');
+ const p=$('#pc');p.style.display=pc.on?'':'none';p.setAttribute('x',60+pc.x*2.8-11);p.setAttribute('height',pc.hi?34:20);p.setAttribute('y',150-(pc.hi?34:20));
+ $('#dir').textContent=O.M1_ALTAS?'◀ sentido ALTAS':O.M1_BAIXAS?'sentido BAIXAS ▶':'esteira parada';
+ [...$('#st').children].forEach((c,i)=>c.classList.toggle('a',!!S[i]));
+ $('#tm').textContent=`T_ESTAB ${Tz.t.toFixed(1)} / 2 s · T_CICLO ${Tc.t.toFixed(1)} / 20 s`;
+ $('#em').textContent=EM?'EMERGÊNCIA / FALHA: libere EME e solte START para rearmar.':'';
+}
+$('#sp').onchange=e=>sp=+e.target.value;$('#rp').onclick=()=>pc.on=0;
+$('#rs').onclick=()=>{S.fill(0);EM=0;first=1;pc.on=0;Tz.u(0,0);Tc.u(0,0)};
+setInterval(()=>{const d=.05*sp;plant(d);scan(d);draw()},50);
+</script></body></html>
