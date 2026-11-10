@@ -469,3 +469,9 @@ NETWORK 37 – Aviso de lotado
   1. SE_ENT em 1: o semáforo de entrada fica verde. Pulse TIQ_RET: a cancela levanta. Ligue e desligue SPASS: o contador sobe e a cancela fecha em 3 s.
   2. SE_ENT e SE_SAI juntos: eles alternam. Com FILA_ENT em 1, a entrada passa na frente.
   3. Force o contador em 100: LOTADO acende e a entrada não é atendida.
+
+  
+  ### Recursos
+
+| [Guia em PDF](experimento-10-.pdf) | 
+| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_.html) |

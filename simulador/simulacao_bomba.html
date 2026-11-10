@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Experimento 3.1 — Bomba manual e automático</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--ink:#16202b;--mut:#5d6b7a;--ln:#d3dae2;--on:#15803d;--off:#c3ccd6;--ac:#0e7490;--bad:#dc2626;--w:#38a3c7;--st:#8a96a3}
+@media(prefers-color-scheme:dark){:root{--bg:#0e141b;--pn:#16202a;--ink:#e4eaf0;--mut:#8d9bab;--ln:#27333f;--on:#22c55e;--off:#33414f;--ac:#38bdf8;--w:#0e7490;--st:#64748b}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pn);border-bottom:1px solid var(--ln)}
+h1{font-size:17px;margin:0}header p{margin:0;color:var(--mut);font-size:12px}
+.tools{display:flex;gap:6px}
+main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr);gap:14px;padding:14px;max-width:1240px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+aside{display:grid;gap:14px;align-content:start}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:12px 14px}
+h2{font-size:13px;font-weight:600;margin:0 0 6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln)}h2+.row{border-top:0}
+code{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--mut)}
+button,select{font:inherit;border:1px solid var(--ln);background:var(--pn);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer;touch-action:manipulation}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on{background:var(--ac);border-color:var(--ac);color:var(--pn)}
+.led{width:13px;height:13px;border-radius:50%;background:var(--off);flex:none}.led.on{background:var(--on);box-shadow:0 0 7px var(--on)}.led.al.on{background:var(--bad);box-shadow:0 0 7px var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}td{padding:3px 4px;border-top:1px solid var(--ln)}td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--ink);font:12px system-ui,sans-serif}svg .m{fill:var(--mut);font-size:11px}
+.lamp{fill:var(--off);stroke:var(--st)}.lamp.lit{fill:var(--on)}.lamp.al.lit{fill:var(--bad)}
+input[type=range]{width:110px}
+.note{font-size:12px;color:var(--mut);margin:8px 0 0}
+@keyframes sp{to{transform:rotate(360deg)}}@keyframes dsh{to{stroke-dashoffset:-32}}
+.spin{animation:sp .6s linear infinite;transform-box:fill-box;transform-origin:center}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><div><h1>Experimento 3.1 — Bomba com modo manual e automático</h1><p>Ladder em varredura de 50 ms (tempo simulado). Atrasos de 10 s conforme o enunciado.</p></div>
+<div class="tools"><select id="sp" aria-label="Velocidade"><option value="1">1×</option><option value="2">2×</option><option value="5">5×</option><option value="10">10×</option></select><button id="ps">Pausar</button><button id="rs">Reiniciar</button></div></header>
+<main>
+<section class="card">
+<svg viewBox="0 0 520 345" role="img" aria-label="Reservatório com bomba e boias de nível">
+<path d="M70 262V28H260V58" fill="none" stroke="var(--st)" stroke-width="8"/>
+<path id="fl" d="M70 262V28H260V58" fill="none" stroke="var(--ac)" stroke-width="3" stroke-dasharray="6 10" style="animation:dsh .5s linear infinite" opacity="0"/>
+<rect id="wt" x="172" y="165" width="176" height="125" fill="var(--w)" opacity=".75"/>
+<rect x="170" y="40" width="180" height="250" fill="none" stroke="var(--ink)" stroke-width="3"/>
+<line x1="160" x2="360" y1="90" y2="90" stroke="var(--st)" stroke-dasharray="4 4"/>
+<line x1="160" x2="360" y1="240" y2="240" stroke="var(--st)" stroke-dasharray="4 4"/>
+<circle id="fa" class="lamp" cx="380" cy="90" r="7"/><text x="394" y="94">Boia alta</text>
+<circle id="fb" class="lamp" cx="380" cy="240" r="7"/><text x="394" y="244">Boia baixa</text>
+<text id="lv" x="260" y="170" text-anchor="middle" font-size="18" font-weight="600">50 %</text>
+<circle cx="70" cy="290" r="28" fill="var(--pn)" stroke="var(--ink)" stroke-width="3"/>
+<g transform="translate(70 290)"><g id="imp"><path d="M0-16V16M-16 0H16" stroke="var(--ink)" stroke-width="4"/></g></g>
+<text x="70" y="338" text-anchor="middle">Bomba</text>
+<path d="M350 272H480" stroke="var(--st)" stroke-width="8"/>
+<path id="out" d="M350 272H480" stroke="var(--ac)" stroke-width="3" stroke-dasharray="6 10" style="animation:dsh .8s linear infinite"/>
+<text class="m" x="415" y="256" text-anchor="middle">consumo</text>
+</svg>
+<p class="note">Automático: liga após 10 s com nível baixo e desliga após 10 s com nível alto, e o nível ainda varia nesse intervalo. Manual: a boia alta em 1 desliga a bomba na hora e bloqueia o LIGA enquanto o nível estiver alto. Ir para automático (inclusive a primeira vez) abre uma contagem de 10 s e a bomba começa a encher; ir para manual para a bomba até o LIGA. Em automático, soltar a EME também refaz os 10 s antes de partir.</p>
+</section>
+<aside>
+<div class="card"><h2>Entradas</h2>
+<div class="row"><span><code>%I0.2</code> AUTO</span><button data-t="auto" data-on="Automático" data-off="Manual">Manual</button></div>
+<div class="row"><span><code>%I0.3</code> LIGA</span><button data-p="liga">Pressionar</button></div>
+<div class="row"><span><code>%I0.4</code> DESLIGA (NF)</span><button data-p="des">Pressionar</button></div>
+<div class="row"><span><code>%I0.5</code> EME (NF)</span><button data-t="eme" data-on="Pressionada (0)" data-off="Solta (1)">Solta (1)</button></div>
+<div class="row"><span>Boias</span><select id="bm"><option value="0">Tanque simulado</option><option value="1">Forçar manualmente</option></select></div>
+<div id="rb" hidden>
+<div class="row"><span><code>%I0.0</code> NIVEL_BAIXO</span><button data-t="nb" data-on="1" data-off="0">0</button></div>
+<div class="row"><span><code>%I0.1</code> NIVEL_ALTO</span><button data-t="na" data-on="1" data-off="0">0</button></div></div>
+<div class="row"><label for="cs">Consumo do tanque</label><span><input type="range" id="cs" min="0" max="2.5" step=".1" value="1"> <output id="co">1,0 %/s</output></span></div>
+</div>
+<div class="card"><h2>Saídas</h2>
+<div class="row"><span><code>%Q0.1</code> BOMBA</span><i class="led" id="q1"></i></div></div>
+<div class="card"><h2>Variáveis</h2><table id="tg"></table></div>
+</aside></main>
+<script>
+const $=s=>document.querySelector(s),I={};
+class TON{constructor(p){this.pt=p;this.et=0;this.q=0}run(i,d){if(i){this.et=Math.min(this.pt,this.et+d);this.q=this.et>=this.pt?1:0}else{this.et=0;this.q=0}}}
+const lab=b=>{if(b.dataset.on)b.textContent=I[b.dataset.t]?b.dataset.on:b.dataset.off};
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{I[b.dataset.t]^=1;b.classList.toggle('on',!!I[b.dataset.t]);lab(b)});
+document.querySelectorAll('[data-p]').forEach(b=>{const k=b.dataset.p,up=()=>setTimeout(()=>{I[k]=0;b.classList.remove('on')},120);b.onpointerdown=e=>{e.preventDefault();I[k]=1;b.classList.add('on')};b.onpointerup=up;b.onpointerleave=()=>{if(I[k])up()}});
+let spd=1,run=1;
+$('#sp').onchange=e=>spd=+e.target.value;$('#ps').onclick=e=>{run^=1;e.target.textContent=run?'Pausar':'Continuar'};$('#rs').onclick=()=>location.reload();
+const S=(i,a,v)=>$('#'+i).setAttribute(a,v),L=(i,v)=>$('#'+i).classList.toggle('lit',!!v),O=(i,v)=>$('#'+i).classList.toggle('on',!!v);
+function tbl(el,rows){$(el).innerHTML=rows.map((r,i)=>`<tr><td><code>${r[0]}</code></td><td>${r[1]}</td><td id="${el.slice(1)}${i}"></td></tr>`).join('')}
+function upd(el,rows){rows.forEach((r,i)=>$(el+i).textContent=r[2]())}
+
+/* ---- Programa ladder (Experimento 3, exercício 1) ---- */
+let lvl=50,Q=0,NBv=0,NAv=0,cons=1;const m={aut:0,am:0,rt:0},tl=new TON(10),td=new TON(10),tr=new TON(10);
+const T=[['—','Nível do tanque',()=>lvl.toFixed(0)+' %'],['%I0.0','NIVEL_BAIXO',()=>NBv],['%I0.1','NIVEL_ALTO',()=>NAv],['%M10.0','AUT_ON',()=>m.aut],['DB','T_LIGA (ET / PT)',()=>tl.et.toFixed(1)+' / 10 s'],['DB','T_DESL (ET / PT)',()=>td.et.toFixed(1)+' / 10 s'],['%M10.1','RETOMA (aguardando retomar)',()=>m.rt],['DB','T_RETOMA (ET / PT)',()=>tr.et.toFixed(1)+' / 10 s']];
+tbl('#tg',T);
+$('#bm').onchange=e=>{I.bm=+e.target.value;$('#rb').hidden=!I.bm};
+$('#cs').oninput=e=>{cons=+e.target.value;$('#co').textContent=cons.toFixed(1).replace('.',',')+' %/s'};
+function scan(dt){
+  NBv=I.bm?(I.nb?1:0):(lvl<=20?1:0);NAv=I.bm?(I.na?1:0):(lvl>=80?1:0);
+  const A=I.auto?1:0,LG=I.liga?1:0,DS=I.des?0:1,EM=I.eme?0:1;
+  const CHG=(A!==m.am)?1:0;m.am=A;                      // N0: troca de modo (pulso)
+  tl.run(A&&NBv&&EM,dt);td.run(A&&NAv,dt);             // N1, N2 (EME pressionada zera a contagem de ligar)
+  tr.run(A&&m.rt&&EM,dt);                               // N2b: contagem de partida/retomada
+  if(!A&&Q)m.aut=1;if(!A&&!Q)m.aut=0;                   // N3, N4
+  if(tl.q)m.aut=1;if(tr.q){m.aut=1;m.rt=0}if(td.q)m.aut=0; // N5, N6
+  if(!EM&&A){if(m.aut)m.rt=1;m.aut=0}                   // EME em automático: para; ao soltar, refaz os 10 s e parte
+  if(CHG){m.rt=A?1:0;m.aut=0}                           // troca de modo: para; indo para automático (inclusive na 1ª vez), conta 10 s e enche
+  Q=(!CHG&&(((A&&m.aut)||(!A&&(LG||Q)&&DS&&!NAv))&&EM))?1:0; // N7: em manual, boia alta desliga e bloqueia o LIGA
+  lvl=Math.max(0,Math.min(100,lvl+((Q?2.5:0)-cons)*dt)); // processo
+}
+function draw(){
+  const h=2.5*lvl;S('wt','y',290-h);S('wt','height',h);$('#lv').textContent=lvl.toFixed(0)+' %';
+  L('fa',NAv);L('fb',NBv);$('#imp').classList.toggle('spin',!!Q);S('fl','opacity',Q?1:0);
+  S('out','opacity',cons>0?1:0);S('out','style',`animation:dsh ${(1.6/Math.max(cons,.2)).toFixed(2)}s linear infinite`);
+  O('q1',Q);upd('#tg',T);
+}
+setInterval(()=>{if(!run)return;for(let k=0;k<spd;k++)scan(.05);draw()},50);draw();
+</script></body></html>
