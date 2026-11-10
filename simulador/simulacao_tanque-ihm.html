@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulador — Experimento 5: controle de nível de tanque com IHM</title>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--ink:#16222d;--mut:#5d6b78;--ln:#cfd7de;--st:#7f98ae;--st2:#3f5a73;--on:#e0a100;--ok:#1f9d55;--bad:#d03c35;--w:#4aa3c7;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1820;--pn:#18232e;--ink:#e4ebf1;--mut:#92a1af;--ln:#2c3b49;--st:#58758f;--st2:#8fb0cc;--on:#f0b429;--ok:#3ec97c;--bad:#ff6b63;--w:#5bb6da;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header,main{max-width:1180px;margin:auto;padding:0 20px}
+header{padding-top:18px}h1{font-size:1.35rem;margin:0 0 2px}header p{margin:0 0 10px;color:var(--mut)}
+main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:14px;padding-bottom:30px}
+section{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:12px 14px}
+h2{font-size:.95rem;margin:0 0 8px}
+svg{width:100%;height:auto;display:block}
+.t{fill:var(--ink);font:600 12px system-ui,sans-serif}.m{fill:var(--mut);font:11px system-ui,sans-serif}
+.pipe{fill:none;stroke:var(--st);stroke-width:7}.flow{fill:none;stroke:var(--w);stroke-width:3;stroke-dasharray:8 8;opacity:0}
+.flow.on{opacity:1;animation:f .6s linear infinite}@keyframes f{to{stroke-dashoffset:-16}}
+.rotor{transform-origin:550px 265px}.rotor.on{animation:r .5s linear infinite}@keyframes r{to{transform:rotate(360deg)}}
+.hmi{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;align-items:stretch}
+.box{border:2px solid var(--st2);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.box b{font-size:.8rem}.row{display:flex;gap:8px;flex-wrap:wrap}
+button,select,input[type=number]{font:inherit;color:var(--ink);background:var(--pn);border:1px solid var(--ln);border-radius:7px;padding:6px 11px;cursor:pointer}
+input[type=number]{width:70px;cursor:text}
+button.round{border-radius:999px;border-width:3px;min-width:64px}
+#liga{border-color:var(--ok)}#desl{border-color:var(--bad)}
+button[aria-pressed=true]{background:var(--st2);color:var(--pn)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--on);outline-offset:2px}
+.msg{margin-top:10px;padding:9px 11px;border-radius:7px;background:var(--bg);border-left:4px solid var(--st)}
+.led{display:flex;align-items:center;gap:8px;padding:2px 0;font-size:.88rem}.led code{min-width:46px;font-weight:600}.led small{color:var(--mut)}
+.d{width:12px;height:12px;border-radius:50%;background:var(--ln);border:1px solid var(--mut);flex:none}
+.led.on .d{background:var(--on);border-color:var(--on);box-shadow:0 0 6px var(--on)}
+.bar{height:9px;border-radius:5px;background:var(--bg);border:1px solid var(--ln);overflow:hidden;margin:3px 0 9px}.bar i{display:block;height:100%;width:0;background:var(--st)}
+code{font-family:ui-monospace,Consolas,monospace}label{display:flex;gap:8px;align-items:center;margin:5px 0}
+.side{display:grid;gap:14px;align-content:start}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.flow.on,.rotor.on{animation:none}}
+</style>
+</head>
+<body>
+<header>
+<h1>Experimento 5 — Controle de nível de tanque com IHM</h1>
+<p>O ladder implementado (POU PLC_PRG, 33 networks) roda aqui em ciclos de 20 ms. Use a IHM abaixo como no experimento.</p>
+</header>
+<main>
+<section aria-label="IHM">
+<svg viewBox="0 0 640 340" role="img" aria-label="Tanque com sensores de nível, bomba e dreno">
+<path d="M100 20V250H220V20" fill="none" stroke="var(--st2)" stroke-width="4"/>
+<clipPath id="cp"><rect x="102" y="20" width="116" height="228"/></clipPath>
+<rect id="water" x="102" y="248" width="116" height="0" fill="var(--w)" opacity=".75" clip-path="url(#cp)"/>
+<line x1="100" x2="220" y1="66" y2="66" stroke="var(--mut)" stroke-dasharray="3 4"/><line x1="100" x2="220" y1="204" y2="204" stroke="var(--mut)" stroke-dasharray="3 4"/>
+<text class="t" x="14" y="62">NÍVEL ALTO</text><circle id="lA" cx="82" cy="66" r="8" fill="var(--ln)" stroke="var(--mut)"/>
+<text class="t" x="8" y="200">NÍVEL BAIXO</text><circle id="lB" cx="82" cy="204" r="8" fill="var(--ln)" stroke="var(--mut)"/>
+<rect x="240" y="90" width="150" height="40" rx="3" fill="none" stroke="var(--ln)"/><text class="t" id="cap" x="252" y="115">CAPACIDADE: 0 %</text>
+<text class="m" x="240" y="152" id="rest">Tempo para encher: 50 s</text>
+<path class="pipe" d="M500 262H400V40H220"/><path id="f1" class="flow" d="M500 262H400V40H222"/>
+<path class="pipe" d="M160 250V300H60"/><path id="f2" class="flow" d="M160 250V300H62"/>
+<rect x="500" y="240" width="110" height="50" rx="10" fill="none" stroke="var(--st2)" stroke-width="3"/>
+<g class="rotor" id="rot"><circle cx="550" cy="265" r="16" fill="none" stroke="var(--st2)" stroke-width="3"/><path d="M550 249V281M534 265H566" stroke="var(--st2)" stroke-width="3"/></g>
+<text class="t" x="520" y="318">BOMBA</text><circle id="lP" cx="590" cy="313" r="8" fill="var(--ln)" stroke="var(--mut)"/>
+<text class="t" x="20" y="326">DRENO</text><circle id="lD" cx="88" cy="322" r="8" fill="var(--ln)" stroke="var(--mut)"/>
+</svg>
+<div class="hmi">
+<div class="box"><b>Modo e bomba</b><div class="row">
+<button id="am" role="switch" aria-checked="false">Manual</button>
+<button id="liga" class="round">LIGA</button><button id="desl" class="round">DESL.</button></div></div>
+<div class="box"><b>Dreno</b><div class="row"><button id="esv" class="round">Esvaziar</button><button id="par" class="round">Parar</button></div></div>
+</div>
+<div id="msg" class="msg" role="status" aria-live="polite"></div>
+</section>
+<div class="side">
+<section><h2>Programa</h2><div id="li"></div><div id="lq"></div>
+<div>NIVEL (M01) <code id="n">0 / 50</code></div><div class="bar"><i id="bn"></i></div>
+<div>TON01 atraso de partida <code id="t1">0.0 s</code></div><div class="bar"><i id="b1"></i></div>
+<div>TON02 atraso de parada <code id="t2">0.0 s</code></div><div class="bar"><i id="b2"></i></div></section>
+<section><h2>Ajustes</h2>
+<label>Atraso de partida (s) <input type="number" id="p1" min="1" max="60" value="10"></label>
+<label>Atraso de parada (s) <input type="number" id="p2" min="1" max="60" value="11"></label>
+<label>Velocidade <select id="spd"><option value="1">1×</option><option value="5">5×</option><option value="20">20×</option></select></label>
+<div class="row"><button id="pause">Pausar</button><button id="rst">Reiniciar</button></div>
+<small class="m">No ladder do experimento os atrasos são constantes (T#10S e T#11S). Os campos permitem testar valores de IHM.</small></section>
+</div>
+</main>
+<script>
+const $=id=>document.getElementById(id),SC=.02;
+const IN=[['I00','SN_BAIXO'],['I01','SN_ALTO'],['I02','AUTO'],['I03','LIGA'],['I04','DESL'],['I05','BT_ESV'],['I06','BT_PARA_ESV']];
+const OUT=[['Q01','BOMBA'],['Q02','DRENO'],['Q03','ENCHENDO'],['M05','TICK']];
+const row=([k,n])=>`<div class="led" id="led-${k}"><span class="d"></span><code>${k}</code><small>${n}</small></div>`;
+$('li').innerHTML=IN.map(row).join('');$('lq').innerHTML=OUT.map(row).join('');
+let V,AUTO,MAN,LIGA,DESL,T1,T2,run=1,speed=1;
+function reset(){V={I00:0,I01:0,I02:0,I03:0,I04:1,I05:0,I06:0,Q01:0,Q02:0,Q03:0,M01:0,M02:50,M03:0,M04:20,M05:0,M06:0};
+ AUTO={p:0};MAN={p:0};LIGA={p:0};DESL={p:0};T1={et:0,q:0};T2={et:0,q:0}}
+const rt=(o,c)=>{const q=c&&!o.p;o.p=c;return q},ft=(o,c)=>{const q=!c&&o.p;o.p=c;return q};
+function ton(t,i,pt,dt){if(i){t.et=Math.min(pt,t.et+dt);t.q=t.et>=pt}else{t.et=0;t.q=false}}
+function scan(dt){const v=V,b=x=>+!!x;
+ // NETWORKS 1 a 8: sensores simulados pelo nível
+ if(v.M01<10)v.I00=1; if(v.M01==10&&v.Q02)v.I00=1; if(v.M01>10)v.I00=0; if(v.M01==10&&v.Q01)v.I00=0;
+ if(v.M01>40)v.I01=1; if(v.M01==40&&v.Q01)v.I01=1; if(v.M01<40)v.I01=0; if(v.M01==40&&v.Q02)v.I01=0;
+ // NETWORK 9: bordas do seletor
+ const aP=rt(AUTO,v.I02),mP=ft(MAN,v.I02);
+ // NETWORKS 10 a 13: esvaziamento (parar prevalece)
+ if(v.I05&&v.M01>0)v.Q02=1;
+ if(v.Q02&&v.M01<=0){v.I05=0;v.I04=1;v.I03=0;v.I02=0}
+ if(v.I06)v.Q02=0; if(v.M01<=0)v.Q02=0;
+ // NETWORKS 14 a 16: ciclo automático de enchimento
+ if(v.I02&&!v.Q02&&!v.I05&&!v.I06&&v.M01<50)v.Q03=1;
+ if(!v.I02||v.Q02)v.Q03=0;
+ if(T2.q||v.M01>=50)v.Q03=0;
+ // NETWORKS 17 e 18: atrasos de partida e de parada
+ ton(T1,v.I02&&v.Q03&&!v.Q01&&!v.Q02,+$('p1').value||10,dt);
+ ton(T2,v.I02&&v.Q01&&v.I01,+$('p2').value||11,dt);
+ // NETWORKS 19 a 22: exclusão mútua LIGA / DESL por borda
+ const lP=rt(LIGA,v.I03),dP=rt(DESL,v.I04);
+ if(lP)v.I04=0; if(dP)v.I03=0;
+ // NETWORK 23: liga a bomba (automático e manual)
+ if((T1.q||(!v.I02&&v.I03))&&!v.Q02&&v.M01<50)v.Q01=1;
+ // NETWORK 24: desliga a bomba (depois do Set, por isso prevalece)
+ if(aP||mP||v.Q02||T2.q||v.M01>=50||(!v.I02&&v.I04))v.Q01=0;
+ // NETWORKS 25 a 27: manual parado e mudança de modo
+ if(!v.I02&&!v.Q01&&v.I03){v.I04=1;v.I03=0}
+ if(aP)v.I04=1; if(mP)v.I03=0;
+ // NETWORKS 28 a 32: relógio de 1 s e nível
+ if(v.Q01||v.Q02)v.M03+=v.M04;
+ v.M05=b(v.M03>=1000);
+ if(v.M05)v.M03-=1000;
+ if(v.M05&&v.Q01){v.M06=v.M01+1;v.M01=Math.min(v.M06,50)}
+ if(v.M05&&v.Q02){v.M06=v.M01-1;v.M01=Math.max(v.M06,0)}
+ // NETWORK 33: tempo restante de enchimento
+ v.M02=50-v.M01}
+const set=(k,x)=>$('led-'+k).classList.toggle('on',!!x),fill=(i,c)=>$(i).style.fill=c?c:'var(--ln)';
+function draw(){const v=V,h=v.M01/50*228;
+ $('water').setAttribute('y',248-h);$('water').setAttribute('height',h);
+ fill('lA',v.I01&&'var(--bad)');fill('lB',v.I00&&'var(--on)');fill('lP',v.Q01&&'var(--ok)');fill('lD',v.Q02&&'var(--bad)');
+ $('cap').textContent='CAPACIDADE: '+Math.round(v.M01*2)+' %';$('rest').textContent='Tempo para encher: '+v.M02+' s';
+ $('f1').classList.toggle('on',!!v.Q01);$('f2').classList.toggle('on',!!v.Q02);$('rot').classList.toggle('on',!!v.Q01);
+ [...IN,...OUT].forEach(([k])=>set(k,v[k]));
+ $('n').textContent=v.M01+' / 50';$('bn').style.width=v.M01*2+'%';
+ const p1=+$('p1').value||10,p2=+$('p2').value||11;
+ $('t1').textContent=T1.et.toFixed(1)+' / '+p1+' s';$('b1').style.width=T1.et/p1*100+'%';
+ $('t2').textContent=T2.et.toFixed(1)+' / '+p2+' s';$('b2').style.width=T2.et/p2*100+'%';
+ $('am').textContent=v.I02?'Automático':'Manual';$('am').setAttribute('aria-checked',!!v.I02);$('am').setAttribute('aria-pressed',!!v.I02);
+ let t;const m=v.I02?'Automático':'Manual';
+ if(v.Q02)t='Esvaziando o tanque. A bomba fica bloqueada.';
+ else if(v.Q01)t=m+': bomba ligada, enchendo.'+(v.I02&&v.I01?' Nível alto detectado, parada em '+Math.max(0,p2-T2.et).toFixed(0)+' s.':'');
+ else if(v.I02&&v.Q03)t='Automático: bomba parte em '+Math.max(0,p1-T1.et).toFixed(0)+' s.';
+ else if(v.M01>=50)t=m+': tanque cheio. Use Esvaziar para recomeçar.';
+ else t=m+': bomba desligada.'+(v.I02?'':' Use LIGA para encher.');
+ if($('msg').textContent!=t)$('msg').textContent=t}
+const hold=(id,k)=>{const e=$(id);e.onclick=()=>{V[k]=1;setTimeout(()=>V[k]=0,150)}};
+hold('esv','I05');hold('par','I06');
+$('liga').onclick=()=>V.I03=1;$('desl').onclick=()=>V.I04=1;
+$('am').onclick=()=>V.I02=+!V.I02;
+$('spd').onchange=e=>speed=+e.target.value;
+$('pause').onclick=()=>{run=!run;$('pause').textContent=run?'Pausar':'Continuar'};
+$('rst').onclick=reset;
+reset();draw();
+let last=performance.now(),acc=0;
+(function loop(n){const dt=Math.min((n-last)/1000,.1);last=n;
+ if(run){acc+=dt*speed;while(acc>=SC){scan(SC);acc-=SC}}
+ draw();requestAnimationFrame(loop)})(last);
+</script>
+</body>
+</html>
