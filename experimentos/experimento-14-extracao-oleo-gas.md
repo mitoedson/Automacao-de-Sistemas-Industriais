@@ -225,5 +225,5 @@ NETWORK 13 – Bomba B_501_4
 
 ### Recursos 
 
-| Guia em PDF | 
+| [Guia em PDF](experimento-14-tanque-bombas.pdf) | 
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_extracao.html) |

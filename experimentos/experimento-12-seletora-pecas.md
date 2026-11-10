@@ -177,5 +177,5 @@ NETWORK 16 – Lâmpada: ligada durante todo o ciclo
   
 ### Recursos
 
-| Guia em PDF | 
+| [Guia em PDF](experimento-12-seletora-pecas.pdf) | 
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_seletora-pecas.html) |

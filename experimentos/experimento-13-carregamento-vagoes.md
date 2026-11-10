@@ -107,5 +107,5 @@ NETWORK 6 – Destravamento (Y2)
   
 ### Recursos
 
-| Guia em PDF | 
+| [Guia em PDF](experimento-13-carregamento-vagoes.pdf) | 
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_carregamento-vagoes.html) |

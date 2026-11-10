@@ -538,5 +538,5 @@ NETWORK 27 – Alimentador de copos (opcional)
 
 ### Recursos
 
-| Guia em PDF | 
+|  [Guia em PDF](experimento-11-maquina-bebidas.pdf) | 
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_maquina-bebidas.html) |
