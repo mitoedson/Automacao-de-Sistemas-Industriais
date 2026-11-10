@@ -335,7 +335,7 @@ EME em 0 desliga em qualquer modo. Em automático, ao soltar, a bomba parte apó
 
 #### 1.1.5. Recursos
 
-| [Guia em PDF](experimento-10-.pdf) | 
+| [Guia em PDF](experimento-03a-bomba.pdf) | 
 | [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_bomba.html) |
 
 
