@@ -707,6 +707,10 @@ Chamada no OB1:
 ### 1.2.13. Recursos
 
 | [Guia em PDF](experimento-03a-bomba.pdf) | 
-| [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_magazine.html) |
+ [Guia em PDF](experimento-03-bomba-e-magazine.pdf) | 
+ [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_bomba.html) |
+ [Simulador em HTML](https://mitoedson.github.io/Automacao-de-Sistemas-Industriais/simulador/simulacao_magazine.html) |
+
+
 
 
