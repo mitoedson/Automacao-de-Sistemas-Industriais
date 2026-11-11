@@ -36,11 +36,8 @@ Nível de integridade de segurança em sistemas automatizados — não coberto n
 ### [IHMs e Sistemas Supervisórios](./08-ihm-supervisorio/README.md)
 Interface homem-máquina e conceitos de supervisão (SCADA).
 
-<!--
 ### [Redes Industriais](./09-redes-industriais/README.md)
 Comunicação entre dispositivos de automação — não coberto no Groover; aplicação prática de rede entre CLP, IHM e inversor de frequência.
--->
-
 
 ### [Revisão e Avaliação](./revisao-avaliacao/README.md)
 Revisão geral dos capítulos 1, 2, 4, 5, 6 e 9 do Groover e das Experiências 1–7 da apostila de laboratório.*
